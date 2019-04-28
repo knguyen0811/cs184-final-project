@@ -4,7 +4,7 @@
 #include <CGL/vector3D.h>
 #include <nanogui/nanogui.h>
 
-#include "clothSimulator.h"
+#include "galaxySimulator.h"
 #include "leak_fix.h"
 
 #include "camera.h"

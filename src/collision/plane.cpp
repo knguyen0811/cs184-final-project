@@ -2,7 +2,7 @@
 #include <nanogui/nanogui.h>
 
 #include "../clothMesh.h"
-#include "../clothSimulator.h"
+#include "../galaxySimulator.h"
 #include "../leak_fix.h"
 #include "plane.h"
 

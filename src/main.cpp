@@ -16,7 +16,7 @@
 #include "collision/plane.h"
 #include "collision/sphere.h"
 #include "cloth.h"
-#include "clothSimulator.h"
+#include "galaxySimulator.h"
 #include "json.hpp"
 #include "misc/file_utils.h"
 
