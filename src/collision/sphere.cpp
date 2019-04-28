@@ -30,3 +30,16 @@ void Sphere::render(GLShader &shader) {
     // and intersect with the sphere when rendered
     m_sphere_mesh.draw_sphere(shader, origin, radius * 0.92);
 }
+
+//Added to File
+void Sphere::simulate(double frames_per_sec, double simulation_steps, SphereParameters *cp,
+                vector<Vector3D> external_accelerations,
+                vector<CollisionObject *> *collision_objects) {
+    //Start Code Here
+
+
+}
+
+void Sphere::reset(){
+
+}
