@@ -16,7 +16,7 @@
 #include "collision/plane.h"
 #include "collision/sphere.h"
 #include "cloth.h"
-#include "clothSimulator.h"
+#include "galaxySimulator.h"
 #include "json.hpp"
 #include "misc/file_utils.h"
 
@@ -35,7 +35,7 @@ const string CLOTH = "cloth";
 
 const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH};
 
-ClothSimulator *app = nullptr;
+GalaxySimulator *app = nullptr;
 GLFWwindow *window = nullptr;
 Screen *screen = nullptr;
 
@@ -472,10 +472,11 @@ int main(int argc, char **argv) {
   cloth.buildGrid();
   cloth.buildClothMesh();
 
-  // Initialize the ClothSimulator object
-  app = new ClothSimulator(project_root, screen);
-  app->loadCloth(&cloth);
-  app->loadClothParameters(&cp);
+  // Initialize the GalaxySimulator object
+  app = new GalaxySimulator(project_root, screen);
+    // NOTE: Commenting out cloth code
+    // app->loadCloth(&cloth);
+    // app->loadClothParameters(&cp);
   app->loadCollisionObjects(&objects);
   app->init();
 

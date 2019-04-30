@@ -12,15 +12,15 @@ using namespace nanogui;
 struct UserShader;
 enum ShaderTypeHint { WIREFRAME = 0, NORMALS = 1, PHONG = 2 };
 
-class ClothSimulator {
+class GalaxySimulator {
 public:
-  ClothSimulator(std::string project_root, Screen *screen);
-  ~ClothSimulator();
+  GalaxySimulator(std::string project_root, Screen *screen);
+  ~GalaxySimulator();
 
   void init();
 
-  void loadCloth(Cloth *cloth);
-  void loadClothParameters(ClothParameters *cp);
+//  void loadCloth(Cloth *cloth);
+//  void loadClothParameters(ClothParameters *cp);
   void loadCollisionObjects(vector<CollisionObject *> *objects);
   virtual bool isAlive();
   virtual void drawContents();
@@ -36,9 +36,10 @@ public:
 
 private:
   virtual void initGUI(Screen *screen);
-  void drawWireframe(GLShader &shader);
-  void drawNormals(GLShader &shader);
-  void drawPhong(GLShader &shader);
+//  NOTE: Commenting out cloth code
+//  void drawWireframe(GLShader &shader);
+//  void drawNormals(GLShader &shader);
+//  void drawPhong(GLShader &shader);
   
   void load_shaders();
   void load_textures();
@@ -61,8 +62,9 @@ private:
   CGL::Vector3D gravity = CGL::Vector3D(0, -9.8, 0);
   nanogui::Color color = nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-  Cloth *cloth;
-  ClothParameters *cp;
+  // NOTE: Commenting out cloth code
+  //  Cloth *cloth;
+  //  ClothParameters *cp;
   vector<CollisionObject *> *collision_objects;
 
   // OpenGL attributes
