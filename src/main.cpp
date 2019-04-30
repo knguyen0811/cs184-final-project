@@ -158,6 +158,7 @@ void incompleteObjectError(const char *object, const char *attribute) {
 
 bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vector<CollisionObject *>* objects, int sphere_num_lat, int sphere_num_lon) {
   // Read JSON from file
+  std::cout << sizeof(int) << endl;
   ifstream i(filename);
   if (!i.good()) {
     return false;
@@ -302,7 +303,6 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
     } else if (key == SPHERE) {
       Vector3D origin;
       double radius, friction;
-
       auto it_origin = object.find("origin");
       if (it_origin != object.end()) {
         vector<double> vec_origin = *it_origin;
@@ -324,8 +324,8 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       } else {
         incompleteObjectError("sphere", "friction");
       }
-
-      Sphere *s = new Sphere(origin, radius, friction, sphere_num_lat, sphere_num_lon);
+      //1e-5 == placeholder mass
+      Sphere *s = new Sphere(origin, radius, friction, 1e-5, sphere_num_lat, sphere_num_lon);
       objects->push_back(s);
     } else { // PLANE
       Vector3D point, normal;

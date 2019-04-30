@@ -16,7 +16,7 @@ struct Sphere : public CollisionObject {
   public:
     void render(GLShader &shader);
     void collide(PointMass &pm);
-    Sphere(const Vector3D &origin, double radius, double mass, double friction, int num_lat = 40, int num_lon = 40)
+    Sphere(const Vector3D &origin, double radius, double friction, double mass=1e-5, int num_lat = 40, int num_lon = 40)
             : origin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)), mass(mass),
               friction(friction), pm(PointMass(origin, false)), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)) {}
     Vector3D gravity(Sphere &other_sphere);
