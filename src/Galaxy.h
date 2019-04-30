@@ -6,11 +6,11 @@
 #define CLOTHSIM_GALAXY_H
 
 #include <vector>
-#include "planet.h"
+#include "collision/sphere.h"
 class Galaxy {
-    std::vector<Planet*> planets;
+    std::vector<Sphere*> planets;
     int num_planets;
-    Galaxy(vector<Planet*>planets);
+    Galaxy(vector<Sphere*>planets);
     ~Galaxy();
     void simulate(double frames_per_sec, double simulation_steps);
 };

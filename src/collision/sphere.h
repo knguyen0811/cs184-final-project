@@ -13,32 +13,27 @@ struct SphereParameters {
 };
 
 struct Sphere : public CollisionObject {
-public:
-  Sphere(const Vector3D &origin, double radius, double friction, int num_lat = 40, int num_lon = 40)
-      : origin(origin), radius(radius), radius2(radius * radius),
-        friction(friction), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)) {}
+  public:
+    void render(GLShader &shader);
+    void collide(PointMass &pm);
+    Sphere(const Vector3D &origin, double radius, double mass, double friction, int num_lat = 40, int num_lon = 40)
+            : origin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)), mass(mass),
+              friction(friction), pm(PointMass(origin, false)), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)) {}
+    Vector3D gravity(Sphere &other_sphere);
+    //Vector3D get_pos();
+    void add_force(Vector3D force);
+    void verlet(double delta_t, double damping = 0.);
+    void reset();
+  private:
+    PointMass pm;
+    Vector3D origin;
+    const double radius;
+    const double radius2;
+    const double log_radius; // for rendering in logarithmic scale
+    const double mass; // integer?
+    double friction;
 
-  void render(GLShader &shader);
-  void collide(PointMass &pm);
-
-private:
-  Vector3D origin;
-  double radius;
-  double radius2;
-  //Added to File
-  double velocity;
-  vector<PointMass> spheremass;
-
-  void simulate(double frames_per_sec, double simulation_steps, SphereParameters *cp,
-                vector<Vector3D> external_accelerations,
-                vector<CollisionObject *> *collision_objects);
-
-  void reset();
-  //end of Added Files
-
-  double friction;
-  
-  Misc::SphereMesh m_sphere_mesh;
+    Misc::SphereMesh m_sphere_mesh;
 };
 
 #endif /* COLLISIONOBJECT_SPHERE_H */

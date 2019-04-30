@@ -3,24 +3,25 @@
 //
 
 #include "Galaxy.h"
+#include "collision/sphere.h"
 #include <vector>
 
 //TODO: Make dynamically allocated?
-Galaxy::Galaxy(vector<Planet*>planets) {
+Galaxy::Galaxy(vector<Sphere*> planets) {
   this->planets = planets;
   num_planets = planets.size();
 }
 
 void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
   double delta_t = 1 / frames_per_sec / simulation_steps;
-  Planet *planet, *other_planet;
-  Vector3D gravity, new_pos;
+  Sphere *sphere, *other_planet;
+  Vector3D gravity;
   for (int i = 0; i < num_planets; i++) {
-    planet = planets[i];
+    sphere = planets[i];
     for (int j = i + 1; j < num_planets; j++) {
       other_planet = planets[j];
-      gravity = planet->gravity(*other_planet);
-      planet->add_force(gravity);
+      gravity = sphere->gravity(*other_planet);
+      sphere->add_force(gravity);
       other_planet->add_force(-gravity);
     }
   }
