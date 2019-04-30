@@ -32,8 +32,10 @@ using json = nlohmann::json;
 const string SPHERE = "sphere";
 const string PLANE = "plane";
 const string CLOTH = "cloth";
+const string SUN = "sun";
+const string MARS = "mars";
 
-const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH};
+const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SUN, MARS};
 
 ClothSimulator *app = nullptr;
 GLFWwindow *window = nullptr;
@@ -299,7 +301,35 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       cp->density = density;
       cp->damping = damping;
       cp->ks = ks;
-    } else if (key == SPHERE) {
+    } else if (key == SUN) {
+      Vector3D origin;
+      double radius, friction;
+
+      auto it_origin = object.find("origin");
+      if (it_origin != object.end()) {
+        vector<double> vec_origin = *it_origin;
+        origin = Vector3D(vec_origin[0], vec_origin[1], vec_origin[2]);
+      } else {
+        incompleteObjectError("sphere", "origin");
+      }
+
+      auto it_radius = object.find("radius");
+      if (it_radius != object.end()) {
+        radius = *it_radius;
+      } else {
+        incompleteObjectError("sphere", "radius");
+      }
+
+      auto it_friction = object.find("friction");
+      if (it_friction != object.end()) {
+        friction = *it_friction;
+      } else {
+        incompleteObjectError("sphere", "friction");
+      }
+
+      Sphere *s = new Sphere(origin, radius, friction, sphere_num_lat, sphere_num_lon);
+      objects->push_back(s);
+    }else if (key == MARS) {
       Vector3D origin;
       double radius, friction;
 
@@ -469,8 +499,8 @@ int main(int argc, char **argv) {
   createGLContexts();
 
   // Initialize the Cloth object
-  cloth.buildGrid();
-  cloth.buildClothMesh();
+//  cloth.buildGrid();
+//  cloth.buildClothMesh();
 
   // Initialize the ClothSimulator object
   app = new ClothSimulator(project_root, screen);
