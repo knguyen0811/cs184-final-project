@@ -146,9 +146,9 @@ void ClothSimulator::load_shaders() {
     shaders_combobox_names.push_back(shader_name);
   }
   
-  // Assuming that it's there, use "Wireframe" by default
+  // TODO: Assuming that it's there, use "Normal" by default
   for (size_t i = 0; i < shaders_combobox_names.size(); ++i) {
-    if (shaders_combobox_names[i] == "Wireframe") {
+    if (shaders_combobox_names[i] == "Normal") {
       active_shader_idx = i;
       break;
     }
@@ -218,7 +218,10 @@ void ClothSimulator::init() {
   CGL::Vector3D target(avg_pm_position.x, avg_pm_position.y / 2,
                        avg_pm_position.z);
   CGL::Vector3D c_dir(0., 0., 0.);
-  canonical_view_distance = max(cloth->width, cloth->height) * 0.9;
+//  canonical_view_distance = max(cloth->width, cloth->height) * 0.9;
+//  std::cout << "dist max: " << canonical_view_distance << "\n";
+  canonical_view_distance = abs(galaxy->lastPlanetDist) / 1E6;
+//  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
 
   view_distance = canonical_view_distance * 2;
@@ -625,6 +628,8 @@ bool ClothSimulator::dropCallbackEvent(int count, const char **filenames) {
 
 bool ClothSimulator::scrollCallbackEvent(double x, double y) {
   camera.move_forward(y * scroll_rate);
+    std::cout << "camera pos: " << camera.position() << "\n";
+    std::cout << "target pos: " << camera.view_point() << "\n";
   return true;
 }
 

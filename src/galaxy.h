@@ -17,6 +17,7 @@ public:
     ~Galaxy();
     void simulate(double frames_per_sec, double simulation_steps);
     void reset();
+    long double lastPlanetDist;
 };
 
 

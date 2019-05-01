@@ -67,6 +67,11 @@ void Sphere::render(GLShader &shader) {
   m_sphere_mesh.draw_sphere(shader, pm.position / 1E6, radius * 0.92);
 }
 
+Vector3D Sphere::getInitOrigin() {
+    return startOrigin;
+}
+
+
 void Sphere::reset() {
     this->origin = startOrigin;
     this->velocity = startVelocity;
