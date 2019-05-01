@@ -7,6 +7,7 @@
 //TODO: Make dynamically allocated?
 Galaxy::Galaxy(vector<Sphere*> *planets) {
     this->planets = planets;
+    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
     num_planets = planets->size();
 }
 
