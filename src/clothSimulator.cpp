@@ -202,8 +202,8 @@ void ClothSimulator::init() {
   // Initialize camera
 
   CGL::Collada::CameraInfo camera_info;
-  camera_info.hFov = 50;
-  camera_info.vFov = 35;
+  camera_info.hFov = 50000;
+  camera_info.vFov = 35000;
   camera_info.nClip = 0.01;
   camera_info.fClip = 10000;
 

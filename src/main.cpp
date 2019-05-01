@@ -481,7 +481,7 @@ int main(int argc, char **argv) {
   if (!file_specified) { // No arguments, default initialization
     std::stringstream def_fname;
     def_fname << project_root;
-    def_fname << "/scene/pinned2.json";
+    def_fname << "/scene/sphere.json";
     file_to_load_from = def_fname.str();
   }
   
