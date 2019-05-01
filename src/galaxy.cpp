@@ -7,6 +7,7 @@
 //TODO: Make dynamically allocated?
 Galaxy::Galaxy(vector<Sphere*> *planets) {
     this->planets = planets;
+    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
     num_planets = planets->size();
 }
 
@@ -24,6 +25,7 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         for (int j = i + 1; j < num_planets; j++) {
             other_planet = (*planets)[j];
             gravity = sphere->gravity(*other_planet);
+            gravity = gravity / pow(10, 10);
             sphere->add_force(gravity);
             other_planet->add_force(-gravity);
         }

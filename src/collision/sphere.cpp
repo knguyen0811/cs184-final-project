@@ -31,7 +31,7 @@ void Sphere::collide(PointMass &pm) {
 }
 
 Vector3D Sphere::gravity(Sphere &other_sphere) {
-  Vector3D dir = other_sphere.origin - origin;
+  Vector3D dir = other_sphere.pm.position - pm.position;
   double r = dir.norm();
   dir.normalize();
   // Divide by r once to normalize dir, then twice more for the gravitation equation
@@ -65,6 +65,11 @@ void Sphere::render(GLShader &shader) {
   // and intersect with the sphere when rendered
   m_sphere_mesh.draw_sphere(shader, pm.position / 1E6, radius * 0.92);
 }
+
+Vector3D Sphere::getInitOrigin() {
+    return startOrigin;
+}
+
 
 void Sphere::reset() {
     this->origin = startOrigin;

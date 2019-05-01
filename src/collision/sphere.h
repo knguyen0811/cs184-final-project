@@ -25,6 +25,7 @@ public:
     void add_force(Vector3D force);
     void verlet(double delta_t);
     void reset();
+    Vector3D getInitOrigin();
 private:
     PointMass pm;
     Vector3D origin;
