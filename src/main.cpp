@@ -335,6 +335,7 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
         if (it_origin != object.end()) {
             vector<double> vec_velocity = *it_velocity;
             velocity = Vector3D(vec_velocity[0], vec_velocity[1], vec_velocity[2]);
+            velocity = 6.5*velocity;
         } else {
             incompleteObjectError("sphere", "velocity");
         }
