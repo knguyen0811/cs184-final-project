@@ -7,24 +7,24 @@
     "mass": 1.9891E30
   },
   "mercury": {
-    "origin": [579, 0, 0],
-    "radius": 2.4397,
+    "origin": [5.79E7, 0, 0],
+    "radius": 1.22,
     "friction": 0.3,
-    "velocity":  [0, 0.000474, 0],
+    "velocity":  [0, 170640, 0],
     "mass":  3.3E23
   },
   "venus": {
-    "origin": [1082, 0, 0],
-    "radius": 6.0518,
+    "origin": [1.082E8, 0, 0],
+    "radius": 3.027,
     "friction": 0.3,
-    "velocity":  [0, 0.000350, 0],
+    "velocity":  [0, 126000, 0],
     "mass":  4.87E24
   },
   "earth": {
-    "origin": [1496, 0, 0],
-    "radius": 6.371,
+    "origin": [1.496E8, 0, 0],
+    "radius": 3.19,
     "friction": 0.3,
-    "velocity":  [0, 0.000298, 0],
+    "velocity":  [0, 107280, 0],
     "mass":  5.976E24
   },
   "cloth": {
