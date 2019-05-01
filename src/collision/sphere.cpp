@@ -43,9 +43,10 @@ void Sphere::add_force(Vector3D force) {
 }
 
 void Sphere::verlet(double delta_t) {
-  Vector3D new_pos = pm.position + delta_t * (pm.last_position - pm.position) + (pm.forces / mass) * (delta_t * delta_t) / 2.f;
+  Vector3D new_pos = pm.position + velocity + (pm.forces / mass) / 2.f;
 
   std::cout << "forces: " << pm.forces << "\n";
+  std::cout << "velocity: " << velocity << "\n";
   std::cout << "mass: " << mass << "\n";
   std::cout << "forces / mass: " << pm.forces / mass << "\n";
   std::cout << "(pm.forces / mass) * (delta_t * delta_t) / 2.f: " << (pm.forces / mass) * (delta_t * delta_t) / 2.f << "\n";
@@ -53,7 +54,8 @@ void Sphere::verlet(double delta_t) {
   std::cout << "pos: " << pm.position << "\n";
   std::cout << "new_pos: " << new_pos << "\n";
 
-  pm.last_position = pm.position;
+  //pm.last_position = pm.position;
+  velocity = new_pos - pm.position;
   pm.position = new_pos;
   pm.forces = Vector3D();
 }
@@ -61,7 +63,7 @@ void Sphere::verlet(double delta_t) {
 void Sphere::render(GLShader &shader) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
-  m_sphere_mesh.draw_sphere(shader, pm.position, radius * 0.92);
+  m_sphere_mesh.draw_sphere(shader, pm.position / 1E6, radius * 0.92);
 }
 
 void Sphere::reset() {
