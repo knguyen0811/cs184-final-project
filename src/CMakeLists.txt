@@ -21,7 +21,7 @@ set(CLOTHSIM_VIEWER_SOURCE
 
     # Camera
     camera.cpp
-)
+        galaxy.cpp galaxy.h)
 
 # Windows-only sources
 if(WIN32)

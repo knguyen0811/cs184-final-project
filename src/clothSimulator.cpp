@@ -187,6 +187,8 @@ void ClothSimulator::loadClothParameters(ClothParameters *cp) { this->cp = cp; }
 
 void ClothSimulator::loadCollisionObjects(vector<CollisionObject *> *objects) { this->collision_objects = objects; }
 
+void ClothSimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
+
 /**
  * Initializes the cloth simulation and spawns a new thread to separate
  * rendering from simulation.
@@ -221,7 +223,7 @@ void ClothSimulator::init() {
 
   view_distance = canonical_view_distance * 2;
   min_view_distance = canonical_view_distance / 10.0;
-  max_view_distance = canonical_view_distance * 20.0;
+  max_view_distance = canonical_view_distance * 1000.0;
 
   // canonicalCamera is a copy used for view resets
 
@@ -246,7 +248,9 @@ void ClothSimulator::drawContents() {
     vector<Vector3D> external_accelerations = {gravity};
 
     for (int i = 0; i < simulation_steps; i++) {
-      cloth->simulate(frames_per_sec, simulation_steps, cp, external_accelerations, collision_objects);
+//      cloth->simulate(frames_per_sec, simulation_steps, cp, external_accelerations, collision_objects);
+        // FIXME:
+        galaxy->simulate(frames_per_sec, simulation_steps);
     }
   }
 
@@ -270,39 +274,39 @@ void ClothSimulator::drawContents() {
   shader.setUniform("u_model", model);
   shader.setUniform("u_view_projection", viewProjection);
 
-  switch (active_shader.type_hint) {
-  case WIREFRAME:
-    shader.setUniform("u_color", color, false);
-    drawWireframe(shader);
-    break;
-  case NORMALS:
-    drawNormals(shader);
-    break;
-  case PHONG:
-  
-    // Others
-    Vector3D cam_pos = camera.position();
-    shader.setUniform("u_color", color, false);
-    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
-    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
-    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
-    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
-    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
-    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
-    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
-    // Textures
-    shader.setUniform("u_texture_1", 1, false);
-    shader.setUniform("u_texture_2", 2, false);
-    shader.setUniform("u_texture_3", 3, false);
-    shader.setUniform("u_texture_4", 4, false);
-    
-    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
-    shader.setUniform("u_height_scaling", m_height_scaling, false);
-    
-    shader.setUniform("u_texture_cubemap", 5, false);
-    drawPhong(shader);
-    break;
-  }
+//  switch (active_shader.type_hint) {
+//  case WIREFRAME:
+//    shader.setUniform("u_color", color, false);
+//    drawWireframe(shader);
+//    break;
+//  case NORMALS:
+//    drawNormals(shader);
+//    break;
+//  case PHONG:
+//
+//    // Others
+//    Vector3D cam_pos = camera.position();
+//    shader.setUniform("u_color", color, false);
+//    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
+//    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
+//    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
+//    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
+//    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
+//    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
+//    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
+//    // Textures
+//    shader.setUniform("u_texture_1", 1, false);
+//    shader.setUniform("u_texture_2", 2, false);
+//    shader.setUniform("u_texture_3", 3, false);
+//    shader.setUniform("u_texture_4", 4, false);
+//
+//    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
+//    shader.setUniform("u_height_scaling", m_height_scaling, false);
+//
+//    shader.setUniform("u_texture_cubemap", 5, false);
+//    drawPhong(shader);
+//    break;
+//  }
 
   for (CollisionObject *co : *collision_objects) {
     co->render(shader);

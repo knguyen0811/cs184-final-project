@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "cloth.h"
 #include "collision/collisionObject.h"
+#include "galaxy.h"
 
 using namespace nanogui;
 
@@ -22,6 +23,7 @@ public:
   void loadCloth(Cloth *cloth);
   void loadClothParameters(ClothParameters *cp);
   void loadCollisionObjects(vector<CollisionObject *> *objects);
+  void loadGalaxy(Galaxy *galaxy);
   virtual bool isAlive();
   virtual void drawContents();
 
@@ -64,6 +66,7 @@ private:
   Cloth *cloth;
   ClothParameters *cp;
   vector<CollisionObject *> *collision_objects;
+  Galaxy *galaxy;
 
   // OpenGL attributes
 
