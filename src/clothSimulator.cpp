@@ -596,7 +596,7 @@ bool ClothSimulator::keyCallbackEvent(int key, int scancode, int action,
       break;
     case 'r':
     case 'R':
-      cloth->reset();
+      galaxy->reset();
       break;
     case ' ':
       resetCamera();

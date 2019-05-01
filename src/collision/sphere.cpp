@@ -67,5 +67,8 @@ void Sphere::render(GLShader &shader) {
 }
 
 void Sphere::reset() {
-
+    this->origin = startOrigin;
+    this->velocity = startVelocity;
+    pm.position = pm.start_position;
+    pm.last_position = pm.start_position;
 }
