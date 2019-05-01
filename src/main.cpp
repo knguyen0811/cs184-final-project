@@ -305,8 +305,9 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       cp->damping = damping;
       cp->ks = ks;
     } else if (key == SUN || key == VENUS || key == MERCURY || key == EARTH) {
-      Vector3D origin;
+      Vector3D origin, velocity;
       double radius, friction;
+      long double mass;
 
       auto it_origin = object.find("origin");
       if (it_origin != object.end()) {
@@ -330,7 +331,24 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
         incompleteObjectError("sphere", "friction");
       }
 
-      Sphere *s = new Sphere(origin, radius, friction, sphere_num_lat, sphere_num_lon);
+        auto it_velocity = object.find("velocity");
+        if (it_origin != object.end()) {
+            vector<double> vec_velocity = *it_velocity;
+            velocity = Vector3D(vec_velocity[0], vec_velocity[1], vec_velocity[2]);
+        } else {
+            incompleteObjectError("sphere", "velocity");
+        }
+
+        std::cout << "velocity: " << velocity << "\n";
+
+        auto it_mass = object.find("mass");
+        if (it_mass != object.end()) {
+            mass = *it_mass;
+        } else {
+            incompleteObjectError("sphere", "mass");
+        }
+
+      Sphere *s = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
       objects->push_back(s);
       planets->push_back(s);
     } else { // PLANE

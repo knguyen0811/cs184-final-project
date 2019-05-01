@@ -2,22 +2,30 @@
   "sun": {
     "origin": [0, 0, 0],
     "radius": 7.0,
-    "friction": 0.3
+    "friction": 0.3,
+    "velocity": [0, 0, 0],
+    "mass": 1.9891E30
   },
   "mercury": {
     "origin": [579, 0, 0],
     "radius": 2.4397,
-    "friction": 0.3
+    "friction": 0.3,
+    "velocity":  [0, 0.000474, 0],
+    "mass":  3.3E23
   },
   "venus": {
     "origin": [1082, 0, 0],
     "radius": 6.0518,
-    "friction": 0.3
+    "friction": 0.3,
+    "velocity":  [0, 0.000350, 0],
+    "mass":  4.87E24
   },
   "earth": {
     "origin": [1496, 0, 0],
     "radius": 6.371,
-    "friction": 0.3
+    "friction": 0.3,
+    "velocity":  [0, 0.000298, 0],
+    "mass":  5.976E24
   },
   "cloth": {
     "damping": 0.2,
