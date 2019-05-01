@@ -34,3 +34,9 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         planet->verlet(delta_t);
     }
 }
+
+void Galaxy::reset() {
+    for (Sphere* s : *planets) {
+        s->reset();
+    }
+}
