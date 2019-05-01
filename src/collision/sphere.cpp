@@ -31,18 +31,28 @@ void Sphere::collide(PointMass &pm) {
 }
 
 Vector3D Sphere::gravity(Sphere &other_sphere) {
-  Vector3D dir = origin - other_sphere.origin;
+  Vector3D dir = other_sphere.origin - origin;
   double r = dir.norm();
+  dir.normalize();
   // Divide by r once to normalize dir, then twice more for the gravitation equation
-  return dir * G * mass * other_sphere.mass / (r * r * r);
+  return dir * G * mass * other_sphere.mass / (r * r);
 }
 
 void Sphere::add_force(Vector3D force) {
   pm.forces += force;
 }
 
-void Sphere::verlet(double delta_t, double damping) {
-  Vector3D new_pos = pm.position + (1 - damping) * (pm.position - pm.last_position) + (pm.forces / mass) * (delta_t * delta_t);
+void Sphere::verlet(double delta_t) {
+  Vector3D new_pos = pm.position + delta_t * (pm.last_position - pm.position) + (pm.forces / mass) * (delta_t * delta_t) / 2.f;
+
+  std::cout << "forces: " << pm.forces << "\n";
+  std::cout << "mass: " << mass << "\n";
+  std::cout << "forces / mass: " << pm.forces / mass << "\n";
+  std::cout << "(pm.forces / mass) * (delta_t * delta_t) / 2.f: " << (pm.forces / mass) * (delta_t * delta_t) / 2.f << "\n";
+
+  std::cout << "pos: " << pm.position << "\n";
+  std::cout << "new_pos: " << new_pos << "\n";
+
   pm.last_position = pm.position;
   pm.position = new_pos;
   pm.forces = Vector3D();

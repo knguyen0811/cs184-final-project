@@ -6,22 +6,24 @@
 #include "camera.h"
 #include "cloth.h"
 #include "collision/collisionObject.h"
+#include "galaxy.h"
 
 using namespace nanogui;
 
 struct UserShader;
 enum ShaderTypeHint { WIREFRAME = 0, NORMALS = 1, PHONG = 2 };
 
-class GalaxySimulator {
+class ClothSimulator {
 public:
-  GalaxySimulator(std::string project_root, Screen *screen);
-  ~GalaxySimulator();
+  ClothSimulator(std::string project_root, Screen *screen);
+  ~ClothSimulator();
 
   void init();
 
-//  void loadCloth(Cloth *cloth);
-//  void loadClothParameters(ClothParameters *cp);
+  void loadCloth(Cloth *cloth);
+  void loadClothParameters(ClothParameters *cp);
   void loadCollisionObjects(vector<CollisionObject *> *objects);
+  void loadGalaxy(Galaxy *galaxy);
   virtual bool isAlive();
   virtual void drawContents();
 
@@ -36,10 +38,9 @@ public:
 
 private:
   virtual void initGUI(Screen *screen);
-//  NOTE: Commenting out cloth code
-//  void drawWireframe(GLShader &shader);
-//  void drawNormals(GLShader &shader);
-//  void drawPhong(GLShader &shader);
+  void drawWireframe(GLShader &shader);
+  void drawNormals(GLShader &shader);
+  void drawPhong(GLShader &shader);
   
   void load_shaders();
   void load_textures();
@@ -62,10 +63,10 @@ private:
   CGL::Vector3D gravity = CGL::Vector3D(0, -9.8, 0);
   nanogui::Color color = nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-  // NOTE: Commenting out cloth code
-  //  Cloth *cloth;
-  //  ClothParameters *cp;
+  Cloth *cloth;
+  ClothParameters *cp;
   vector<CollisionObject *> *collision_objects;
+  Galaxy *galaxy;
 
   // OpenGL attributes
 

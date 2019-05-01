@@ -16,9 +16,10 @@
 #include "collision/plane.h"
 #include "collision/sphere.h"
 #include "cloth.h"
-#include "galaxySimulator.h"
+#include "clothSimulator.h"
 #include "json.hpp"
 #include "misc/file_utils.h"
+#include "galaxy.h"
 
 typedef uint32_t gid_t;
 
@@ -32,10 +33,14 @@ using json = nlohmann::json;
 const string SPHERE = "sphere";
 const string PLANE = "plane";
 const string CLOTH = "cloth";
+const string SUN = "sun";
+const string MERCURY = "mercury";
+const string VENUS = "venus";
+const string EARTH = "earth";
 
-const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH};
+const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SUN, MERCURY, VENUS, EARTH};
 
-GalaxySimulator *app = nullptr;
+ClothSimulator *app = nullptr;
 GLFWwindow *window = nullptr;
 Screen *screen = nullptr;
 
@@ -156,9 +161,8 @@ void incompleteObjectError(const char *object, const char *attribute) {
   exit(-1);
 }
 
-bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vector<CollisionObject *>* objects, int sphere_num_lat, int sphere_num_lon) {
+bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vector<CollisionObject *>* objects, vector<Sphere *>* planets, int sphere_num_lat, int sphere_num_lon) {
   // Read JSON from file
-  std::cout << sizeof(int) << endl;
   ifstream i(filename);
   if (!i.good()) {
     return false;
@@ -300,9 +304,11 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       cp->density = density;
       cp->damping = damping;
       cp->ks = ks;
-    } else if (key == SPHERE) {
-      Vector3D origin;
+    } else if (key == SUN || key == VENUS || key == MERCURY || key == EARTH) {
+      Vector3D origin, velocity;
       double radius, friction;
+      long double mass;
+
       auto it_origin = object.find("origin");
       if (it_origin != object.end()) {
         vector<double> vec_origin = *it_origin;
@@ -324,9 +330,27 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       } else {
         incompleteObjectError("sphere", "friction");
       }
-      //1e-5 == placeholder mass
-      Sphere *s = new Sphere(origin, radius, friction, 1e-5, sphere_num_lat, sphere_num_lon);
+
+        auto it_velocity = object.find("velocity");
+        if (it_origin != object.end()) {
+            vector<double> vec_velocity = *it_velocity;
+            velocity = Vector3D(vec_velocity[0], vec_velocity[1], vec_velocity[2]);
+        } else {
+            incompleteObjectError("sphere", "velocity");
+        }
+
+        std::cout << "velocity: " << velocity << "\n";
+
+        auto it_mass = object.find("mass");
+        if (it_mass != object.end()) {
+            mass = *it_mass;
+        } else {
+            incompleteObjectError("sphere", "mass");
+        }
+
+      Sphere *s = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
       objects->push_back(s);
+      planets->push_back(s);
     } else { // PLANE
       Vector3D point, normal;
       double friction;
@@ -398,6 +422,8 @@ int main(int argc, char **argv) {
   Cloth cloth;
   ClothParameters cp;
   vector<CollisionObject *> objects;
+  vector<Sphere *> planets;
+
   
   int c;
   
@@ -459,7 +485,7 @@ int main(int argc, char **argv) {
     file_to_load_from = def_fname.str();
   }
   
-  bool success = loadObjectsFromFile(file_to_load_from, &cloth, &cp, &objects, sphere_num_lat, sphere_num_lon);
+  bool success = loadObjectsFromFile(file_to_load_from, &cloth, &cp, &objects, &planets, sphere_num_lat, sphere_num_lon);
   if (!success) {
     std::cout << "Warn: Unable to load from file: " << file_to_load_from << std::endl;
   }
@@ -469,15 +495,16 @@ int main(int argc, char **argv) {
   createGLContexts();
 
   // Initialize the Cloth object
-  cloth.buildGrid();
-  cloth.buildClothMesh();
+//  cloth.buildGrid();
+//  cloth.buildClothMesh();
 
-  // Initialize the GalaxySimulator object
-  app = new GalaxySimulator(project_root, screen);
-    // NOTE: Commenting out cloth code
-    // app->loadCloth(&cloth);
-    // app->loadClothParameters(&cp);
+  // Initialize the ClothSimulator object
+  Galaxy galaxy(&planets);
+  app = new ClothSimulator(project_root, screen);
+  app->loadCloth(&cloth);
+  app->loadClothParameters(&cp);
   app->loadCollisionObjects(&objects);
+    app->loadGalaxy(&galaxy);
   app->init();
 
   // Call this after all the widgets have been defined

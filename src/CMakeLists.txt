@@ -12,7 +12,7 @@ set(CLOTHSIM_VIEWER_SOURCE
 
     # Application
     main.cpp
-        galaxySimulator.cpp
+    clothSimulator.cpp
 
     # Miscellaneous
     # png.cpp
@@ -21,7 +21,7 @@ set(CLOTHSIM_VIEWER_SOURCE
 
     # Camera
     camera.cpp
-        planet.cpp planet.h Galaxy.cpp Galaxy.h)
+        galaxy.cpp galaxy.h)
 
 # Windows-only sources
 if(WIN32)
