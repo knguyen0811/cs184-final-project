@@ -78,7 +78,6 @@ void Galaxy::add_planet_helper(Sphere *s) {
 
 void Galaxy::remove_planet() {
     std::cout << "Removing planet..\n";
-    Sphere *last = planets->back();
     planets->pop_back();
 
     // Deallocate Sphere object TODO: NVM ACTUALLY BREAKS SIMULATION
