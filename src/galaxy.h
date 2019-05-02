@@ -9,15 +9,21 @@
 #include "collision/sphere.h"
 class Galaxy {
 public:
-    std::vector<Sphere*> *planets;
-    int num_planets;
-
+    // Constructor & Destructor
     Galaxy(vector<Sphere *> *planets);
-
     ~Galaxy();
+
+    // Functions
     void simulate(double frames_per_sec, double simulation_steps);
     void reset();
+    void add_planet(Sphere *s);
+    void add_planet();
+    void render(GLShader &shader);
+
+    // Variables
+    int num_planets;
     long double lastPlanetDist;
+    std::vector<Sphere*> *planets;
 };
 
 

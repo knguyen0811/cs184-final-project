@@ -220,6 +220,7 @@ void ClothSimulator::init() {
   CGL::Vector3D c_dir(0., 0., 0.);
 //  canonical_view_distance = max(cloth->width, cloth->height) * 0.9;
 //  std::cout << "dist max: " << canonical_view_distance << "\n";
+    // DEBUG: Adjust Camera View Distance Here
   canonical_view_distance = abs(galaxy->lastPlanetDist) / 1E6;
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
@@ -277,43 +278,50 @@ void ClothSimulator::drawContents() {
   shader.setUniform("u_model", model);
   shader.setUniform("u_view_projection", viewProjection);
 
-//  switch (active_shader.type_hint) {
-//  case WIREFRAME:
-//    shader.setUniform("u_color", color, false);
+  switch (active_shader.type_hint) {
+  case WIREFRAME:
+    shader.setUniform("u_color", color, false);
 //    drawWireframe(shader);
-//    break;
-//  case NORMALS:
+    for (CollisionObject *co : *collision_objects) {
+        co->render(shader);
+    }
+    break;
+  case NORMALS:
 //    drawNormals(shader);
-//    break;
-//  case PHONG:
-//
-//    // Others
-//    Vector3D cam_pos = camera.position();
-//    shader.setUniform("u_color", color, false);
-//    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
-//    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
-//    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
-//    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
-//    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
-//    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
-//    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
-//    // Textures
-//    shader.setUniform("u_texture_1", 1, false);
-//    shader.setUniform("u_texture_2", 2, false);
-//    shader.setUniform("u_texture_3", 3, false);
-//    shader.setUniform("u_texture_4", 4, false);
-//
-//    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
-//    shader.setUniform("u_height_scaling", m_height_scaling, false);
-//
-//    shader.setUniform("u_texture_cubemap", 5, false);
-//    drawPhong(shader);
-//    break;
-//  }
+    for (CollisionObject *co : *collision_objects) {
+        co->render(shader);
+    }
+    break;
+  case PHONG:
 
-  for (CollisionObject *co : *collision_objects) {
-    co->render(shader);
+    // Others
+    Vector3D cam_pos = camera.position();
+    shader.setUniform("u_color", color, false);
+    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
+    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
+    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
+    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
+    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
+    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
+    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
+    // Textures
+    shader.setUniform("u_texture_1", 1, false);
+    shader.setUniform("u_texture_2", 2, false);
+    shader.setUniform("u_texture_3", 3, false);
+    shader.setUniform("u_texture_4", 4, false);
+
+    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
+    shader.setUniform("u_height_scaling", m_height_scaling, false);
+
+    shader.setUniform("u_texture_cubemap", 5, false);
+//    drawPhong(shader);
+    for (CollisionObject *co : *collision_objects) {
+        co->render(shader);
+    }
+    break;
   }
+
+
 }
 
 void ClothSimulator::drawWireframe(GLShader &shader) {
@@ -615,6 +623,11 @@ bool ClothSimulator::keyCallbackEvent(int key, int scancode, int action,
         drawContents();
         is_paused = true;
       }
+    case 'a':
+    case 'A':
+        std::cout << "a key pressed\n";
+        galaxy->add_planet();
+        drawContents();
       break;
     }
   }
@@ -628,8 +641,8 @@ bool ClothSimulator::dropCallbackEvent(int count, const char **filenames) {
 
 bool ClothSimulator::scrollCallbackEvent(double x, double y) {
   camera.move_forward(y * scroll_rate);
-    std::cout << "camera pos: " << camera.position() << "\n";
-    std::cout << "target pos: " << camera.view_point() << "\n";
+//    std::cout << "camera pos: " << camera.position() << "\n";
+//    std::cout << "target pos: " << camera.view_point() << "\n";
   return true;
 }
 

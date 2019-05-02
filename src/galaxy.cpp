@@ -36,6 +36,40 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     }
 }
 
+void Galaxy::render(GLShader &shader) {
+    
+}
+
+void Galaxy::add_planet(Sphere *s) {
+    this->planets->push_back(s);
+    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
+    num_planets = planets->size();
+}
+
+void Galaxy::add_planet() {
+    // NOTE: Lat and Lon already specified in constructor
+//    int sphere_num_lat = 40;
+//    int sphere_num_lon = 40;
+    std::cout << "Adding planet..\n";
+    Vector3D origin, velocity;
+    double radius, friction;
+    long double mass;
+
+    Sphere *last = planets->back();
+
+    double multiplier = (rand()/RAND_MAX + 0.5f);
+
+    origin = last->getInitOrigin() * multiplier;
+    velocity = last->getInitVelocity() * multiplier;
+    radius = last->getRadius() * multiplier;
+    mass = last->getMass() * multiplier;
+
+    Sphere *s = new Sphere(origin, radius, 1, velocity, mass);
+    this->planets->push_back(s);
+    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
+    num_planets = planets->size();
+}
+
 void Galaxy::reset() {
     for (Sphere* s : *planets) {
         s->reset();
