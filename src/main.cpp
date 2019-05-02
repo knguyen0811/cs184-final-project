@@ -304,7 +304,7 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       cp->density = density;
       cp->damping = damping;
       cp->ks = ks;
-    } else if (key == SUN || key == VENUS || key == MERCURY || key == EARTH) {
+    } else if (key == SUN || key == MERCURY || key == VENUS  || key == EARTH) {
       Vector3D origin, velocity;
       double radius, friction;
       long double mass;

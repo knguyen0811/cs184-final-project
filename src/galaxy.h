@@ -18,7 +18,19 @@ public:
     void reset();
     void add_planet(Sphere *s);
     void add_planet();
+    void add_planet_helper(Sphere *s);
+    void remove_planet();
     void render(GLShader &shader);
+
+
+    // Comparators
+    static bool compareRadius(Sphere *s1, Sphere *s2) {
+        return s1->getRadius() < s2->getRadius();
+    }
+
+    static bool compareOrigin(Sphere *s1, Sphere *s2) {
+        return s1->getInitOrigin().norm() < s2->getInitOrigin().norm();
+    }
 
     // Variables
     int num_planets;

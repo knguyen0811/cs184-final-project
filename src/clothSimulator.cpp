@@ -282,15 +282,11 @@ void ClothSimulator::drawContents() {
   case WIREFRAME:
     shader.setUniform("u_color", color, false);
 //    drawWireframe(shader);
-    for (CollisionObject *co : *collision_objects) {
-        co->render(shader);
-    }
+    galaxy->render(shader);
     break;
   case NORMALS:
 //    drawNormals(shader);
-    for (CollisionObject *co : *collision_objects) {
-        co->render(shader);
-    }
+    galaxy->render(shader);
     break;
   case PHONG:
 
@@ -315,13 +311,12 @@ void ClothSimulator::drawContents() {
 
     shader.setUniform("u_texture_cubemap", 5, false);
 //    drawPhong(shader);
-    for (CollisionObject *co : *collision_objects) {
-        co->render(shader);
-    }
+    galaxy->render(shader);
     break;
   }
-
-
+//    for (CollisionObject *co : *collision_objects) {
+//        co->render(shader);
+//    }
 }
 
 void ClothSimulator::drawWireframe(GLShader &shader) {
@@ -623,12 +618,17 @@ bool ClothSimulator::keyCallbackEvent(int key, int scancode, int action,
         drawContents();
         is_paused = true;
       }
+      break;
     case 'a':
     case 'A':
-        std::cout << "a key pressed\n";
         galaxy->add_planet();
         drawContents();
       break;
+    case 'd':
+    case 'D':
+        galaxy->remove_planet();
+        drawContents();
+        break;
     }
   }
 
