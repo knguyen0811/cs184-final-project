@@ -8,7 +8,7 @@
 Galaxy::Galaxy(vector<Sphere*> *planets) {
     this->planets = planets;
     sort(planets->begin(), planets->end(), compareOrigin);
-    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
+    this->last = planets->back();
     num_planets = planets->size();
 }
 
@@ -56,8 +56,6 @@ void Galaxy::add_planet() {
     double radius, friction;
     long double mass;
 
-    Sphere *last = planets->back();
-
     double multiplier = (rand()/RAND_MAX + 1.f);
 
     origin = last->getInitOrigin() * 1.5f;
@@ -72,7 +70,7 @@ void Galaxy::add_planet() {
 void Galaxy::add_planet_helper(Sphere *s) {
     this->planets->push_back(s);
     sort(planets->begin(), planets->end(), compareOrigin);
-    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
+    this->last = planets->back();
     num_planets = planets->size();
 }
 
@@ -82,6 +80,10 @@ void Galaxy::remove_planet() {
 
     // Deallocate Sphere object TODO: NVM ACTUALLY BREAKS SIMULATION
 //    delete last;
+}
+
+Sphere* Galaxy::getLastPlanet() {
+    return last;
 }
 
 void Galaxy::reset() {

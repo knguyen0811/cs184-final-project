@@ -20,6 +20,7 @@ public:
     void add_planet();
     void add_planet_helper(Sphere *s);
     void remove_planet();
+    Sphere* getLastPlanet();
     void render(GLShader &shader);
 
 
@@ -34,7 +35,7 @@ public:
 
     // Variables
     int num_planets;
-    long double lastPlanetDist;
+    Sphere *last;
     std::vector<Sphere*> *planets;
 };
 
