@@ -161,7 +161,7 @@ void incompleteObjectError(const char *object, const char *attribute) {
   exit(-1);
 }
 
-bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vector<CollisionObject *>* objects, vector<Sphere *>* planets, int sphere_num_lat, int sphere_num_lon) {
+bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vector<Sphere *>* planets, int sphere_num_lat, int sphere_num_lon) {
   // Read JSON from file
   ifstream i(filename);
   if (!i.good()) {
@@ -350,7 +350,7 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
         }
 
       Sphere *s = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
-      objects->push_back(s);
+//      objects->push_back(s);
       planets->push_back(s);
     } else { // PLANE
       Vector3D point, normal;
@@ -380,7 +380,7 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       }
 
       Plane *p = new Plane(point, normal, friction);
-      objects->push_back(p);
+//      objects->push_back(p);
     }
   }
 
@@ -422,7 +422,7 @@ int main(int argc, char **argv) {
   
   Cloth cloth;
   ClothParameters cp;
-  vector<CollisionObject *> objects;
+//  vector<CollisionObject *> objects;
   vector<Sphere *> planets;
 
   
@@ -486,7 +486,7 @@ int main(int argc, char **argv) {
     file_to_load_from = def_fname.str();
   }
   
-  bool success = loadObjectsFromFile(file_to_load_from, &cloth, &cp, &objects, &planets, sphere_num_lat, sphere_num_lon);
+  bool success = loadObjectsFromFile(file_to_load_from, &cloth, &cp, &planets, sphere_num_lat, sphere_num_lon);
   if (!success) {
     std::cout << "Warn: Unable to load from file: " << file_to_load_from << std::endl;
   }
@@ -504,7 +504,7 @@ int main(int argc, char **argv) {
   app = new ClothSimulator(project_root, screen);
   app->loadCloth(&cloth);
   app->loadClothParameters(&cp);
-  app->loadCollisionObjects(&objects);
+//  app->loadCollisionObjects(&objects);
     app->loadGalaxy(&galaxy);
   app->init();
 

@@ -178,14 +178,14 @@ ClothSimulator::~ClothSimulator() {
 
   if (cloth) delete cloth;
   if (cp) delete cp;
-  if (collision_objects) delete collision_objects;
+//  if (collision_objects) delete collision_objects;
 }
 
 void ClothSimulator::loadCloth(Cloth *cloth) { this->cloth = cloth; }
 
 void ClothSimulator::loadClothParameters(ClothParameters *cp) { this->cp = cp; }
 
-void ClothSimulator::loadCollisionObjects(vector<CollisionObject *> *objects) { this->collision_objects = objects; }
+//void ClothSimulator::loadCollisionObjects(vector<CollisionObject *> *objects) { this->collision_objects = objects; }
 
 void ClothSimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
 
