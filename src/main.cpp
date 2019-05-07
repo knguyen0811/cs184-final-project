@@ -31,14 +31,11 @@ using json = nlohmann::json;
 #define msg(s) cerr << "[ClothSim] " << s << endl;
 
 const string SPHERE = "sphere";
+const string SPHERES = "spheres";
 const string PLANE = "plane";
 const string CLOTH = "cloth";
-const string SUN = "sun";
-const string MERCURY = "mercury";
-const string VENUS = "venus";
-const string EARTH = "earth";
 
-const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SUN, MERCURY, VENUS, EARTH};
+const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SPHERES};
 
 ClothSimulator *app = nullptr;
 GLFWwindow *window = nullptr;
@@ -304,54 +301,56 @@ bool loadObjectsFromFile(string filename, Cloth *cloth, ClothParameters *cp, vec
       cp->density = density;
       cp->damping = damping;
       cp->ks = ks;
-    } else if (key == SUN || key == MERCURY || key == VENUS  || key == EARTH) {
+    } else if (key == SPHERES) {
+      // the object under key "spheres" will be an array of bodies.
       Vector3D origin, velocity;
       double radius, friction;
       long double mass;
-
-      auto it_origin = object.find("origin");
-      if (it_origin != object.end()) {
-        vector<double> vec_origin = *it_origin;
-        origin = Vector3D(vec_origin[0], vec_origin[1], vec_origin[2]);
-      } else {
-        incompleteObjectError("sphere", "origin");
-      }
-
-      auto it_radius = object.find("radius");
-      if (it_radius != object.end()) {
-        radius = *it_radius;
-      } else {
-        incompleteObjectError("sphere", "radius");
-      }
-
-      auto it_friction = object.find("friction");
-      if (it_friction != object.end()) {
-        friction = *it_friction;
-      } else {
-        incompleteObjectError("sphere", "friction");
-      }
-
-        auto it_velocity = object.find("velocity");
-        if (it_origin != object.end()) {
-            vector<double> vec_velocity = *it_velocity;
-            velocity = Vector3D(vec_velocity[0], vec_velocity[1], vec_velocity[2]);
-            velocity = 1*velocity;//TODO NEED TO BE BETWEEN 10 and 100
+      for (auto& sphere_element : object) {
+        auto it_origin = sphere_element.find("origin");
+        if (it_origin != sphere_element.end()) {
+          vector<double> vec_origin = *it_origin;
+          origin = Vector3D(vec_origin[0], vec_origin[1], vec_origin[2]);
         } else {
-            incompleteObjectError("sphere", "velocity");
+          incompleteObjectError("sphere", "origin");
+        }
+
+        auto it_radius = sphere_element.find("radius");
+        if (it_radius != sphere_element.end()) {
+          radius = *it_radius;
+        } else {
+          incompleteObjectError("sphere", "radius");
+        }
+
+        auto it_friction = sphere_element.find("friction");
+        if (it_friction != sphere_element.end()) {
+          friction = *it_friction;
+        } else {
+          incompleteObjectError("sphere", "friction");
+        }
+
+        auto it_velocity = sphere_element.find("velocity");
+        if (it_origin != sphere_element.end()) {
+          vector<double> vec_velocity = *it_velocity;
+          velocity = Vector3D(vec_velocity[0], vec_velocity[1], vec_velocity[2]);
+          velocity = 1 * velocity;//TODO NEED TO BE BETWEEN 10 and 100
+        } else {
+          incompleteObjectError("sphere", "velocity");
         }
 
         std::cout << "velocity: " << velocity << "\n";
 
-        auto it_mass = object.find("mass");
-        if (it_mass != object.end()) {
-            mass = *it_mass;
+        auto it_mass = sphere_element.find("mass");
+        if (it_mass != sphere_element.end()) {
+          mass = *it_mass;
         } else {
-            incompleteObjectError("sphere", "mass");
+          incompleteObjectError("sphere", "mass");
         }
 
-      Sphere *s = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
-      objects->push_back(s);
-      planets->push_back(s);
+        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
+        objects->push_back(new_sphere);
+        planets->push_back(new_sphere);
+      }
     } else { // PLANE
       Vector3D point, normal;
       double friction;
