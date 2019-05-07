@@ -6,6 +6,10 @@
 #include "collisionObject.h"
 
 #define sphere_factor 1E7
+#define seconds 1
+#define hours 1
+#define days 1
+#define years 1
 
 using namespace CGL;
 using namespace std;
