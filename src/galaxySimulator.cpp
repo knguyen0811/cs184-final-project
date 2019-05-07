@@ -657,33 +657,6 @@ void GalaxySimulator::initGUI(Screen *screen) {
   window->setPosition(Vector2i(default_window_size(0) - 245, 15));
   window->setLayout(new GroupLayout(15, 6, 14, 5));
 
-//  // Spring types
-//
-//  new Label(window, "Spring types", "sans-bold");
-//
-//  {
-//    Button *b = new Button(window, "structural");
-//    b->setFlags(Button::ToggleButton);
-//    b->setPushed(cp->enable_structural_constraints);
-//    b->setFontSize(14);
-//    b->setChangeCallback(
-//        [this](bool state) { cp->enable_structural_constraints = state; });
-//
-//    b = new Button(window, "shearing");
-//    b->setFlags(Button::ToggleButton);
-//    b->setPushed(cp->enable_shearing_constraints);
-//    b->setFontSize(14);
-//    b->setChangeCallback(
-//        [this](bool state) { cp->enable_shearing_constraints = state; });
-//
-//    b = new Button(window, "bending");
-//    b->setFlags(Button::ToggleButton);
-//    b->setPushed(cp->enable_bending_constraints);
-//    b->setFontSize(14);
-//    b->setChangeCallback(
-//        [this](bool state) { cp->enable_bending_constraints = state; });
-//  }
-
   // New Planet Parameters
     Sphere *last = galaxy->getLastPlanet();
 
@@ -692,7 +665,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
     cp->newRadius = last->getRadius();
     cp->newMass = last->getMass();
 
-  new Label(window, "Parameters", "sans-bold");
+  new Label(window, "New Planet Parameters", "sans-bold");
 
   {
     Widget *panel = new Widget(window);
