@@ -20,6 +20,8 @@ public:
     void add_planet();
     void add_planet_helper(Sphere *s);
     void remove_planet();
+    void remove_planet(int index);
+    int size();
     Sphere* getLastPlanet();
     void render(GLShader &shader);
 

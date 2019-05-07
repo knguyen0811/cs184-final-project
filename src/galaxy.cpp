@@ -82,9 +82,22 @@ void Galaxy::add_planet_helper(Sphere *s) {
 void Galaxy::remove_planet() {
     std::cout << "Removing planet..\n";
     planets->pop_back();
+    this->last = planets->back();
+    num_planets = planets->size();
 
     // Deallocate Sphere object TODO: NVM ACTUALLY BREAKS SIMULATION
 //    delete last;
+}
+
+void Galaxy::remove_planet(int index) {
+    std::cout << "Removing planet at index..\n";
+    planets->erase(planets->begin()+index);
+    this->last = planets->back();
+    num_planets = planets->size();
+}
+
+int Galaxy::size() {
+    return num_planets;
 }
 
 Sphere* Galaxy::getLastPlanet() {

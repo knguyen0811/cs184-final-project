@@ -5,6 +5,8 @@
 #include "../misc/sphere_drawing.h"
 #include "collisionObject.h"
 
+#define sphere_factor 1E7
+
 using namespace CGL;
 using namespace std;
 

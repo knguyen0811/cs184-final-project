@@ -50,6 +50,7 @@ struct ClothParameters {
     double minMultiplier = 2.f;
     double maxMultiplier = 3.f;
     bool button_pushed = false;
+    int delIndex;
 };
 
 struct Cloth {

@@ -221,7 +221,7 @@ void ClothSimulator::init() {
 //  canonical_view_distance = max(cloth->width, cloth->height) * 0.9;
 //  std::cout << "dist max: " << canonical_view_distance << "\n";
     // DEBUG: Adjust Camera View Distance Here
-  canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / 1E6;
+  canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / sphere_factor;
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
 
@@ -731,7 +731,6 @@ void ClothSimulator::initGUI(Screen *screen) {
       fb->setValueIncrement(cp->newRadius * cp->minMultiplier / 10.f);
       fb->setUnits("A.U.");
     fb->setSpinnable(true);
-    fb->setMinValue(0);
     fb->setCallback([this](float value) { cp->newRadius = value; });
 
       new Label(panel, "Init Vel :", "sans-bold");
@@ -759,8 +758,19 @@ void ClothSimulator::initGUI(Screen *screen) {
       fb->setValueIncrement(cp->newMass * cp->minMultiplier / 10.f);
       fb->setUnits("A.U.");
       fb->setSpinnable(true);
-      fb->setMinValue(0);
       fb->setCallback([this](float value) { cp->newMass = value; });
+
+      new Label(panel, "Remove Index:", "sans-bold");
+
+      fb = new FloatBox<double>(panel);
+      fb->setEditable(true);
+      fb->setFixedSize(Vector2i(100, 20));
+      fb->setFontSize(14);
+      fb->setValue(1);
+      fb->setMinMaxValues(1, galaxy->size() - 1);
+//      fb->setUnits("A.U.");
+      fb->setSpinnable(true);
+      fb->setCallback([this](float value) { cp->delIndex = value; });
 
       // Add Planet Button
       Button *b = new Button(window, "Add Planet");
@@ -790,7 +800,7 @@ void ClothSimulator::initGUI(Screen *screen) {
                   cp->button_pushed = state;
                   if (state) {
                       std::cout << "removing planet using button" << endl;
-                      galaxy->remove_planet();
+                      galaxy->remove_planet(cp->delIndex);
                       drawContents();
                   }
               });
