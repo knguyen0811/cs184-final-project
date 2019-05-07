@@ -4,7 +4,6 @@
 #include <nanogui/nanogui.h>
 
 #include "camera.h"
-#include "cloth.h"
 #include "collision/collisionObject.h"
 #include "galaxy.h"
 
@@ -20,7 +19,7 @@ public:
 
   void init();
 
-  void loadClothParameters(ClothParameters *cp);
+  void loadSphereParameters(SphereParameters *sp);
   void loadGalaxy(Galaxy *galaxy);
   virtual bool isAlive();
   virtual void drawContents();
@@ -62,8 +61,8 @@ private:
   nanogui::Color color = nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 //  Cloth *cloth;
-  ClothParameters *cp;
-  vector<CollisionObject *> *collision_objects;
+  SphereParameters *sp;
+//  vector<CollisionObject *> *collision_objects;
   Galaxy *galaxy;
 
   // OpenGL attributes

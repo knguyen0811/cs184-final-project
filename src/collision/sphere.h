@@ -15,7 +15,17 @@ using namespace CGL;
 using namespace std;
 
 struct SphereParameters {
+    SphereParameters() {}
 
+    // New Planet Variables
+    Vector3D newOrigin;
+    Vector3D newVelocity;
+    double newRadius;
+    long double newMass;
+    double minMultiplier = 2.f;
+    double maxMultiplier = 3.f;
+    bool button_pushed = false;
+    int delIndex = 1;
 };
 
 struct Sphere : public CollisionObject {

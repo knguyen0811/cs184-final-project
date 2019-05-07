@@ -8,7 +8,6 @@
 #include "leak_fix.h"
 
 #include "camera.h"
-#include "cloth.h"
 #include "collision/plane.h"
 #include "collision/sphere.h"
 #include "misc/camera_info.h"
@@ -176,11 +175,11 @@ GalaxySimulator::~GalaxySimulator() {
   glDeleteTextures(1, &m_gl_texture_4);
   glDeleteTextures(1, &m_gl_cubemap_tex);
 
-  if (cp) delete cp;
+  if (sp) delete sp;
 }
 
 
-void GalaxySimulator::loadClothParameters(ClothParameters *cp) { this->cp = cp; }
+void GalaxySimulator::loadSphereParameters(SphereParameters *sp) { this->sp = sp; }
 
 void GalaxySimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
 
@@ -247,7 +246,7 @@ void GalaxySimulator::drawContents() {
     vector<Vector3D> external_accelerations = {gravity};
 
     for (int i = 0; i < simulation_steps; i++) {
-//      cloth->simulate(frames_per_sec, simulation_steps, cp, external_accelerations, collision_objects);
+//      cloth->simulate(frames_per_sec, simulation_steps, sp, external_accelerations, collision_objects);
         // FIXME:
         galaxy->simulate(frames_per_sec, simulation_steps);
     }
@@ -323,9 +322,9 @@ void GalaxySimulator::drawContents() {
 //  int num_bending_springs = num_structural_springs - cloth->num_width_points -
 //                            cloth->num_height_points;
 //
-//  int num_springs = cp->enable_structural_constraints * num_structural_springs +
-//                    cp->enable_shearing_constraints * num_shear_springs +
-//                    cp->enable_bending_constraints * num_bending_springs;
+//  int num_springs = sp->enable_structural_constraints * num_structural_springs +
+//                    sp->enable_shearing_constraints * num_shear_springs +
+//                    sp->enable_bending_constraints * num_bending_springs;
 //
 //  MatrixXf positions(4, num_springs * 2);
 //  MatrixXf normals(4, num_springs * 2);
@@ -337,9 +336,9 @@ void GalaxySimulator::drawContents() {
 //  for (int i = 0; i < cloth->springs.size(); i++) {
 //    Spring s = cloth->springs[i];
 //
-//    if ((s.spring_type == STRUCTURAL && !cp->enable_structural_constraints) ||
-//        (s.spring_type == SHEARING && !cp->enable_shearing_constraints) ||
-//        (s.spring_type == BENDING && !cp->enable_bending_constraints)) {
+//    if ((s.spring_type == STRUCTURAL && !sp->enable_structural_constraints) ||
+//        (s.spring_type == SHEARING && !sp->enable_shearing_constraints) ||
+//        (s.spring_type == BENDING && !sp->enable_bending_constraints)) {
 //      continue;
 //    }
 //
@@ -660,10 +659,10 @@ void GalaxySimulator::initGUI(Screen *screen) {
   // New Planet Parameters
     Sphere *last = galaxy->getLastPlanet();
 
-    cp->newOrigin = last->getInitOrigin();
-    cp->newVelocity = last->getInitVelocity();
-    cp->newRadius = last->getRadius();
-    cp->newMass = last->getMass();
+    sp->newOrigin = last->getInitOrigin();
+    sp->newVelocity = last->getInitVelocity();
+    sp->newRadius = last->getRadius();
+    sp->newMass = last->getMass();
 
   new Label(window, "New Planet Parameters", "sans-bold");
 
@@ -681,12 +680,12 @@ void GalaxySimulator::initGUI(Screen *screen) {
     fb->setEditable(true);
     fb->setFixedSize(Vector2i(100, 20));
     fb->setFontSize(14);
-    fb->setValue(cp->newOrigin.norm() * cp->minMultiplier);
-    fb->setMinMaxValues(cp->newOrigin.norm() * cp->minMultiplier, cp->newOrigin.norm() * cp->maxMultiplier);
-    fb->setValueIncrement(cp->newOrigin.norm() * cp->minMultiplier / 10.f);
+    fb->setValue(sp->newOrigin.norm() * sp->minMultiplier);
+    fb->setMinMaxValues(sp->newOrigin.norm() * sp->minMultiplier, sp->newOrigin.norm() * sp->maxMultiplier);
+    fb->setValueIncrement(sp->newOrigin.norm() * sp->minMultiplier / 10.f);
     fb->setUnits("A.U.");
     fb->setSpinnable(true);
-    fb->setCallback([this](float value) { cp->newOrigin.x = value; });
+    fb->setCallback([this](float value) { sp->newOrigin.x = value; });
 
     new Label(panel, "Radius :", "sans-bold");
 
@@ -694,12 +693,12 @@ void GalaxySimulator::initGUI(Screen *screen) {
     fb->setEditable(true);
     fb->setFixedSize(Vector2i(100, 20));
     fb->setFontSize(14);
-      fb->setValue(cp->newRadius * cp->minMultiplier);
-      fb->setMinMaxValues(cp->newRadius * cp->minMultiplier, cp->newRadius * cp->maxMultiplier);
-      fb->setValueIncrement(cp->newRadius * cp->minMultiplier / 10.f);
+      fb->setValue(sp->newRadius * sp->minMultiplier);
+      fb->setMinMaxValues(sp->newRadius * sp->minMultiplier, sp->newRadius * sp->maxMultiplier);
+      fb->setValueIncrement(sp->newRadius * sp->minMultiplier / 10.f);
       fb->setUnits("A.U.");
     fb->setSpinnable(true);
-    fb->setCallback([this](float value) { cp->newRadius = value; });
+    fb->setCallback([this](float value) { sp->newRadius = value; });
 
       new Label(panel, "Init Vel :", "sans-bold");
 
@@ -707,13 +706,13 @@ void GalaxySimulator::initGUI(Screen *screen) {
       fb->setEditable(true);
       fb->setFixedSize(Vector2i(100, 20));
       fb->setFontSize(14);
-      fb->setValue(cp->newVelocity.norm() * cp->minMultiplier);
-      fb->setMinMaxValues(cp->newVelocity.norm() * cp->minMultiplier, cp->newVelocity.norm() * cp->maxMultiplier);
-      fb->setValueIncrement(cp->newVelocity.norm() * cp->minMultiplier / 10.f);
+      fb->setValue(sp->newVelocity.norm() * sp->minMultiplier);
+      fb->setMinMaxValues(sp->newVelocity.norm() * sp->minMultiplier, sp->newVelocity.norm() * sp->maxMultiplier);
+      fb->setValueIncrement(sp->newVelocity.norm() * sp->minMultiplier / 10.f);
     fb->setUnits("A.U.");
     fb->setSpinnable(true);
       fb->setMinValue(0);
-      fb->setCallback([this](float value) { cp->newVelocity.y = value; });
+      fb->setCallback([this](float value) { sp->newVelocity.y = value; });
 
       new Label(panel, "Mass :", "sans-bold");
 
@@ -721,12 +720,12 @@ void GalaxySimulator::initGUI(Screen *screen) {
       fb->setEditable(true);
       fb->setFixedSize(Vector2i(100, 20));
       fb->setFontSize(14);
-      fb->setValue(cp->newMass * cp->minMultiplier);
-      fb->setMinMaxValues(cp->newMass * cp->minMultiplier, cp->newMass * cp->maxMultiplier);
-      fb->setValueIncrement(cp->newMass * cp->minMultiplier / 10.f);
+      fb->setValue(sp->newMass * sp->minMultiplier);
+      fb->setMinMaxValues(sp->newMass * sp->minMultiplier, sp->newMass * sp->maxMultiplier);
+      fb->setValueIncrement(sp->newMass * sp->minMultiplier / 10.f);
       fb->setUnits("A.U.");
       fb->setSpinnable(true);
-      fb->setCallback([this](float value) { cp->newMass = value; });
+      fb->setCallback([this](float value) { sp->newMass = value; });
 
       new Label(panel, "Remove Index:", "sans-bold");
 
@@ -737,21 +736,26 @@ void GalaxySimulator::initGUI(Screen *screen) {
       fb->setValue(1);
       fb->setMinMaxValues(1, galaxy->size() - 1);
 //      fb->setUnits("A.U.");
+        fb->setValueIncrement(1);
       fb->setSpinnable(true);
-      fb->setCallback([this](float value) { cp->delIndex = value; });
+      fb->setCallback(
+              [this, fb](float value) {
+                  sp->delIndex = value;
+                  fb->setMinMaxValues(1, galaxy->size() - 1);
+              });
 
       // Add Planet Button
       Button *b = new Button(window, "Add Planet");
       b->setFlags(Button::NormalButton);
-      b->setPushed(cp->button_pushed);
+      b->setPushed(sp->button_pushed);
       b->setFontSize(14);
       b->setChangeCallback(
               [this](bool state) {
 //                  std::cout << "state: " << state << endl;
-                  cp->button_pushed = state;
+                  sp->button_pushed = state;
                   if (state) {
                       std::cout << "adding planet using button" << endl;
-                      Sphere *newPlanet = new Sphere(cp->newOrigin, cp->newRadius, 1, cp->newVelocity);
+                      Sphere *newPlanet = new Sphere(sp->newOrigin, sp->newRadius, 1, sp->newVelocity);
                       galaxy->add_planet(newPlanet);
                       drawContents();
                   }
@@ -760,15 +764,15 @@ void GalaxySimulator::initGUI(Screen *screen) {
       // Remove Planet Button
       b = new Button(window, "Remove Planet");
       b->setFlags(Button::NormalButton);
-      b->setPushed(cp->button_pushed);
+      b->setPushed(sp->button_pushed);
       b->setFontSize(14);
       b->setChangeCallback(
               [this](bool state) {
 //                  std::cout << "state: " << state << endl;
-                  cp->button_pushed = state;
+                  sp->button_pushed = state;
                   if (state) {
                       std::cout << "removing planet using button" << endl;
-                      galaxy->remove_planet(cp->delIndex);
+                      galaxy->remove_planet(sp->delIndex);
                       drawContents();
                   }
               });
@@ -810,11 +814,11 @@ void GalaxySimulator::initGUI(Screen *screen) {
       // Time Lapse Buttons
       Button *b = new Button(window, "Seconds");
       b->setFlags(Button::NormalButton);
-      b->setPushed(cp->button_pushed);
+      b->setPushed(sp->button_pushed);
       b->setFontSize(14);
       b->setChangeCallback(
               [this, num_steps](bool state) {
-                  cp->button_pushed = state;
+                  sp->button_pushed = state;
                   if (state) {
                       simulation_steps = seconds;
                       num_steps->setValue(simulation_steps);
@@ -823,11 +827,11 @@ void GalaxySimulator::initGUI(Screen *screen) {
 
       b = new Button(window, "Hours");
       b->setFlags(Button::NormalButton);
-      b->setPushed(cp->button_pushed);
+      b->setPushed(sp->button_pushed);
       b->setFontSize(14);
       b->setChangeCallback(
               [this, num_steps](bool state) {
-                  cp->button_pushed = state;
+                  sp->button_pushed = state;
                   if (state) {
                       simulation_steps = hours;
                       num_steps->setValue(simulation_steps);
@@ -836,11 +840,11 @@ void GalaxySimulator::initGUI(Screen *screen) {
 
       b = new Button(window, "Days");
       b->setFlags(Button::NormalButton);
-      b->setPushed(cp->button_pushed);
+      b->setPushed(sp->button_pushed);
       b->setFontSize(14);
       b->setChangeCallback(
               [this, num_steps](bool state) {
-                  cp->button_pushed = state;
+                  sp->button_pushed = state;
                   if (state) {
                       simulation_steps = days;
                       num_steps->setValue(simulation_steps);
@@ -849,11 +853,11 @@ void GalaxySimulator::initGUI(Screen *screen) {
 
       b = new Button(window, "Years");
       b->setFlags(Button::NormalButton);
-      b->setPushed(cp->button_pushed);
+      b->setPushed(sp->button_pushed);
       b->setFontSize(14);
       b->setChangeCallback(
               [this, num_steps](bool state) {
-                  cp->button_pushed = state;
+                  sp->button_pushed = state;
                   if (state) {
                       simulation_steps = years;
                       num_steps->setValue(simulation_steps);
@@ -871,13 +875,13 @@ void GalaxySimulator::initGUI(Screen *screen) {
 //        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
 //
 //    Slider *slider = new Slider(panel);
-//    slider->setValue(cp->damping);
+//    slider->setValue(sp->damping);
 //    slider->setFixedWidth(105);
 //    cout << "Slider range: " << slider->range().first << ", " << slider->range().second << endl;
 //
 //    TextBox *percentage = new TextBox(panel);
 //    percentage->setFixedWidth(75);
-//    percentage->setValue(to_string(cp->damping));
+//    percentage->setValue(to_string(sp->damping));
 //    percentage->setUnits("%");
 //    percentage->setFontSize(14);
 //
@@ -885,7 +889,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
 //      percentage->setValue(std::to_string(value));
 //    });
 //    slider->setFinalCallback([&](float value) {
-//      cp->damping = (double)value;
+//      sp->damping = (double)value;
 //      // cout << "Final slider value: " << (int)(value * 100) << endl;
 //    });
 //  }

@@ -15,7 +15,6 @@
 #include "CGL/CGL.h"
 #include "collision/plane.h"
 #include "collision/sphere.h"
-#include "cloth.h"
 #include "galaxySimulator.h"
 #include "json.hpp"
 #include "misc/file_utils.h"
@@ -158,7 +157,7 @@ void incompleteObjectError(const char *object, const char *attribute) {
   exit(-1);
 }
 
-bool loadObjectsFromFile(string filename, ClothParameters *cp, vector<Sphere *>* planets, int sphere_num_lat, int sphere_num_lon) {
+bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_num_lat, int sphere_num_lon) {
   // Read JSON from file
   ifstream i(filename);
   if (!i.good()) {
@@ -211,7 +210,7 @@ bool loadObjectsFromFile(string filename, ClothParameters *cp, vector<Sphere *>*
         }
 
         auto it_velocity = sphere_element.find("velocity");
-        if (it_origin != sphere_element.end()) {
+        if (it_velocity != sphere_element.end()) {
           vector<double> vec_velocity = *it_velocity;
           velocity = Vector3D(vec_velocity[0], vec_velocity[1], vec_velocity[2]);
           velocity = 1 * velocity;//TODO NEED TO BE BETWEEN 10 and 100
@@ -270,7 +269,7 @@ int main(int argc, char **argv) {
   std::string project_root;
   bool found_project_root = find_project_root(search_paths, project_root);
   
-  ClothParameters cp;
+  SphereParameters sp;
   vector<Sphere *> planets;
 
   int c;
@@ -333,7 +332,7 @@ int main(int argc, char **argv) {
     file_to_load_from = def_fname.str();
   }
   
-  bool success = loadObjectsFromFile(file_to_load_from, &cp, &planets, sphere_num_lat, sphere_num_lon);
+  bool success = loadObjectsFromFile(file_to_load_from, &planets, sphere_num_lat, sphere_num_lon);
   if (!success) {
     std::cout << "Warn: Unable to load from file: " << file_to_load_from << std::endl;
   }
@@ -345,7 +344,7 @@ int main(int argc, char **argv) {
   // Initialize the GalaxySimulator object
   Galaxy galaxy(&planets);
   app = new GalaxySimulator(project_root, screen);
-  app->loadClothParameters(&cp);
+  app->loadSphereParameters(&sp);
     app->loadGalaxy(&galaxy);
   app->init();
 
