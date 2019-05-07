@@ -502,7 +502,7 @@ int main(int argc, char **argv) {
   // Initialize the ClothSimulator object
   Galaxy galaxy(&planets);
   app = new ClothSimulator(project_root, screen);
-  app->loadCloth(&cloth);
+//  app->loadCloth(&cloth);
   app->loadClothParameters(&cp);
 //  app->loadCollisionObjects(&objects);
     app->loadGalaxy(&galaxy);
