@@ -50,47 +50,7 @@ struct ClothParameters {
     double minMultiplier = 2.f;
     double maxMultiplier = 3.f;
     bool button_pushed = false;
-    int delIndex;
-};
-
-struct Cloth {
-  Cloth() {}
-  Cloth(double width, double height, int num_width_points,
-        int num_height_points, float thickness);
-  ~Cloth();
-
-  void buildGrid();
-
-  void simulate(double frames_per_sec, double simulation_steps, ClothParameters *cp,
-                vector<Vector3D> external_accelerations,
-                vector<CollisionObject *> *collision_objects);
-
-  void reset();
-  void buildClothMesh();
-
-  void build_spatial_map();
-  void self_collide(PointMass &pm, double simulation_steps);
-  float hash_position(Vector3D pos);
-
-  // Cloth properties
-  double width;
-  double height;
-  int num_width_points;
-  int num_height_points;
-  double thickness;
-  e_orientation orientation;
-
-  // Cloth components
-  vector<PointMass> point_masses;
-  vector<vector<int>> pinned;
-  vector<Spring> springs;
-  ClothMesh *clothMesh;
-
-  // Spatial hashing
-  unordered_map<float, vector<PointMass *> *> map;
-
-  // NOTE: MY HELPER
-  int getIndex(int i, int j);
+    int delIndex = 1;
 };
 
 #endif /* CLOTH_H */
