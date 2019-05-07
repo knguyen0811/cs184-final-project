@@ -20,9 +20,9 @@ public:
 
   void init();
 
-  void loadCloth(Cloth *cloth);
+//  void loadCloth(Cloth *cloth);
   void loadClothParameters(ClothParameters *cp);
-  void loadCollisionObjects(vector<CollisionObject *> *objects);
+//  void loadCollisionObjects(vector<CollisionObject *> *objects);
   void loadGalaxy(Galaxy *galaxy);
   virtual bool isAlive();
   virtual void drawContents();
@@ -38,9 +38,9 @@ public:
 
 private:
   virtual void initGUI(Screen *screen);
-  void drawWireframe(GLShader &shader);
-  void drawNormals(GLShader &shader);
-  void drawPhong(GLShader &shader);
+//  void drawWireframe(GLShader &shader);
+//  void drawNormals(GLShader &shader);
+//  void drawPhong(GLShader &shader);
   
   void load_shaders();
   void load_textures();
@@ -63,7 +63,7 @@ private:
   CGL::Vector3D gravity = CGL::Vector3D(0, -9.8, 0);
   nanogui::Color color = nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-  Cloth *cloth;
+//  Cloth *cloth;
   ClothParameters *cp;
   vector<CollisionObject *> *collision_objects;
   Galaxy *galaxy;

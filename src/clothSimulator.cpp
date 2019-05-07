@@ -319,148 +319,148 @@ void ClothSimulator::drawContents() {
 //    }
 }
 
-void ClothSimulator::drawWireframe(GLShader &shader) {
-  int num_structural_springs =
-      2 * cloth->num_width_points * cloth->num_height_points -
-      cloth->num_width_points - cloth->num_height_points;
-  int num_shear_springs =
-      2 * (cloth->num_width_points - 1) * (cloth->num_height_points - 1);
-  int num_bending_springs = num_structural_springs - cloth->num_width_points -
-                            cloth->num_height_points;
+//void ClothSimulator::drawWireframe(GLShader &shader) {
+//  int num_structural_springs =
+//      2 * cloth->num_width_points * cloth->num_height_points -
+//      cloth->num_width_points - cloth->num_height_points;
+//  int num_shear_springs =
+//      2 * (cloth->num_width_points - 1) * (cloth->num_height_points - 1);
+//  int num_bending_springs = num_structural_springs - cloth->num_width_points -
+//                            cloth->num_height_points;
+//
+//  int num_springs = cp->enable_structural_constraints * num_structural_springs +
+//                    cp->enable_shearing_constraints * num_shear_springs +
+//                    cp->enable_bending_constraints * num_bending_springs;
+//
+//  MatrixXf positions(4, num_springs * 2);
+//  MatrixXf normals(4, num_springs * 2);
+//
+//  // Draw springs as lines
+//
+//  int si = 0;
+//
+//  for (int i = 0; i < cloth->springs.size(); i++) {
+//    Spring s = cloth->springs[i];
+//
+//    if ((s.spring_type == STRUCTURAL && !cp->enable_structural_constraints) ||
+//        (s.spring_type == SHEARING && !cp->enable_shearing_constraints) ||
+//        (s.spring_type == BENDING && !cp->enable_bending_constraints)) {
+//      continue;
+//    }
+//
+//    Vector3D pa = s.pm_a->position;
+//    Vector3D pb = s.pm_b->position;
+//
+//    Vector3D na = s.pm_a->normal();
+//    Vector3D nb = s.pm_b->normal();
+//
+//    positions.col(si) << pa.x, pa.y, pa.z, 1.0;
+//    positions.col(si + 1) << pb.x, pb.y, pb.z, 1.0;
+//
+//    normals.col(si) << na.x, na.y, na.z, 0.0;
+//    normals.col(si + 1) << nb.x, nb.y, nb.z, 0.0;
+//
+//    si += 2;
+//  }
+//
+//  //shader.setUniform("u_color", nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f), false);
+//  shader.uploadAttrib("in_position", positions, false);
+//  // Commented out: the wireframe shader does not have this attribute
+//  //shader.uploadAttrib("in_normal", normals);
+//
+//  shader.drawArray(GL_LINES, 0, num_springs * 2);
+//
+//#ifdef LEAK_PATCH_ON
+//  shader.freeAttrib("in_position");
+//#endif
+//}
 
-  int num_springs = cp->enable_structural_constraints * num_structural_springs +
-                    cp->enable_shearing_constraints * num_shear_springs +
-                    cp->enable_bending_constraints * num_bending_springs;
+//void ClothSimulator::drawNormals(GLShader &shader) {
+//  int num_tris = cloth->clothMesh->triangles.size();
+//
+//  MatrixXf positions(4, num_tris * 3);
+//  MatrixXf normals(4, num_tris * 3);
+//
+//  for (int i = 0; i < num_tris; i++) {
+//    Triangle *tri = cloth->clothMesh->triangles[i];
+//
+//    Vector3D p1 = tri->pm1->position;
+//    Vector3D p2 = tri->pm2->position;
+//    Vector3D p3 = tri->pm3->position;
+//
+//    Vector3D n1 = tri->pm1->normal();
+//    Vector3D n2 = tri->pm2->normal();
+//    Vector3D n3 = tri->pm3->normal();
+//
+//    positions.col(i * 3) << p1.x, p1.y, p1.z, 1.0;
+//    positions.col(i * 3 + 1) << p2.x, p2.y, p2.z, 1.0;
+//    positions.col(i * 3 + 2) << p3.x, p3.y, p3.z, 1.0;
+//
+//    normals.col(i * 3) << n1.x, n1.y, n1.z, 0.0;
+//    normals.col(i * 3 + 1) << n2.x, n2.y, n2.z, 0.0;
+//    normals.col(i * 3 + 2) << n3.x, n3.y, n3.z, 0.0;
+//  }
+//
+//  shader.uploadAttrib("in_position", positions, false);
+//  shader.uploadAttrib("in_normal", normals, false);
+//
+//  shader.drawArray(GL_TRIANGLES, 0, num_tris * 3);
+//#ifdef LEAK_PATCH_ON
+//  shader.freeAttrib("in_position");
+//  shader.freeAttrib("in_normal");
+//#endif
+//}
 
-  MatrixXf positions(4, num_springs * 2);
-  MatrixXf normals(4, num_springs * 2);
-
-  // Draw springs as lines
-
-  int si = 0;
-
-  for (int i = 0; i < cloth->springs.size(); i++) {
-    Spring s = cloth->springs[i];
-
-    if ((s.spring_type == STRUCTURAL && !cp->enable_structural_constraints) ||
-        (s.spring_type == SHEARING && !cp->enable_shearing_constraints) ||
-        (s.spring_type == BENDING && !cp->enable_bending_constraints)) {
-      continue;
-    }
-
-    Vector3D pa = s.pm_a->position;
-    Vector3D pb = s.pm_b->position;
-
-    Vector3D na = s.pm_a->normal();
-    Vector3D nb = s.pm_b->normal();
-
-    positions.col(si) << pa.x, pa.y, pa.z, 1.0;
-    positions.col(si + 1) << pb.x, pb.y, pb.z, 1.0;
-
-    normals.col(si) << na.x, na.y, na.z, 0.0;
-    normals.col(si + 1) << nb.x, nb.y, nb.z, 0.0;
-
-    si += 2;
-  }
-
-  //shader.setUniform("u_color", nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f), false);
-  shader.uploadAttrib("in_position", positions, false);
-  // Commented out: the wireframe shader does not have this attribute
-  //shader.uploadAttrib("in_normal", normals);
-
-  shader.drawArray(GL_LINES, 0, num_springs * 2);
-
-#ifdef LEAK_PATCH_ON
-  shader.freeAttrib("in_position");
-#endif
-}
-
-void ClothSimulator::drawNormals(GLShader &shader) {
-  int num_tris = cloth->clothMesh->triangles.size();
-
-  MatrixXf positions(4, num_tris * 3);
-  MatrixXf normals(4, num_tris * 3);
-
-  for (int i = 0; i < num_tris; i++) {
-    Triangle *tri = cloth->clothMesh->triangles[i];
-
-    Vector3D p1 = tri->pm1->position;
-    Vector3D p2 = tri->pm2->position;
-    Vector3D p3 = tri->pm3->position;
-
-    Vector3D n1 = tri->pm1->normal();
-    Vector3D n2 = tri->pm2->normal();
-    Vector3D n3 = tri->pm3->normal();
-
-    positions.col(i * 3) << p1.x, p1.y, p1.z, 1.0;
-    positions.col(i * 3 + 1) << p2.x, p2.y, p2.z, 1.0;
-    positions.col(i * 3 + 2) << p3.x, p3.y, p3.z, 1.0;
-
-    normals.col(i * 3) << n1.x, n1.y, n1.z, 0.0;
-    normals.col(i * 3 + 1) << n2.x, n2.y, n2.z, 0.0;
-    normals.col(i * 3 + 2) << n3.x, n3.y, n3.z, 0.0;
-  }
-
-  shader.uploadAttrib("in_position", positions, false);
-  shader.uploadAttrib("in_normal", normals, false);
-
-  shader.drawArray(GL_TRIANGLES, 0, num_tris * 3);
-#ifdef LEAK_PATCH_ON
-  shader.freeAttrib("in_position");
-  shader.freeAttrib("in_normal");
-#endif
-}
-
-void ClothSimulator::drawPhong(GLShader &shader) {
-  int num_tris = cloth->clothMesh->triangles.size();
-
-  MatrixXf positions(4, num_tris * 3);
-  MatrixXf normals(4, num_tris * 3);
-  MatrixXf uvs(2, num_tris * 3);
-  MatrixXf tangents(4, num_tris * 3);
-
-  for (int i = 0; i < num_tris; i++) {
-    Triangle *tri = cloth->clothMesh->triangles[i];
-
-    Vector3D p1 = tri->pm1->position;
-    Vector3D p2 = tri->pm2->position;
-    Vector3D p3 = tri->pm3->position;
-
-    Vector3D n1 = tri->pm1->normal();
-    Vector3D n2 = tri->pm2->normal();
-    Vector3D n3 = tri->pm3->normal();
-
-    positions.col(i * 3    ) << p1.x, p1.y, p1.z, 1.0;
-    positions.col(i * 3 + 1) << p2.x, p2.y, p2.z, 1.0;
-    positions.col(i * 3 + 2) << p3.x, p3.y, p3.z, 1.0;
-
-    normals.col(i * 3    ) << n1.x, n1.y, n1.z, 0.0;
-    normals.col(i * 3 + 1) << n2.x, n2.y, n2.z, 0.0;
-    normals.col(i * 3 + 2) << n3.x, n3.y, n3.z, 0.0;
-    
-    uvs.col(i * 3    ) << tri->uv1.x, tri->uv1.y;
-    uvs.col(i * 3 + 1) << tri->uv2.x, tri->uv2.y;
-    uvs.col(i * 3 + 2) << tri->uv3.x, tri->uv3.y;
-    
-    tangents.col(i * 3    ) << 1.0, 0.0, 0.0, 1.0;
-    tangents.col(i * 3 + 1) << 1.0, 0.0, 0.0, 1.0;
-    tangents.col(i * 3 + 2) << 1.0, 0.0, 0.0, 1.0;
-  }
-
-
-  shader.uploadAttrib("in_position", positions, false);
-  shader.uploadAttrib("in_normal", normals, false);
-  shader.uploadAttrib("in_uv", uvs, false);
-  shader.uploadAttrib("in_tangent", tangents, false);
-
-  shader.drawArray(GL_TRIANGLES, 0, num_tris * 3);
-#ifdef LEAK_PATCH_ON
-  shader.freeAttrib("in_position");
-  shader.freeAttrib("in_normal");
-  shader.freeAttrib("in_uv");
-  shader.freeAttrib("in_tangent");
-#endif
-}
+//void ClothSimulator::drawPhong(GLShader &shader) {
+//  int num_tris = cloth->clothMesh->triangles.size();
+//
+//  MatrixXf positions(4, num_tris * 3);
+//  MatrixXf normals(4, num_tris * 3);
+//  MatrixXf uvs(2, num_tris * 3);
+//  MatrixXf tangents(4, num_tris * 3);
+//
+//  for (int i = 0; i < num_tris; i++) {
+//    Triangle *tri = cloth->clothMesh->triangles[i];
+//
+//    Vector3D p1 = tri->pm1->position;
+//    Vector3D p2 = tri->pm2->position;
+//    Vector3D p3 = tri->pm3->position;
+//
+//    Vector3D n1 = tri->pm1->normal();
+//    Vector3D n2 = tri->pm2->normal();
+//    Vector3D n3 = tri->pm3->normal();
+//
+//    positions.col(i * 3    ) << p1.x, p1.y, p1.z, 1.0;
+//    positions.col(i * 3 + 1) << p2.x, p2.y, p2.z, 1.0;
+//    positions.col(i * 3 + 2) << p3.x, p3.y, p3.z, 1.0;
+//
+//    normals.col(i * 3    ) << n1.x, n1.y, n1.z, 0.0;
+//    normals.col(i * 3 + 1) << n2.x, n2.y, n2.z, 0.0;
+//    normals.col(i * 3 + 2) << n3.x, n3.y, n3.z, 0.0;
+//
+//    uvs.col(i * 3    ) << tri->uv1.x, tri->uv1.y;
+//    uvs.col(i * 3 + 1) << tri->uv2.x, tri->uv2.y;
+//    uvs.col(i * 3 + 2) << tri->uv3.x, tri->uv3.y;
+//
+//    tangents.col(i * 3    ) << 1.0, 0.0, 0.0, 1.0;
+//    tangents.col(i * 3 + 1) << 1.0, 0.0, 0.0, 1.0;
+//    tangents.col(i * 3 + 2) << 1.0, 0.0, 0.0, 1.0;
+//  }
+//
+//
+//  shader.uploadAttrib("in_position", positions, false);
+//  shader.uploadAttrib("in_normal", normals, false);
+//  shader.uploadAttrib("in_uv", uvs, false);
+//  shader.uploadAttrib("in_tangent", tangents, false);
+//
+//  shader.drawArray(GL_TRIANGLES, 0, num_tris * 3);
+//#ifdef LEAK_PATCH_ON
+//  shader.freeAttrib("in_position");
+//  shader.freeAttrib("in_normal");
+//  shader.freeAttrib("in_uv");
+//  shader.freeAttrib("in_tangent");
+//#endif
+//}
 
 // ----------------------------------------------------------------------------
 // CAMERA CALCULATIONS
