@@ -19,7 +19,6 @@ Galaxy::~Galaxy() {
 
 void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     double delta_t = 1 / frames_per_sec / simulation_steps;
-
     // std::cout << "DELTA_T:" << delta_t << "\n";
     // std::cout << "Frames per sec:" << frames_per_sec << "\n";
     // std::cout << "Simulation Steps:" << simulation_steps << "\n";
@@ -31,7 +30,7 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         for (int j = i + 1; j < num_planets; j++) {
             other_planet = (*planets)[j];
             gravity = sphere->gravity(*other_planet);
-            gravity = gravity*1E-3*2; //TODO SCALED DOWN GRAVITY
+            gravity = gravity;//*1E-3*2; //TODO SCALED DOWN GRAVITY
             sphere->add_force(gravity);
             other_planet->add_force(-gravity);
         }

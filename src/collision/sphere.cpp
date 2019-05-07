@@ -64,7 +64,7 @@ void Sphere::verlet(double delta_t) {
 void Sphere::render(GLShader &shader) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
-  m_sphere_mesh.draw_sphere(shader, pm.position / 1E7, radius * 0.92);
+  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius * 0.92);
 }
 
 Vector3D Sphere::getInitOrigin() {
