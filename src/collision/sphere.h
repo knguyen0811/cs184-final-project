@@ -5,6 +5,10 @@
 #include "../misc/sphere_drawing.h"
 #include "collisionObject.h"
 
+#define seconds 1
+#define hours 1
+#define days 1
+#define years 1
 #define sphere_factor 1E9
 
 using namespace CGL;

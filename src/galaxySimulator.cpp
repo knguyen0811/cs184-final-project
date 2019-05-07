@@ -806,6 +806,59 @@ void GalaxySimulator::initGUI(Screen *screen) {
     num_steps->setSpinnable(true);
     num_steps->setMinValue(0);
     num_steps->setCallback([this](int value) { simulation_steps = value; });
+
+      // Time Lapse Buttons
+      Button *b = new Button(window, "Seconds");
+      b->setFlags(Button::NormalButton);
+      b->setPushed(cp->button_pushed);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this, num_steps](bool state) {
+                  cp->button_pushed = state;
+                  if (state) {
+                      simulation_steps = seconds;
+                      num_steps->setValue(simulation_steps);
+                  }
+              });
+
+      b = new Button(window, "Hours");
+      b->setFlags(Button::NormalButton);
+      b->setPushed(cp->button_pushed);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this, num_steps](bool state) {
+                  cp->button_pushed = state;
+                  if (state) {
+                      simulation_steps = hours;
+                      num_steps->setValue(simulation_steps);
+                  }
+              });
+
+      b = new Button(window, "Days");
+      b->setFlags(Button::NormalButton);
+      b->setPushed(cp->button_pushed);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this, num_steps](bool state) {
+                  cp->button_pushed = state;
+                  if (state) {
+                      simulation_steps = days;
+                      num_steps->setValue(simulation_steps);
+                  }
+              });
+
+      b = new Button(window, "Years");
+      b->setFlags(Button::NormalButton);
+      b->setPushed(cp->button_pushed);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this, num_steps](bool state) {
+                  cp->button_pushed = state;
+                  if (state) {
+                      simulation_steps = years;
+                      num_steps->setValue(simulation_steps);
+                  }
+              });
   }
     // TODO: Replace
 //  // Damping slider and textbox
