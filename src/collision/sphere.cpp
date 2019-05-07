@@ -71,6 +71,17 @@ Vector3D Sphere::getInitOrigin() {
     return startOrigin;
 }
 
+Vector3D Sphere::getInitVelocity() {
+    return velocity;
+}
+
+double Sphere::getRadius() {
+    return radius;
+}
+
+long double Sphere::getMass() {
+    return mass;
+}
 
 void Sphere::reset() {
     this->origin = startOrigin;

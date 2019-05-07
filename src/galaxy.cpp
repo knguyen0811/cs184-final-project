@@ -7,7 +7,8 @@
 //TODO: Make dynamically allocated?
 Galaxy::Galaxy(vector<Sphere*> *planets) {
     this->planets = planets;
-    this->lastPlanetDist = planets->back()->getInitOrigin().norm();
+    sort(planets->begin(), planets->end(), compareOrigin);
+    this->last = planets->back();
     num_planets = planets->size();
 }
 
@@ -39,6 +40,55 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         //TODO: possibly add damping
         planet->verlet(delta_t);
     }
+}
+
+void Galaxy::render(GLShader &shader) {
+    for (Sphere *s : *planets) {
+        s->render(shader);
+    }
+}
+
+void Galaxy::add_planet(Sphere *s) {
+    add_planet_helper(s);
+}
+
+void Galaxy::add_planet() {
+    // NOTE: Lat and Lon already specified in constructor
+//    int sphere_num_lat = 40;
+//    int sphere_num_lon = 40;
+    std::cout << "Adding planet..\n";
+    Vector3D origin, velocity;
+    double radius, friction;
+    long double mass;
+
+    double multiplier = (rand()/RAND_MAX + 1.f);
+
+    origin = last->getInitOrigin() * 1.5f;
+    velocity = last->getInitVelocity() * multiplier;
+    radius = last->getRadius() * multiplier;
+    mass = last->getMass() * multiplier;
+
+    Sphere *s = new Sphere(origin, radius, 1, velocity, mass);
+    add_planet_helper(s);
+}
+
+void Galaxy::add_planet_helper(Sphere *s) {
+    this->planets->push_back(s);
+    sort(planets->begin(), planets->end(), compareOrigin);
+    this->last = planets->back();
+    num_planets = planets->size();
+}
+
+void Galaxy::remove_planet() {
+    std::cout << "Removing planet..\n";
+    planets->pop_back();
+
+    // Deallocate Sphere object TODO: NVM ACTUALLY BREAKS SIMULATION
+//    delete last;
+}
+
+Sphere* Galaxy::getLastPlanet() {
+    return last;
 }
 
 void Galaxy::reset() {

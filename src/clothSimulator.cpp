@@ -220,7 +220,8 @@ void ClothSimulator::init() {
   CGL::Vector3D c_dir(0., 0., 0.);
 //  canonical_view_distance = max(cloth->width, cloth->height) * 0.9;
 //  std::cout << "dist max: " << canonical_view_distance << "\n";
-  canonical_view_distance = abs(galaxy->lastPlanetDist) / 1E6;
+    // DEBUG: Adjust Camera View Distance Here
+  canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / 1E6;
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
 
@@ -277,43 +278,45 @@ void ClothSimulator::drawContents() {
   shader.setUniform("u_model", model);
   shader.setUniform("u_view_projection", viewProjection);
 
-//  switch (active_shader.type_hint) {
-//  case WIREFRAME:
-//    shader.setUniform("u_color", color, false);
+  switch (active_shader.type_hint) {
+  case WIREFRAME:
+    shader.setUniform("u_color", color, false);
 //    drawWireframe(shader);
-//    break;
-//  case NORMALS:
+    galaxy->render(shader);
+    break;
+  case NORMALS:
 //    drawNormals(shader);
-//    break;
-//  case PHONG:
-//
-//    // Others
-//    Vector3D cam_pos = camera.position();
-//    shader.setUniform("u_color", color, false);
-//    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
-//    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
-//    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
-//    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
-//    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
-//    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
-//    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
-//    // Textures
-//    shader.setUniform("u_texture_1", 1, false);
-//    shader.setUniform("u_texture_2", 2, false);
-//    shader.setUniform("u_texture_3", 3, false);
-//    shader.setUniform("u_texture_4", 4, false);
-//
-//    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
-//    shader.setUniform("u_height_scaling", m_height_scaling, false);
-//
-//    shader.setUniform("u_texture_cubemap", 5, false);
-//    drawPhong(shader);
-//    break;
-//  }
+    galaxy->render(shader);
+    break;
+  case PHONG:
 
-  for (CollisionObject *co : *collision_objects) {
-    co->render(shader);
+    // Others
+    Vector3D cam_pos = camera.position();
+    shader.setUniform("u_color", color, false);
+    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
+    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
+    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
+    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
+    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
+    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
+    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
+    // Textures
+    shader.setUniform("u_texture_1", 1, false);
+    shader.setUniform("u_texture_2", 2, false);
+    shader.setUniform("u_texture_3", 3, false);
+    shader.setUniform("u_texture_4", 4, false);
+
+    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
+    shader.setUniform("u_height_scaling", m_height_scaling, false);
+
+    shader.setUniform("u_texture_cubemap", 5, false);
+//    drawPhong(shader);
+    galaxy->render(shader);
+    break;
   }
+//    for (CollisionObject *co : *collision_objects) {
+//        co->render(shader);
+//    }
 }
 
 void ClothSimulator::drawWireframe(GLShader &shader) {
@@ -616,6 +619,17 @@ bool ClothSimulator::keyCallbackEvent(int key, int scancode, int action,
         is_paused = true;
       }
       break;
+      // TODO: Extra Keys
+    case 'a':
+    case 'A':
+        galaxy->add_planet();
+        drawContents();
+      break;
+    case 'd':
+    case 'D':
+        galaxy->remove_planet();
+        drawContents();
+        break;
     }
   }
 
@@ -628,8 +642,8 @@ bool ClothSimulator::dropCallbackEvent(int count, const char **filenames) {
 
 bool ClothSimulator::scrollCallbackEvent(double x, double y) {
   camera.move_forward(y * scroll_rate);
-    std::cout << "camera pos: " << camera.position() << "\n";
-    std::cout << "target pos: " << camera.view_point() << "\n";
+//    std::cout << "camera pos: " << camera.position() << "\n";
+//    std::cout << "target pos: " << camera.view_point() << "\n";
   return true;
 }
 
@@ -675,7 +689,13 @@ void ClothSimulator::initGUI(Screen *screen) {
         [this](bool state) { cp->enable_bending_constraints = state; });
   }
 
-  // Mass-spring parameters
+  // New Planet Parameters
+    Sphere *last = galaxy->getLastPlanet();
+
+    cp->newOrigin = last->getInitOrigin();
+    cp->newVelocity = last->getInitVelocity();
+    cp->newRadius = last->getRadius();
+    cp->newMass = last->getMass();
 
   new Label(window, "Parameters", "sans-bold");
 
@@ -687,28 +707,93 @@ void ClothSimulator::initGUI(Screen *screen) {
     layout->setSpacing(0, 10);
     panel->setLayout(layout);
 
-    new Label(panel, "density :", "sans-bold");
+    new Label(panel, "Origin :", "sans-bold");
 
     FloatBox<double> *fb = new FloatBox<double>(panel);
     fb->setEditable(true);
     fb->setFixedSize(Vector2i(100, 20));
     fb->setFontSize(14);
-    fb->setValue(cp->density / 10);
-    fb->setUnits("g/cm^2");
+    fb->setValue(cp->newOrigin.norm() * cp->minMultiplier);
+    fb->setMinMaxValues(cp->newOrigin.norm() * cp->minMultiplier, cp->newOrigin.norm() * cp->maxMultiplier);
+    fb->setValueIncrement(cp->newOrigin.norm() * cp->minMultiplier / 10.f);
+    fb->setUnits("A.U.");
     fb->setSpinnable(true);
-    fb->setCallback([this](float value) { cp->density = (double)(value * 10); });
+    fb->setCallback([this](float value) { cp->newOrigin.x = value; });
 
-    new Label(panel, "ks :", "sans-bold");
+    new Label(panel, "Radius :", "sans-bold");
 
     fb = new FloatBox<double>(panel);
     fb->setEditable(true);
     fb->setFixedSize(Vector2i(100, 20));
     fb->setFontSize(14);
-    fb->setValue(cp->ks);
-    fb->setUnits("N/m");
+      fb->setValue(cp->newRadius * cp->minMultiplier);
+      fb->setMinMaxValues(cp->newRadius * cp->minMultiplier, cp->newRadius * cp->maxMultiplier);
+      fb->setValueIncrement(cp->newRadius * cp->minMultiplier / 10.f);
+      fb->setUnits("A.U.");
     fb->setSpinnable(true);
     fb->setMinValue(0);
-    fb->setCallback([this](float value) { cp->ks = value; });
+    fb->setCallback([this](float value) { cp->newRadius = value; });
+
+      new Label(panel, "Init Vel :", "sans-bold");
+
+      fb = new FloatBox<double>(panel);
+      fb->setEditable(true);
+      fb->setFixedSize(Vector2i(100, 20));
+      fb->setFontSize(14);
+      fb->setValue(cp->newVelocity.norm() * cp->minMultiplier);
+      fb->setMinMaxValues(cp->newVelocity.norm() * cp->minMultiplier, cp->newVelocity.norm() * cp->maxMultiplier);
+      fb->setValueIncrement(cp->newVelocity.norm() * cp->minMultiplier / 10.f);
+    fb->setUnits("A.U.");
+    fb->setSpinnable(true);
+      fb->setMinValue(0);
+      fb->setCallback([this](float value) { cp->newVelocity.y = value; });
+
+      new Label(panel, "Mass :", "sans-bold");
+
+      fb = new FloatBox<double>(panel);
+      fb->setEditable(true);
+      fb->setFixedSize(Vector2i(100, 20));
+      fb->setFontSize(14);
+      fb->setValue(cp->newMass * cp->minMultiplier);
+      fb->setMinMaxValues(cp->newMass * cp->minMultiplier, cp->newMass * cp->maxMultiplier);
+      fb->setValueIncrement(cp->newMass * cp->minMultiplier / 10.f);
+      fb->setUnits("A.U.");
+      fb->setSpinnable(true);
+      fb->setMinValue(0);
+      fb->setCallback([this](float value) { cp->newMass = value; });
+
+      // Add Planet Button
+      Button *b = new Button(window, "Add Planet");
+      b->setFlags(Button::NormalButton);
+      b->setPushed(cp->button_pushed);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this](bool state) {
+//                  std::cout << "state: " << state << endl;
+                  cp->button_pushed = state;
+                  if (state) {
+                      std::cout << "adding planet using button" << endl;
+                      Sphere *newPlanet = new Sphere(cp->newOrigin, cp->newRadius, 1, cp->newVelocity);
+                      galaxy->add_planet(newPlanet);
+                      drawContents();
+                  }
+              });
+
+      // Remove Planet Button
+      b = new Button(window, "Remove Planet");
+      b->setFlags(Button::NormalButton);
+      b->setPushed(cp->button_pushed);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this](bool state) {
+//                  std::cout << "state: " << state << endl;
+                  cp->button_pushed = state;
+                  if (state) {
+                      std::cout << "removing planet using button" << endl;
+                      galaxy->remove_planet();
+                      drawContents();
+                  }
+              });
   }
 
   // Simulation constants
@@ -744,80 +829,81 @@ void ClothSimulator::initGUI(Screen *screen) {
     num_steps->setMinValue(0);
     num_steps->setCallback([this](int value) { simulation_steps = value; });
   }
-
-  // Damping slider and textbox
-
-  new Label(window, "Damping", "sans-bold");
-
-  {
-    Widget *panel = new Widget(window);
-    panel->setLayout(
-        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
-
-    Slider *slider = new Slider(panel);
-    slider->setValue(cp->damping);
-    slider->setFixedWidth(105);
-
-    TextBox *percentage = new TextBox(panel);
-    percentage->setFixedWidth(75);
-    percentage->setValue(to_string(cp->damping));
-    percentage->setUnits("%");
-    percentage->setFontSize(14);
-
-    slider->setCallback([percentage](float value) {
-      percentage->setValue(std::to_string(value));
-    });
-    slider->setFinalCallback([&](float value) {
-      cp->damping = (double)value;
-      // cout << "Final slider value: " << (int)(value * 100) << endl;
-    });
-  }
-
-  // Gravity
-
-  new Label(window, "Gravity", "sans-bold");
-
-  {
-    Widget *panel = new Widget(window);
-    GridLayout *layout =
-        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
-    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
-    layout->setSpacing(0, 10);
-    panel->setLayout(layout);
-
-    new Label(panel, "x :", "sans-bold");
-
-    FloatBox<double> *fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(gravity.x);
-    fb->setUnits("m/s^2");
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { gravity.x = value; });
-
-    new Label(panel, "y :", "sans-bold");
-
-    fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(gravity.y);
-    fb->setUnits("m/s^2");
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { gravity.y = value; });
-
-    new Label(panel, "z :", "sans-bold");
-
-    fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(gravity.z);
-    fb->setUnits("m/s^2");
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { gravity.z = value; });
-  }
+    // TODO: Replace
+//  // Damping slider and textbox
+//
+//  new Label(window, "Damping", "sans-bold");
+//
+//  {
+//    Widget *panel = new Widget(window);
+//    panel->setLayout(
+//        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
+//
+//    Slider *slider = new Slider(panel);
+//    slider->setValue(cp->damping);
+//    slider->setFixedWidth(105);
+//    cout << "Slider range: " << slider->range().first << ", " << slider->range().second << endl;
+//
+//    TextBox *percentage = new TextBox(panel);
+//    percentage->setFixedWidth(75);
+//    percentage->setValue(to_string(cp->damping));
+//    percentage->setUnits("%");
+//    percentage->setFontSize(14);
+//
+//    slider->setCallback([percentage](float value) {
+//      percentage->setValue(std::to_string(value));
+//    });
+//    slider->setFinalCallback([&](float value) {
+//      cp->damping = (double)value;
+//      // cout << "Final slider value: " << (int)(value * 100) << endl;
+//    });
+//  }
+//
+//  // Gravity
+//
+//  new Label(window, "Gravity", "sans-bold");
+//
+//  {
+//    Widget *panel = new Widget(window);
+//    GridLayout *layout =
+//        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
+//    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
+//    layout->setSpacing(0, 10);
+//    panel->setLayout(layout);
+//
+//    new Label(panel, "x :", "sans-bold");
+//
+//    FloatBox<double> *fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(gravity.x);
+//    fb->setUnits("m/s^2");
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { gravity.x = value; });
+//
+//    new Label(panel, "y :", "sans-bold");
+//
+//    fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(gravity.y);
+//    fb->setUnits("m/s^2");
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { gravity.y = value; });
+//
+//    new Label(panel, "z :", "sans-bold");
+//
+//    fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(gravity.z);
+//    fb->setUnits("m/s^2");
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { gravity.z = value; });
+//  }
   
   window = new Window(screen, "Appearance");
   window->setPosition(Vector2i(15, 15));

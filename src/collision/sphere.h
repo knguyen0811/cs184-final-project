@@ -20,12 +20,19 @@ public:
             : origin(origin), startOrigin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)),
             velocity(velocity), startVelocity(velocity), mass(mass), friction(friction),
             pm(PointMass(origin, false)), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)) {}
-    Vector3D gravity(Sphere &other_sphere);
     //Vector3D get_pos();
+
+    // Our Functions
+    Vector3D gravity(Sphere &other_sphere);
     void add_force(Vector3D force);
     void verlet(double delta_t);
     void reset();
+
+    // Get Functions
     Vector3D getInitOrigin();
+    Vector3D getInitVelocity();
+    double getRadius();
+    long double getMass();
 private:
     PointMass pm;
     Vector3D origin;

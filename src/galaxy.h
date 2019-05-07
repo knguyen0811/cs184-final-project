@@ -9,15 +9,34 @@
 #include "collision/sphere.h"
 class Galaxy {
 public:
-    std::vector<Sphere*> *planets;
-    int num_planets;
-
+    // Constructor & Destructor
     Galaxy(vector<Sphere *> *planets);
-
     ~Galaxy();
+
+    // Functions
     void simulate(double frames_per_sec, double simulation_steps);
     void reset();
-    long double lastPlanetDist;
+    void add_planet(Sphere *s);
+    void add_planet();
+    void add_planet_helper(Sphere *s);
+    void remove_planet();
+    Sphere* getLastPlanet();
+    void render(GLShader &shader);
+
+
+    // Comparators
+    static bool compareRadius(Sphere *s1, Sphere *s2) {
+        return s1->getRadius() < s2->getRadius();
+    }
+
+    static bool compareOrigin(Sphere *s1, Sphere *s2) {
+        return s1->getInitOrigin().norm() < s2->getInitOrigin().norm();
+    }
+
+    // Variables
+    int num_planets;
+    Sphere *last;
+    std::vector<Sphere*> *planets;
 };
 
 
