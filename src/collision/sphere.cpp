@@ -7,9 +7,6 @@
 using namespace nanogui;
 using namespace CGL;
 
-#include "../clothMesh.h"
-#include "../misc/sphere_drawing.h"
-
 #define G 6.67408e-11
 
 void Sphere::collide(PointMass &pm) {

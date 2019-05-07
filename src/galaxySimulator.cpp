@@ -4,7 +4,7 @@
 #include <CGL/vector3D.h>
 #include <nanogui/nanogui.h>
 
-#include "clothSimulator.h"
+#include "galaxySimulator.h"
 #include "leak_fix.h"
 
 #include "camera.h"
@@ -64,7 +64,7 @@ void load_cubemap(int frame_idx, GLuint handle, const std::vector<std::string>& 
   }
 }
 
-void ClothSimulator::load_textures() {
+void GalaxySimulator::load_textures() {
   glGenTextures(1, &m_gl_texture_1);
   glGenTextures(1, &m_gl_texture_2);
   glGenTextures(1, &m_gl_texture_3);
@@ -94,7 +94,7 @@ void ClothSimulator::load_textures() {
   std::cout << "Loaded cubemap texture" << std::endl;
 }
 
-void ClothSimulator::load_shaders() {
+void GalaxySimulator::load_shaders() {
   std::set<std::string> shader_folder_contents;
   bool success = FileUtils::list_files_in_directory(m_project_root + "/shaders", shader_folder_contents);
   if (!success) {
@@ -155,7 +155,7 @@ void ClothSimulator::load_shaders() {
   }
 }
 
-ClothSimulator::ClothSimulator(std::string project_root, Screen *screen)
+GalaxySimulator::GalaxySimulator(std::string project_root, Screen *screen)
 : m_project_root(project_root) {
   this->screen = screen;
   
@@ -166,7 +166,7 @@ ClothSimulator::ClothSimulator(std::string project_root, Screen *screen)
   glEnable(GL_DEPTH_TEST);
 }
 
-ClothSimulator::~ClothSimulator() {
+GalaxySimulator::~GalaxySimulator() {
   for (auto shader : shaders) {
     shader.nanogui_shader.free();
   }
@@ -176,24 +176,19 @@ ClothSimulator::~ClothSimulator() {
   glDeleteTextures(1, &m_gl_texture_4);
   glDeleteTextures(1, &m_gl_cubemap_tex);
 
-//  if (cloth) delete cloth;
   if (cp) delete cp;
-//  if (collision_objects) delete collision_objects;
 }
 
-//void ClothSimulator::loadCloth(Cloth *cloth) { this->cloth = cloth; }
 
-void ClothSimulator::loadClothParameters(ClothParameters *cp) { this->cp = cp; }
+void GalaxySimulator::loadClothParameters(ClothParameters *cp) { this->cp = cp; }
 
-//void ClothSimulator::loadCollisionObjects(vector<CollisionObject *> *objects) { this->collision_objects = objects; }
-
-void ClothSimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
+void GalaxySimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
 
 /**
  * Initializes the cloth simulation and spawns a new thread to separate
  * rendering from simulation.
  */
-void ClothSimulator::init() {
+void GalaxySimulator::init() {
 
   // Initialize GUI
   screen->setSize(default_window_size);
@@ -243,9 +238,9 @@ void ClothSimulator::init() {
   canonicalCamera.configure(camera_info, screen_w, screen_h);
 }
 
-bool ClothSimulator::isAlive() { return is_alive; }
+bool GalaxySimulator::isAlive() { return is_alive; }
 
-void ClothSimulator::drawContents() {
+void GalaxySimulator::drawContents() {
   glEnable(GL_DEPTH_TEST);
 
   if (!is_paused) {
@@ -319,7 +314,7 @@ void ClothSimulator::drawContents() {
 //    }
 }
 
-//void ClothSimulator::drawWireframe(GLShader &shader) {
+//void GalaxySimulator::drawWireframe(GLShader &shader) {
 //  int num_structural_springs =
 //      2 * cloth->num_width_points * cloth->num_height_points -
 //      cloth->num_width_points - cloth->num_height_points;
@@ -375,7 +370,7 @@ void ClothSimulator::drawContents() {
 //#endif
 //}
 
-//void ClothSimulator::drawNormals(GLShader &shader) {
+//void GalaxySimulator::drawNormals(GLShader &shader) {
 //  int num_tris = cloth->clothMesh->triangles.size();
 //
 //  MatrixXf positions(4, num_tris * 3);
@@ -411,7 +406,7 @@ void ClothSimulator::drawContents() {
 //#endif
 //}
 
-//void ClothSimulator::drawPhong(GLShader &shader) {
+//void GalaxySimulator::drawPhong(GLShader &shader) {
 //  int num_tris = cloth->clothMesh->triangles.size();
 //
 //  MatrixXf positions(4, num_tris * 3);
@@ -469,9 +464,9 @@ void ClothSimulator::drawContents() {
 // functions that have to be recreated here.
 // ----------------------------------------------------------------------------
 
-void ClothSimulator::resetCamera() { camera.copy_placement(canonicalCamera); }
+void GalaxySimulator::resetCamera() { camera.copy_placement(canonicalCamera); }
 
-Matrix4f ClothSimulator::getProjectionMatrix() {
+Matrix4f GalaxySimulator::getProjectionMatrix() {
   Matrix4f perspective;
   perspective.setZero();
 
@@ -492,7 +487,7 @@ Matrix4f ClothSimulator::getProjectionMatrix() {
   return perspective;
 }
 
-Matrix4f ClothSimulator::getViewMatrix() {
+Matrix4f GalaxySimulator::getViewMatrix() {
   Matrix4f lookAt;
   Matrix3f R;
 
@@ -524,7 +519,7 @@ Matrix4f ClothSimulator::getViewMatrix() {
 // EVENT HANDLING
 // ----------------------------------------------------------------------------
 
-bool ClothSimulator::cursorPosCallbackEvent(double x, double y) {
+bool GalaxySimulator::cursorPosCallbackEvent(double x, double y) {
   if (left_down && !middle_down && !right_down) {
     if (ctrl_down) {
       mouseRightDragged(x, y);
@@ -543,7 +538,7 @@ bool ClothSimulator::cursorPosCallbackEvent(double x, double y) {
   return true;
 }
 
-bool ClothSimulator::mouseButtonCallbackEvent(int button, int action,
+bool GalaxySimulator::mouseButtonCallbackEvent(int button, int action,
                                               int modifiers) {
   switch (action) {
   case GLFW_PRESS:
@@ -578,20 +573,20 @@ bool ClothSimulator::mouseButtonCallbackEvent(int button, int action,
   return false;
 }
 
-void ClothSimulator::mouseMoved(double x, double y) { y = screen_h - y; }
+void GalaxySimulator::mouseMoved(double x, double y) { y = screen_h - y; }
 
-void ClothSimulator::mouseLeftDragged(double x, double y) {
+void GalaxySimulator::mouseLeftDragged(double x, double y) {
   float dx = x - mouse_x;
   float dy = y - mouse_y;
 
   camera.rotate_by(-dy * (PI / screen_h), -dx * (PI / screen_w));
 }
 
-void ClothSimulator::mouseRightDragged(double x, double y) {
+void GalaxySimulator::mouseRightDragged(double x, double y) {
   camera.move_by(mouse_x - x, y - mouse_y, canonical_view_distance);
 }
 
-bool ClothSimulator::keyCallbackEvent(int key, int scancode, int action,
+bool GalaxySimulator::keyCallbackEvent(int key, int scancode, int action,
                                       int mods) {
   ctrl_down = (bool)(mods & GLFW_MOD_CONTROL);
 
@@ -636,18 +631,18 @@ bool ClothSimulator::keyCallbackEvent(int key, int scancode, int action,
   return true;
 }
 
-bool ClothSimulator::dropCallbackEvent(int count, const char **filenames) {
+bool GalaxySimulator::dropCallbackEvent(int count, const char **filenames) {
   return true;
 }
 
-bool ClothSimulator::scrollCallbackEvent(double x, double y) {
+bool GalaxySimulator::scrollCallbackEvent(double x, double y) {
   camera.move_forward(y * scroll_rate);
 //    std::cout << "camera pos: " << camera.position() << "\n";
 //    std::cout << "target pos: " << camera.view_point() << "\n";
   return true;
 }
 
-bool ClothSimulator::resizeCallbackEvent(int width, int height) {
+bool GalaxySimulator::resizeCallbackEvent(int width, int height) {
   screen_w = width;
   screen_h = height;
 
@@ -655,39 +650,39 @@ bool ClothSimulator::resizeCallbackEvent(int width, int height) {
   return true;
 }
 
-void ClothSimulator::initGUI(Screen *screen) {
+void GalaxySimulator::initGUI(Screen *screen) {
   Window *window;
   
   window = new Window(screen, "Simulation");
   window->setPosition(Vector2i(default_window_size(0) - 245, 15));
   window->setLayout(new GroupLayout(15, 6, 14, 5));
 
-  // Spring types
-
-  new Label(window, "Spring types", "sans-bold");
-
-  {
-    Button *b = new Button(window, "structural");
-    b->setFlags(Button::ToggleButton);
-    b->setPushed(cp->enable_structural_constraints);
-    b->setFontSize(14);
-    b->setChangeCallback(
-        [this](bool state) { cp->enable_structural_constraints = state; });
-
-    b = new Button(window, "shearing");
-    b->setFlags(Button::ToggleButton);
-    b->setPushed(cp->enable_shearing_constraints);
-    b->setFontSize(14);
-    b->setChangeCallback(
-        [this](bool state) { cp->enable_shearing_constraints = state; });
-
-    b = new Button(window, "bending");
-    b->setFlags(Button::ToggleButton);
-    b->setPushed(cp->enable_bending_constraints);
-    b->setFontSize(14);
-    b->setChangeCallback(
-        [this](bool state) { cp->enable_bending_constraints = state; });
-  }
+//  // Spring types
+//
+//  new Label(window, "Spring types", "sans-bold");
+//
+//  {
+//    Button *b = new Button(window, "structural");
+//    b->setFlags(Button::ToggleButton);
+//    b->setPushed(cp->enable_structural_constraints);
+//    b->setFontSize(14);
+//    b->setChangeCallback(
+//        [this](bool state) { cp->enable_structural_constraints = state; });
+//
+//    b = new Button(window, "shearing");
+//    b->setFlags(Button::ToggleButton);
+//    b->setPushed(cp->enable_shearing_constraints);
+//    b->setFontSize(14);
+//    b->setChangeCallback(
+//        [this](bool state) { cp->enable_shearing_constraints = state; });
+//
+//    b = new Button(window, "bending");
+//    b->setFlags(Button::ToggleButton);
+//    b->setPushed(cp->enable_bending_constraints);
+//    b->setFontSize(14);
+//    b->setChangeCallback(
+//        [this](bool state) { cp->enable_bending_constraints = state; });
+//  }
 
   // New Planet Parameters
     Sphere *last = galaxy->getLastPlanet();

@@ -13,16 +13,14 @@ using namespace nanogui;
 struct UserShader;
 enum ShaderTypeHint { WIREFRAME = 0, NORMALS = 1, PHONG = 2 };
 
-class ClothSimulator {
+class GalaxySimulator {
 public:
-  ClothSimulator(std::string project_root, Screen *screen);
-  ~ClothSimulator();
+  GalaxySimulator(std::string project_root, Screen *screen);
+  ~GalaxySimulator();
 
   void init();
 
-//  void loadCloth(Cloth *cloth);
   void loadClothParameters(ClothParameters *cp);
-//  void loadCollisionObjects(vector<CollisionObject *> *objects);
   void loadGalaxy(Galaxy *galaxy);
   virtual bool isAlive();
   virtual void drawContents();

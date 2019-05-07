@@ -16,7 +16,7 @@
 #include "collision/plane.h"
 #include "collision/sphere.h"
 #include "cloth.h"
-#include "clothSimulator.h"
+#include "galaxySimulator.h"
 #include "json.hpp"
 #include "misc/file_utils.h"
 #include "galaxy.h"
@@ -40,7 +40,7 @@ const string EARTH = "earth";
 
 const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SUN, MERCURY, VENUS, EARTH};
 
-ClothSimulator *app = nullptr;
+GalaxySimulator *app = nullptr;
 GLFWwindow *window = nullptr;
 Screen *screen = nullptr;
 
@@ -271,12 +271,9 @@ int main(int argc, char **argv) {
   std::string project_root;
   bool found_project_root = find_project_root(search_paths, project_root);
   
-//  Cloth cloth;
   ClothParameters cp;
-//  vector<CollisionObject *> objects;
   vector<Sphere *> planets;
 
-  
   int c;
   
   int sphere_num_lat = 40;
@@ -346,9 +343,9 @@ int main(int argc, char **argv) {
 
   createGLContexts();
 
-  // Initialize the ClothSimulator object
+  // Initialize the GalaxySimulator object
   Galaxy galaxy(&planets);
-  app = new ClothSimulator(project_root, screen);
+  app = new GalaxySimulator(project_root, screen);
   app->loadClothParameters(&cp);
     app->loadGalaxy(&galaxy);
   app->init();
