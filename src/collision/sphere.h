@@ -6,9 +6,9 @@
 #include "collisionObject.h"
 
 #define seconds 1
-#define hours 1
-#define days 1
-#define years 1
+#define hours 3600
+#define days 86400
+#define years 31536000
 #define sphere_factor 1E9
 
 using namespace CGL;

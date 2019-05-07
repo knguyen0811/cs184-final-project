@@ -40,7 +40,7 @@ void Sphere::add_force(Vector3D force) {
 }
 
 void Sphere::verlet(double delta_t) {
-  Vector3D new_pos = pm.position + velocity + (pm.forces / mass) / 2.f;
+  Vector3D new_pos = pm.position + velocity + (pm.forces / mass);
   
   // std::cout << "forces: " << pm.forces << "\n";
   // std::cout << "velocity: " << velocity << "\n";
