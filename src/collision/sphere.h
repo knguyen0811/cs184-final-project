@@ -53,6 +53,7 @@ private:
     PointMass pm;
     Vector3D origin;
     Vector3D velocity;
+    std::vector<Vector3D> track = std::vector<Vector3D>();
     Vector3D startOrigin;
     Vector3D startVelocity;
     const double radius;
