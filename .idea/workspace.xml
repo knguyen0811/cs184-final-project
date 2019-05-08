@@ -2,12 +2,12 @@
 <project version="4">
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
     <generated>
-      <config projectName="ClothSim" targetName="clothsim" />
-      <config projectName="ClothSim" targetName="CGL" />
       <config projectName="ClothSim" targetName="glfw" />
-      <config projectName="ClothSim" targetName="glfw_objects" />
-      <config projectName="ClothSim" targetName="nanogui-obj" />
       <config projectName="ClothSim" targetName="nanogui" />
+      <config projectName="ClothSim" targetName="CGL" />
+      <config projectName="ClothSim" targetName="nanogui-obj" />
+      <config projectName="ClothSim" targetName="clothsim" />
+      <config projectName="ClothSim" targetName="glfw_objects" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -17,11 +17,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5ab507-ccad-43bb-839b-957361589576" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/scene/sphereGen.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cloth.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/collision/sphere.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/collision/sphere.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/galaxy.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/galaxy.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/galaxy.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/galaxy.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/galaxySimulator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/galaxySimulator.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/galaxySimulator.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/galaxySimulator.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -50,28 +50,16 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.4563107">
+    <splitter split-orientation="horizontal" split-proportion="0.5">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/collision/sphere.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1305">
-                  <caret line="87" column="1" selection-start-line="87" selection-start-column="1" selection-end-line="87" selection-end-column="1" />
+                <state relative-caret-position="839">
+                  <caret line="60" column="13" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
                   <folding>
                     <element signature="e#0#28#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/collision/sphere.h">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="255">
-                  <caret line="17" column="25" lean-forward="true" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="25" />
-                  <folding>
-                    <element signature="e#67#92#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -80,8 +68,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/galaxySimulator.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="413">
-                  <caret line="743" column="61" lean-forward="true" selection-start-line="743" selection-start-column="61" selection-end-line="743" selection-end-column="61" />
+                <state relative-caret-position="-3865">
+                  <caret line="183" column="75" selection-start-line="183" selection-start-column="75" selection-end-line="183" selection-end-column="75" />
                   <folding>
                     <element signature="e#0#16#0" expanded="true" />
                   </folding>
@@ -92,7 +80,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/galaxySimulator.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="90">
+                <state relative-caret-position="-168">
                   <caret line="6" selection-start-line="6" selection-end-line="6" />
                 </state>
               </provider>
@@ -101,8 +89,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/main.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="623">
-                  <caret line="337" column="3" lean-forward="true" selection-start-line="337" selection-start-column="3" selection-end-line="337" selection-end-column="3" />
+                <state relative-caret-position="3483">
+                  <caret line="445" column="21" lean-forward="true" selection-start-line="445" selection-start-column="21" selection-end-line="445" selection-end-column="21" />
                   <folding>
                     <element signature="e#0#19#0" expanded="true" />
                     <element signature="e#174#193#0" expanded="true" />
@@ -115,12 +103,12 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+        <leaf>
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/galaxy.cpp">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="617">
-                  <caret line="95" selection-start-line="95" selection-end-line="95" />
+                <state relative-caret-position="400">
+                  <caret line="54" column="14" selection-start-line="54" selection-start-column="14" selection-end-line="54" selection-end-column="14" />
                 </state>
               </provider>
             </entry>
@@ -128,10 +116,42 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/galaxy.h">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="405">
-                  <caret line="27" selection-start-line="27" selection-end-line="27" />
+                <state relative-caret-position="76">
+                  <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
                   <folding>
                     <element signature="e#102#119#0" expanded="true" />
+                  </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/scene/sphere2.json">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="735">
+                  <caret line="49" column="15" selection-start-line="49" selection-start-column="15" selection-end-line="49" selection-end-column="15" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/scene/sphereGen.json">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="535">
+                  <caret line="49" column="3" selection-start-line="49" selection-start-column="3" selection-end-line="49" selection-end-column="3" />
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file pinned="false" current-in-tab="false">
+            <entry file="file://$PROJECT_DIR$/src/main.cpp">
+              <provider selected="true" editor-type-id="text-editor">
+                <state relative-caret-position="177">
+                  <caret line="259" selection-start-line="259" selection-end-line="259" />
+                  <folding>
+                    <element signature="e#0#19#0" expanded="true" />
+                    <element signature="e#174#193#0" expanded="true" />
+                    <element signature="e#221#245#0" expanded="true" />
                   </folding>
                 </state>
               </provider>
@@ -143,14 +163,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>-&gt;</find>
-      <find>galaxy-&gt;</find>
-      <find>loadcoll</find>
-      <find>pos</find>
-      <find>wheel</find>
-      <find>normal</find>
-      <find>wireframe</find>
-      <find>camera</find>
       <find>camera pos</find>
       <find>texture</find>
       <find>Displacement</find>
@@ -173,6 +185,14 @@
       <find>sphereparam</find>
       <find>loadcloth</find>
       <find>cp</find>
+      <find>generate</find>
+      <find>sphere</find>
+      <find>.</find>
+      <find>c++</find>
+      <find>c++11</find>
+      <find>real</find>
+      <find>load</find>
+      <find>loadGa</find>
     </findStrings>
     <replaceStrings>
       <replace>mass</replace>
@@ -182,6 +202,8 @@
       <replace>newRadius</replace>
       <replace>newVelocity</replace>
       <replace>sp</replace>
+      <replace>ast</replace>
+      <replace>-&gt;</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -191,8 +213,6 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/camera.cpp" />
-        <option value="$PROJECT_DIR$/src/galaxy.cpp" />
-        <option value="$PROJECT_DIR$/src/galaxy.h" />
         <option value="$PROJECT_DIR$/scene/sphere.json" />
         <option value="$PROJECT_DIR$/src/cloth.cpp" />
         <option value="$PROJECT_DIR$/src/cloth.h" />
@@ -201,8 +221,11 @@
         <option value="$PROJECT_DIR$/src/collision/sphere.cpp" />
         <option value="$PROJECT_DIR$/src/collision/sphere.h" />
         <option value="$PROJECT_DIR$/src/galaxySimulator.h" />
-        <option value="$PROJECT_DIR$/src/main.cpp" />
+        <option value="$PROJECT_DIR$/scene/sphereGen.json" />
         <option value="$PROJECT_DIR$/src/galaxySimulator.cpp" />
+        <option value="$PROJECT_DIR$/src/galaxy.h" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
+        <option value="$PROJECT_DIR$/src/galaxy.cpp" />
       </list>
     </option>
   </component>
@@ -250,10 +273,16 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/scene" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/scene" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -273,7 +302,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="clothsim" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-f ../scene/sphere2.json" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ClothSim" TARGET_NAME="clothsim" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ClothSim" RUN_TARGET_NAME="clothsim">
+    <configuration name="clothsim" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-f ../scene/sphereGen.json" PASS_PARENT_ENVS_2="true" PROJECT_NAME="ClothSim" TARGET_NAME="clothsim" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="ClothSim" RUN_TARGET_NAME="clothsim">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -327,18 +356,18 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="36163000" />
+    <option name="totallyTimeSpent" value="45770000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1280" y="23" width="1920" height="1057" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.498708" visible="true" weight="0.122470714" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.498708" visible="true" weight="0.08200213" />
       <window_info id="Structure" order="1" sideWeight="0.501292" side_tool="true" weight="0.17689823" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3284974" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946752" weight="0.34300518" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946752" visible="true" weight="0.34300518" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -363,8 +392,23 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/galaxy.cpp</url>
-          <line>92</line>
+          <line>112</line>
           <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/main.cpp</url>
+          <line>220</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/main.cpp</url>
+          <line>185</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/src/main.cpp</url>
+          <line>166</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -385,24 +429,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CGL/include/CGL/vector3D.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="106" column="16" selection-start-line="106" selection-start-column="16" selection-end-line="106" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/camera.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="930">
           <caret line="62" selection-start-line="62" selection-end-line="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/misc/sphere_drawing.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="14" column="6" selection-start-line="14" selection-start-column="6" selection-end-line="14" selection-end-column="6" />
         </state>
       </provider>
     </entry>
@@ -490,9 +520,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cloth.cpp" />
-    <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/collision/collisionObject.h">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -524,54 +551,104 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/galaxy.h">
+    <entry file="file://$PROJECT_DIR$/src/cloth.h" />
+    <entry file="file://$PROJECT_DIR$/CGL/include/CGL/vector3D.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
-          <folding>
-            <element signature="e#102#119#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="240">
+          <caret line="128" column="14" selection-start-line="128" selection-start-column="14" selection-end-line="128" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/misc/sphere_drawing.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="413">
+          <caret line="37" column="25" lean-forward="true" selection-start-line="37" selection-start-column="25" selection-end-line="37" selection-end-column="25" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/collision/sphere.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="25" lean-forward="true" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="25" />
+        <state relative-caret-position="68">
+          <caret line="30" column="7" selection-start-line="30" selection-start-column="7" selection-end-line="30" selection-end-column="7" />
           <folding>
             <element signature="e#67#92#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/cmake-build-debug/cmake_install.cmake">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-261" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CGL/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2736" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1125">
+          <caret line="81" column="69" lean-forward="true" selection-start-line="81" selection-start-column="69" selection-end-line="81" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ext/nanogui/ext/glad/include/glad/glad.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" column="26" selection-start-line="4" selection-start-column="26" selection-end-line="4" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/algorithm">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="177">
+          <caret line="3226" column="16" selection-start-line="3226" selection-start-column="16" selection-end-line="3226" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/random">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="3712" column="44" lean-forward="true" selection-start-line="3712" selection-start-column="44" selection-end-line="3712" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scene/sphere2.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="735">
+          <caret line="49" column="15" selection-start-line="49" selection-start-column="15" selection-end-line="49" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scene/sphereGen.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="535">
+          <caret line="49" column="3" selection-start-line="49" selection-start-column="3" selection-end-line="49" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/galaxySimulator.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-168">
+          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/collision/sphere.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1305">
-          <caret line="87" column="1" selection-start-line="87" selection-start-column="1" selection-end-line="87" selection-end-column="1" />
+        <state relative-caret-position="839">
+          <caret line="60" column="13" selection-start-line="60" selection-start-column="13" selection-end-line="60" selection-end-column="13" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/galaxySimulator.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cloth.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="623">
-          <caret line="337" column="3" lean-forward="true" selection-start-line="337" selection-start-column="3" selection-end-line="337" selection-end-column="3" />
+        <state relative-caret-position="177">
+          <caret line="259" selection-start-line="259" selection-end-line="259" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#174#193#0" expanded="true" />
@@ -580,20 +657,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/galaxy.cpp">
+    <entry file="file://$PROJECT_DIR$/src/galaxy.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="617">
-          <caret line="95" selection-start-line="95" selection-end-line="95" />
+        <state relative-caret-position="76">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+          <folding>
+            <element signature="e#102#119#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/galaxySimulator.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="413">
-          <caret line="743" column="61" lean-forward="true" selection-start-line="743" selection-start-column="61" selection-end-line="743" selection-end-column="61" />
+        <state relative-caret-position="-3865">
+          <caret line="183" column="75" selection-start-line="183" selection-start-column="75" selection-end-line="183" selection-end-column="75" />
           <folding>
             <element signature="e#0#16#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/galaxy.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="54" column="14" selection-start-line="54" selection-start-column="14" selection-end-line="54" selection-end-column="14" />
         </state>
       </provider>
     </entry>

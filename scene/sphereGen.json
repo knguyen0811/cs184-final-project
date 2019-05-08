@@ -1,0 +1,51 @@
+{
+  "spheres":
+  [
+    {
+      "origin": [0, 0, 0],
+      "radius": 7.0,
+      "friction": 0.3,
+      "velocity": [0, 0, 0],
+      "mass": 1.9891E30
+    },
+    {
+      "origin": [5.79E10, 0, 0],
+      "radius": 1.22,
+      "friction": 0.3,
+      "velocity":  [0, 47400, 0],
+      "mass":  3.3E23
+    },
+    {
+      "origin": [1.082E11, 0, 0],
+      "radius": 3.027,
+      "friction": 0.3,
+      "velocity":  [0, 35000, 0],
+      "mass":  4.87E24
+    },
+    {
+      "origin": [1.496E11, 0, 0],
+      "radius": 3.19,
+      "friction": 0.3,
+      "velocity":  [0, 29800, 0],
+      "mass":  5.976E24
+    },
+    {
+      "origin": [2.279E11, 0, 0],
+      "radius": 4,
+      "friction": 0.3,
+      "velocity":  [0, 24100, 0],
+      "mass":  5.976E24
+    },
+    {
+      "origin": [5.203E11, 0, 0],
+      "radius": 5,
+      "friction": 0.3,
+      "velocity":  [0, 13100, 0],
+      "mass":  5.976E24
+    }
+  ],
+  "generate": {
+    "spheres": 5,
+    "asteroids": 0
+  }
+}

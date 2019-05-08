@@ -12,6 +12,16 @@ Galaxy::Galaxy(vector<Sphere*> *planets) {
     num_planets = planets->size();
 }
 
+Galaxy::Galaxy(vector<Sphere *> *planets, vector<Sphere *> *asteroids) {
+    this->planets = planets;
+    sort(planets->begin(), planets->end(), compareOrigin);
+    this->last = planets->back();
+    num_planets = planets->size();
+
+    this->asteroids = asteroids;
+    num_asteroids = asteroids->size();
+}
+
 Galaxy::~Galaxy() {
     planets->clear();
     num_planets = 0;
@@ -39,11 +49,21 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         //TODO: possibly add damping
         planet->verlet(delta_t);
     }
+
+    // Add Asteroid stuff here
+    if (asteroids != nullptr) {
+        return
+    }
 }
 
 void Galaxy::render(GLShader &shader) {
     for (Sphere *s : *planets) {
         s->render(shader);
+    }
+    if (asteroids != nullptr) {
+        for (Sphere *a : *asteroids) {
+            a->render(shader);
+        }
     }
 }
 
