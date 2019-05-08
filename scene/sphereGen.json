@@ -45,7 +45,7 @@
     }
   ],
   "generate": {
-    "spheres": 5,
-    "asteroids": 0
+    "spheres": 0,
+    "asteroids": 100
   }
 }

@@ -51,8 +51,15 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     }
 
     // Add Asteroid stuff here
+    // DEBUG: Placeholder Code for Asteroids, only considers sun's gravitational force
     if (asteroids != nullptr) {
-        return
+        Sphere *center = (*planets)[0];
+        for (Sphere *a : *asteroids) {
+            gravity = center->gravity(*a);
+            gravity = gravity; //TODO SCALED DOWN GRAVITY
+            center->add_force(gravity);
+            a->add_force(-gravity);
+        }
     }
 }
 

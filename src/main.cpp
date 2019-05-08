@@ -186,6 +186,13 @@ Vector3D randomVec(Vector3D min, Vector3D max) {
     return min + factor * dir;
 }
 
+Vector3D randomVec(double norm) {
+    // Return random vector between min and max
+    double angle = randomAngle();
+    Vector3D newVec(cos(angle)*norm, sin(angle)*norm, 0);
+    return newVec;
+}
+
 void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* asteroids, int num_spheres, int num_asteroids=0) {
     Vector3D sphereOrigMin, sphereOrigMax, sphereVelMin, sphereVelMax;
 //    double sphereRadiusMin, sphereRadiusMax, friction=1;
@@ -228,9 +235,22 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
         }
     }
 
-//    Vector3D astOrigMin, astOrigMax, astVelMin, astVelMax;
-//    double astRadiusMin, astRadiusMax;
-//    long double astMassMin, astMassMax;
+    Vector3D astVelMin=10000, astVelMax=40000;
+    double astDist, astRadiusMin=2, astRadiusMax=4;
+    long double astMassMin=2.8E21, astMassMax=3.2E21;
+
+    Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
+    astDist = 1.f * last->getInitOrigin().norm();
+
+    for (int j = 0; j < num_asteroids; j++) {
+        origin = randomVec(astDist);
+        velocity = randomVec(astVelMin, astVelMax);
+        radius = randomVal(astRadiusMin, astRadiusMax);
+        mass = randomVal(astMassMin, astMassMax);
+
+        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+        asteroids->push_back(new_sphere);
+    }
 }
 
 bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int* num_spheres, int* num_asteroids, int sphere_num_lat, int sphere_num_lon) {
@@ -363,7 +383,6 @@ int main(int argc, char **argv) {
   SphereParameters sp;
   vector<Sphere *> planets;
   vector<Sphere *> asteroids;
-  Galaxy galaxy;
   int num_spheres = 0;
   int num_asteroids = 0;
 
@@ -440,11 +459,7 @@ int main(int argc, char **argv) {
   if (num_spheres != 0 || num_asteroids != 0) {
       generateObjectsFromFile(&planets, &asteroids, num_spheres, num_asteroids);
   }
-  if (!asteroids.empty()) {
-      galaxy = Galaxy(&planets, &asteroids);
-  } else {
-      galaxy = Galaxy(&planets);
-  }
+  Galaxy galaxy(&planets, &asteroids);
   app = new GalaxySimulator(project_root, screen);
   app->loadSphereParameters(&sp);
   app->loadGalaxy(&galaxy);
