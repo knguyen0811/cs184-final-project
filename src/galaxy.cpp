@@ -41,9 +41,9 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     }
 }
 
-void Galaxy::render(GLShader &shader) {
+void Galaxy::render(GLShader &shader, bool is_paused) {
     for (Sphere *s : *planets) {
-        s->render(shader);
+        s->render(shader, is_paused);
     }
 }
 

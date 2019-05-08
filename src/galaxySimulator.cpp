@@ -276,11 +276,11 @@ void GalaxySimulator::drawContents() {
   case WIREFRAME:
     shader.setUniform("u_color", color, false);
 //    drawWireframe(shader);
-    galaxy->render(shader);
+    galaxy->render(shader, is_paused);
     break;
   case NORMALS:
 //    drawNormals(shader);
-    galaxy->render(shader);
+    galaxy->render(shader, is_paused);
     break;
   case PHONG:
 
@@ -305,7 +305,7 @@ void GalaxySimulator::drawContents() {
 
     shader.setUniform("u_texture_cubemap", 5, false);
 //    drawPhong(shader);
-    galaxy->render(shader);
+    galaxy->render(shader, is_paused);
     break;
   }
 //    for (CollisionObject *co : *collision_objects) {
