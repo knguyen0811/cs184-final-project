@@ -64,6 +64,7 @@ void load_cubemap(int frame_idx, GLuint handle, const std::vector<std::string>& 
 }
 
 void GalaxySimulator::load_textures() {
+  //TODO: replace with map to texture id
   glGenTextures(1, &m_gl_texture_1);
   glGenTextures(1, &m_gl_texture_2);
   glGenTextures(1, &m_gl_texture_3);
@@ -95,7 +96,7 @@ void GalaxySimulator::load_textures() {
     m_project_root + "/textures/space/negz.jpg"
   };
   
-  load_cubemap(5, m_gl_cubemap_tex, cubemap_fnames);
+  load_cubemap(7, m_gl_cubemap_tex, cubemap_fnames);
   std::cout << "Loaded cubemap texture" << std::endl;
 }
 
@@ -243,6 +244,12 @@ void GalaxySimulator::init() {
 
   camera.configure(camera_info, screen_w, screen_h);
   canonicalCamera.configure(camera_info, screen_w, screen_h);
+
+  //Initialize sphere shaders
+  int i = 1;
+  for (auto& sphere : *galaxy->planets) {
+    sphere->shader.initFromFiles("Texture " + to_string(i++), m_project_root + "/shaders/Default.vert", m_project_root + "/shaders/Texture.frag");
+  }
 }
 
 bool GalaxySimulator::isAlive() { return is_alive; }
@@ -276,9 +283,24 @@ void GalaxySimulator::drawContents() {
   Matrix4f projection = getProjectionMatrix();
 
   Matrix4f viewProjection = projection * view;
-
-  shader.setUniform("u_model", model);
-  shader.setUniform("u_view_projection", viewProjection);
+  Vector3D cam_pos = camera.position();
+  // FIXME: Needs performance improvements
+  int i = 1; //FIXME: Placeholder
+  for (auto& sphere : *galaxy->planets) {
+    sphere->shader.bind();
+    //TODO: get rid of unnecessary fields
+    sphere->shader.setUniform("u_model", model);
+    sphere->shader.setUniform("u_view_projection", viewProjection);
+    sphere->shader.setUniform("u_texture", i++, false); //FIXME: Placeholder
+    //sphere->shader.setUniform("u_color", color, false);
+    sphere->shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
+    //sphere->shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
+    //sphere->shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
+    //sphere->shader.setUniform("u_normal_scaling", m_normal_scaling, false);
+    //sphere->shader.setUniform("u_height_scaling", m_height_scaling, false);
+    //sphere->shader.setUniform("u_texture_cubemap", 7, false);
+    sphere->render(shader, false); // FIXME: shader field is a placeholder at this point
+  }
 
   switch (active_shader.type_hint) {
   case WIREFRAME:
@@ -291,10 +313,8 @@ void GalaxySimulator::drawContents() {
     galaxy->render(shader, is_paused);
     break;
   case PHONG:
-
     // Others
-    Vector3D cam_pos = camera.position();
-    shader.setUniform("u_color", color, false);
+    /*shader.setUniform("u_color", color, false);
     shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
     shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
     shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
@@ -312,7 +332,7 @@ void GalaxySimulator::drawContents() {
     shader.setUniform("u_height_scaling", m_height_scaling, false);
 
     shader.setUniform("u_texture_cubemap", 7, false);
-//    drawPhong(shader);
+//    drawPhong(shader);*/
     galaxy->render(shader, is_paused);
     break;
   }

@@ -35,7 +35,7 @@ public:
     Sphere(const Vector3D &origin, double radius, double friction, Vector3D &velocity, long double mass=1e-5, int num_lat = 40, int num_lon = 40)
             : origin(origin), startOrigin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)),
             velocity(velocity), startVelocity(velocity), mass(mass), friction(friction), addTrack(true),
-            pm(PointMass(origin, false)), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)) {}
+            pm(PointMass(origin, false)), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)), shader(GLShader()) {}
     //Vector3D get_pos();
 
     // Our Functions
@@ -44,12 +44,14 @@ public:
     void verlet(double delta_t);
     void reset();
     void isTrackEnd(Vector3D track_start, double distance);
+    void setTextureID(int id);
 
     // Get Functions
     Vector3D getInitOrigin();
     Vector3D getInitVelocity();
     double getRadius();
     long double getMass();
+    GLShader shader;
 private:
     PointMass pm;
     Vector3D origin;
@@ -63,9 +65,7 @@ private:
     const long double mass;
     double friction;
     bool addTrack;
-
     Misc::SphereMesh m_sphere_mesh;
-    GLShader shader;
 };
 
 #endif /* COLLISIONOBJECT_SPHERE_H */

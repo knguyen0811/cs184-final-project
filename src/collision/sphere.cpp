@@ -62,7 +62,7 @@ void Sphere::render(GLShader &shader, bool is_paused) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
   //TODO: have each sphere have its own shader instead
-  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
+  m_sphere_mesh.draw_sphere(this->shader, pm.position / sphere_factor, radius);
   if (!is_paused) {
       if (track.size() > 2 && addTrack) {
           this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
@@ -99,6 +99,10 @@ double Sphere::getRadius() {
 
 long double Sphere::getMass() {
     return mass;
+}
+
+void Sphere::setTextureID(int id) {
+  shader.setUniform("u_texture", id, false);
 }
 
 void Sphere::reset() {

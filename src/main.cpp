@@ -182,6 +182,8 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
 
     // Parse object depending on type (cloth, sphere, or plane)
     if (key == SPHERES) {
+      // TODO: allow JSON to set each sphere's texture
+      // TODO: construct a texture shader for each sphere
       // the object under key "spheres" will be an array of bodies.
       Vector3D origin, velocity;
       double radius, friction;
@@ -345,7 +347,7 @@ int main(int argc, char **argv) {
   Galaxy galaxy(&planets);
   app = new GalaxySimulator(project_root, screen);
   app->loadSphereParameters(&sp);
-    app->loadGalaxy(&galaxy);
+  app->loadGalaxy(&galaxy);
   app->init();
 
   // Call this after all the widgets have been defined
