@@ -44,7 +44,6 @@ public:
     void verlet(double delta_t);
     void reset();
     void isTrackEnd(Vector3D track_start, double distance);
-    void setShader(GLShader& my_shader);
 
     // Get Functions
     Vector3D getInitOrigin();

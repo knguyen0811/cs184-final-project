@@ -68,17 +68,23 @@ void GalaxySimulator::load_textures() {
   glGenTextures(1, &m_gl_texture_2);
   glGenTextures(1, &m_gl_texture_3);
   glGenTextures(1, &m_gl_texture_4);
+  glGenTextures(1, &m_gl_texture_5);
+  glGenTextures(1, &m_gl_texture_6);
   glGenTextures(1, &m_gl_cubemap_tex);
   
-  m_gl_texture_1_size = load_texture(1, m_gl_texture_1, (m_project_root + "/textures/texture_1.png").c_str());
-  m_gl_texture_2_size = load_texture(2, m_gl_texture_2, (m_project_root + "/textures/texture_2.png").c_str());
-  m_gl_texture_3_size = load_texture(3, m_gl_texture_3, (m_project_root + "/textures/texture_3.png").c_str());
-  m_gl_texture_4_size = load_texture(4, m_gl_texture_4, (m_project_root + "/textures/texture_4.png").c_str());
+  m_gl_texture_1_size = load_texture(1, m_gl_texture_1, (m_project_root + "/textures/earth.png").c_str());
+  m_gl_texture_2_size = load_texture(2, m_gl_texture_2, (m_project_root + "/textures/jupiter.png").c_str());
+  m_gl_texture_3_size = load_texture(3, m_gl_texture_3, (m_project_root + "/textures/mars.png").c_str());
+  m_gl_texture_4_size = load_texture(4, m_gl_texture_4, (m_project_root + "/textures/moon.png").c_str());
+  m_gl_texture_5_size = load_texture(5, m_gl_texture_5, (m_project_root + "/textures/neptune.png").c_str());
+  m_gl_texture_6_size = load_texture(6, m_gl_texture_6, (m_project_root + "/textures/sun.png").c_str());
   
   std::cout << "Texture 1 loaded with size: " << m_gl_texture_1_size << std::endl;
   std::cout << "Texture 2 loaded with size: " << m_gl_texture_2_size << std::endl;
   std::cout << "Texture 3 loaded with size: " << m_gl_texture_3_size << std::endl;
   std::cout << "Texture 4 loaded with size: " << m_gl_texture_4_size << std::endl;
+  std::cout << "Texture 5 loaded with size: " << m_gl_texture_5_size << std::endl;
+  std::cout << "Texture 6 loaded with size: " << m_gl_texture_6_size << std::endl;
   
   std::vector<std::string> cubemap_fnames = {
     m_project_root + "/textures/space/posx.jpg",
@@ -173,6 +179,8 @@ GalaxySimulator::~GalaxySimulator() {
   glDeleteTextures(1, &m_gl_texture_2);
   glDeleteTextures(1, &m_gl_texture_3);
   glDeleteTextures(1, &m_gl_texture_4);
+  glDeleteTextures(1, &m_gl_texture_5);
+  glDeleteTextures(1, &m_gl_texture_6);
   glDeleteTextures(1, &m_gl_cubemap_tex);
 
   if (sp) delete sp;
@@ -295,15 +303,15 @@ void GalaxySimulator::drawContents() {
     shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
     shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
     // Textures
-    shader.setUniform("u_texture_1", 1, false);
-    shader.setUniform("u_texture_2", 2, false);
-    shader.setUniform("u_texture_3", 3, false);
-    shader.setUniform("u_texture_4", 4, false);
-
+    //shader.setUniform("u_texture_1", 1, false);
+    //shader.setUniform("u_texture_2", 2, false);
+    //shader.setUniform("u_texture_3", 3, false);
+    //shader.setUniform("u_texture_4", 4, false);
+    shader.setUniform("u_texture", 1, false);
     shader.setUniform("u_normal_scaling", m_normal_scaling, false);
     shader.setUniform("u_height_scaling", m_height_scaling, false);
 
-    shader.setUniform("u_texture_cubemap", 5, false);
+    shader.setUniform("u_texture_cubemap", 7, false);
 //    drawPhong(shader);
     galaxy->render(shader, is_paused);
     break;

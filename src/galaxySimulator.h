@@ -67,7 +67,7 @@ private:
 
   // OpenGL attributes
 
-  int active_shader_idx = 0;
+  int active_shader_idx = 7; //Texture.frag
 
   vector<UserShader> shaders;
   vector<std::string> shaders_combobox_names;
@@ -78,10 +78,14 @@ private:
   Vector3D m_gl_texture_2_size;
   Vector3D m_gl_texture_3_size;
   Vector3D m_gl_texture_4_size;
+  Vector3D m_gl_texture_5_size;
+  Vector3D m_gl_texture_6_size;
   GLuint m_gl_texture_1;
   GLuint m_gl_texture_2;
   GLuint m_gl_texture_3;
   GLuint m_gl_texture_4;
+  GLuint m_gl_texture_5;
+  GLuint m_gl_texture_6;
   GLuint m_gl_cubemap_tex;
   
   // OpenGL customizable inputs
