@@ -42,15 +42,15 @@ void Sphere::add_force(Vector3D force) {
 void Sphere::verlet(double delta_t) {
   Vector3D new_pos = pm.position + velocity + (pm.forces / mass);
   
-  // std::cout << "forces: " << pm.forces << "\n";
-  // std::cout << "velocity: " << velocity << "\n";
-  // std::cout << "mass: " << mass << "\n";
-  // std::cout << "forces / mass: " << pm.forces / mass << "\n";
-  // std::cout << "Accleration factor: " << (pm.forces / mass) / 2.f << "\n";
-
-  // std::cout << "pos: " << pm.position << "\n";
-  // std::cout << "new_pos: " << new_pos << "\n";
-  // std::cout << "\n\n\n";
+//    std::cout << "forces: " << pm.forces << "\n";
+//    std::cout << "velocity: " << velocity << "\n";
+//    std::cout << "mass: " << mass << "\n";
+//    std::cout << "forces / mass: " << pm.forces / mass << "\n";
+//    std::cout << "Accleration factor: " << (pm.forces / mass) / 2.f << "\n";
+//
+//    std::cout << "pos: " << pm.position << "\n";
+//    std::cout << "new_pos: " << new_pos << "\n";
+//    std::cout << "\n\n\n";
 
   //pm.last_position = pm.position;
   velocity = new_pos - pm.position;
@@ -58,10 +58,31 @@ void Sphere::verlet(double delta_t) {
   pm.forces = Vector3D();
 }
 
-void Sphere::render(GLShader &shader) {
+void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
-  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius * 0.92);
+  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
+  if (!is_paused) {
+      if (track.size() > 2 && addTrack) {
+          this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
+      }
+
+      if (addTrack) {
+          track.push_back(pm.position);
+      }
+  }
+    if (draw_track) {
+      for (Vector3D p : track) {
+          m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
+      }
+    }
+}
+
+void Sphere::isTrackEnd(Vector3D track_start, double distance) {
+    if (abs((track_start - pm.position).norm()) < abs(distance)) {
+        addTrack = false;
+    }
+
 }
 
 Vector3D Sphere::getInitOrigin() {

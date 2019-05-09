@@ -30,11 +30,11 @@ struct SphereParameters {
 
 struct Sphere : public CollisionObject {
 public:
-    void render(GLShader &shader);
+    void render(GLShader &shader, bool is_paused, bool draw_track);
     void collide(PointMass &pm);
     Sphere(const Vector3D &origin, double radius, double friction, Vector3D &velocity, long double mass=1e-5, int num_lat = 40, int num_lon = 40)
             : origin(origin), startOrigin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)),
-            velocity(velocity), startVelocity(velocity), mass(mass), friction(friction),
+            velocity(velocity), startVelocity(velocity), mass(mass), friction(friction), addTrack(true),
             pm(PointMass(origin, false)), m_sphere_mesh(Misc::SphereMesh(num_lat, num_lon)) {}
     //Vector3D get_pos();
 
@@ -43,6 +43,7 @@ public:
     void add_force(Vector3D force);
     void verlet(double delta_t);
     void reset();
+    void isTrackEnd(Vector3D track_start, double distance);
 
     // Get Functions
     Vector3D getInitOrigin();
@@ -53,6 +54,7 @@ private:
     PointMass pm;
     Vector3D origin;
     Vector3D velocity;
+    std::vector<Vector3D> track = std::vector<Vector3D>();
     Vector3D startOrigin;
     Vector3D startVelocity;
     const double radius;
@@ -60,6 +62,7 @@ private:
     const double log_radius; // for rendering in logarithmic scale
     const long double mass; // integer?
     double friction;
+    bool addTrack;
 
     Misc::SphereMesh m_sphere_mesh;
 };

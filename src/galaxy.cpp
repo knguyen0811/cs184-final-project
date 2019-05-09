@@ -68,9 +68,9 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     }
 }
 
-void Galaxy::render(GLShader &shader) {
+void Galaxy::render(GLShader &shader, bool is_paused, bool draw_track) {
     for (Sphere *s : *planets) {
-        s->render(shader);
+        s->render(shader, is_paused, draw_track);
     }
     if (asteroids != nullptr) {
         for (Sphere *a : *asteroids) {

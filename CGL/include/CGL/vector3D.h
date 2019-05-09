@@ -55,6 +55,10 @@ class Vector3D {
     return v.x == x && v.y == y && v.z == z;
   }
 
+  inline bool operator!=( const Vector3D& v) const {
+    return v.x != x || v.y != y || v.z != z;
+  }
+
   // negation
   inline Vector3D operator-( void ) const {
     return Vector3D( -x, -y, -z );

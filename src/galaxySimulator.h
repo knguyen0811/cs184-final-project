@@ -121,6 +121,7 @@ private:
   // Simulation flags
 
   bool is_paused = true;
+  bool draw_track = false;
 
   // Screen attributes
 

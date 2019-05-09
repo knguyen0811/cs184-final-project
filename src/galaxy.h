@@ -25,7 +25,7 @@ public:
     void remove_planet(int index);
     int size();
     Sphere* getLastPlanet();
-    void render(GLShader &shader);
+    void render(GLShader &shader, bool is_paused, bool draw_track);
 
 
     // Comparators
