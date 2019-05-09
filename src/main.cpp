@@ -195,17 +195,52 @@ Vector3D randomVec(double norm) {
 
 void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* asteroids, int num_spheres, int num_asteroids=0) {
     Vector3D sphereOrigMin, sphereOrigMax, sphereVelMin, sphereVelMax;
-//    double sphereRadiusMin, sphereRadiusMax, friction=1;
+//    double sphereRadiusMin, sphereRadiusMax, friction=0.3f;
     long double sphereMassMin, sphereMassMax;
-    double sphereRadiusMin=20, sphereRadiusMax=30, friction=1;
+    double sphereRadiusMin=20, sphereRadiusMax=30, friction=0.3f;
 
     Vector3D origin, velocity;
     double radius;
     long double mass;
 
     if (planets->empty()) {
-        if (planets->empty()) {
-            return;
+        for (int i = 0; i < num_spheres; i++) {
+            if (planets->empty()) {
+                // Generate the star of the solar system
+                origin = Vector3D(0,0,0);
+                velocity = Vector3D(0,0,0);
+                radius = randomVal(7, 15);
+                mass = randomVal(1E30, 5E30);
+
+                Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                planets->push_back(new_sphere);
+            } else {
+                // Generate rest of the planets
+                Vector3D origSeed(5.79E10,0,0);
+                Vector3D vecSeed(0,4740,0);
+                velocity = randomVec(5 * vecSeed, 10 * vecSeed); // Make velocity large
+//                velocity = 10 * vecSeed;
+                mass = randomVal(1E23, 6E24);
+                radius = randomVal(1, 6);
+
+                if (planets->size() == 1) {
+                    // Create first planet
+                    origin = randomVec(origSeed, 2 * origSeed);
+
+                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                    planets->push_back(new_sphere);
+                } else {
+                    Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
+                    Vector3D farthestOrig = last->getInitOrigin();
+                    sphereOrigMin = farthestOrig * 1.5f;
+                    sphereOrigMax = farthestOrig * 2.f;
+
+                    origin = randomVec(sphereOrigMin, sphereOrigMax);
+
+                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                    planets->push_back(new_sphere);
+                }
+            }
         }
     } else {
         sort(planets->begin(), planets->end(), Galaxy::compareOrigin);
@@ -219,8 +254,8 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
             sphereVelMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareVelocity))->getInitVelocity();
             sphereVelMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareVelocity))->getInitVelocity();
 
-//            sphereRadiusMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareRadius))->getRadius();
-//            sphereRadiusMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareRadius))->getRadius();
+            sphereRadiusMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareRadius))->getRadius();
+            sphereRadiusMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareRadius))->getRadius();
 
             sphereMassMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareMass))->getMass();
             sphereMassMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareMass))->getMass();
@@ -234,25 +269,27 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
             planets->push_back(new_sphere);
         }
     }
-    double angle = randomAngle();
-    Vector3D astVelMin(cos(angle)*17900, sin(angle)*17900, 0);
-    Vector3D astVelMax(cos(angle)*30000, sin(angle)*30000, 0);
-    double astDist, astRadiusMin=2, astRadiusMax=4;
-    long double astMassMin=2.8E21, astMassMax=3.2E21;
+    if (num_asteroids) {
+        double angle = randomAngle();
+        Vector3D astVelMin(cos(angle)*17900, sin(angle)*17900, 0);
+        Vector3D astVelMax(cos(angle)*30000, sin(angle)*30000, 0);
+        double astDist, astRadiusMin=2, astRadiusMax=4;
+        long double astMassMin=2.8E21, astMassMax=3.2E21;
 
-    Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
-    double lastDist = 1.f * last->getInitOrigin().norm();
+        Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
+        double lastDist = 1.f * last->getInitOrigin().norm();
 
-    for (int j = 0; j < num_asteroids; j++) {
-        astDist = randomVal(lastDist, 1.1f * lastDist);
+        for (int j = 0; j < num_asteroids; j++) {
+            astDist = randomVal(lastDist, 1.1f * lastDist);
 
-        origin = randomVec(astDist);
-        velocity = randomVec(astVelMin, astVelMax);
-        radius = randomVal(astRadiusMin, astRadiusMax);
-        mass = randomVal(astMassMin, astMassMax);
+            origin = randomVec(astDist);
+            velocity = randomVec(astVelMin, astVelMax);
+            radius = randomVal(astRadiusMin, astRadiusMax);
+            mass = randomVal(astMassMin, astMassMax);
 
-        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
-        asteroids->push_back(new_sphere);
+            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+            asteroids->push_back(new_sphere);
+        }
     }
 }
 
@@ -445,7 +482,7 @@ int main(int argc, char **argv) {
   if (!file_specified) { // No arguments, default initialization
     std::stringstream def_fname;
     def_fname << project_root;
-    def_fname << "/scene/sphere.json";
+    def_fname << "/scene/rocky_planets_gen.json";
     file_to_load_from = def_fname.str();
   }
   
