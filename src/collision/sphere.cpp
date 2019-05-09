@@ -100,6 +100,10 @@ long double Sphere::getMass() {
     return mass;
 }
 
+void Sphere::setShader(GLShader& my_shader) {
+    this->shader = my_shader;
+}
+
 void Sphere::reset() {
     this->origin = startOrigin;
     this->velocity = startVelocity;

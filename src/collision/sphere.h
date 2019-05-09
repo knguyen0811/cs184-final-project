@@ -44,6 +44,7 @@ public:
     void verlet(double delta_t);
     void reset();
     void isTrackEnd(Vector3D track_start, double distance);
+    void setShader(GLShader& my_shader);
 
     // Get Functions
     Vector3D getInitOrigin();
@@ -60,11 +61,12 @@ private:
     const double radius;
     const double radius2;
     const double log_radius; // for rendering in logarithmic scale
-    const long double mass; // integer?
+    const long double mass;
     double friction;
     bool addTrack;
 
     Misc::SphereMesh m_sphere_mesh;
+    GLShader shader;
 };
 
 #endif /* COLLISIONOBJECT_SPHERE_H */

@@ -81,12 +81,12 @@ void GalaxySimulator::load_textures() {
   std::cout << "Texture 4 loaded with size: " << m_gl_texture_4_size << std::endl;
   
   std::vector<std::string> cubemap_fnames = {
-    m_project_root + "/textures/cube/posx.jpg",
-    m_project_root + "/textures/cube/negx.jpg",
-    m_project_root + "/textures/cube/posy.jpg",
-    m_project_root + "/textures/cube/negy.jpg",
-    m_project_root + "/textures/cube/posz.jpg",
-    m_project_root + "/textures/cube/negz.jpg"
+    m_project_root + "/textures/space/posx.jpg",
+    m_project_root + "/textures/space/negx.jpg",
+    m_project_root + "/textures/space/posy.jpg",
+    m_project_root + "/textures/space/negy.jpg",
+    m_project_root + "/textures/space/posz.jpg",
+    m_project_root + "/textures/space/negz.jpg"
   };
   
   load_cubemap(5, m_gl_cubemap_tex, cubemap_fnames);
