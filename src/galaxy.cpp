@@ -74,7 +74,9 @@ void Galaxy::render(GLShader &shader, bool is_paused, bool draw_track) {
     }
     if (asteroids != nullptr) {
         for (Sphere *a : *asteroids) {
-            a->render(shader);
+            // Set is_paused to true to ignore adding position for tracking
+            // Set draw_track to false because we are not draw trail for asteroid belt
+            a->render(shader, true, false);
         }
     }
 }
