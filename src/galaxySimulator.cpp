@@ -219,8 +219,8 @@ void GalaxySimulator::init() {
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
 
-  view_distance = canonical_view_distance * 2;
-  min_view_distance = canonical_view_distance / 10.0;
+  view_distance = canonical_view_distance;
+  min_view_distance = canonical_view_distance / 100.0;
   max_view_distance = canonical_view_distance * 1000.0;
 
   // canonicalCamera is a copy used for view resets
