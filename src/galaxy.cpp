@@ -60,6 +60,11 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
             center->add_force(gravity);
             a->add_force(-gravity);
         }
+
+        for (Sphere *a : *asteroids) {
+            //TODO: possibly add damping
+            a->verlet(delta_t);
+        }
     }
 }
 

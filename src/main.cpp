@@ -234,15 +234,18 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
             planets->push_back(new_sphere);
         }
     }
-
-    Vector3D astVelMin=10000, astVelMax=40000;
+    double angle = randomAngle();
+    Vector3D astVelMin(cos(angle)*17900, sin(angle)*17900, 0);
+    Vector3D astVelMax(cos(angle)*30000, sin(angle)*30000, 0);
     double astDist, astRadiusMin=2, astRadiusMax=4;
     long double astMassMin=2.8E21, astMassMax=3.2E21;
 
     Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
-    astDist = 1.f * last->getInitOrigin().norm();
+    double lastDist = 1.f * last->getInitOrigin().norm();
 
     for (int j = 0; j < num_asteroids; j++) {
+        astDist = randomVal(lastDist, 1.1f * lastDist);
+
         origin = randomVec(astDist);
         velocity = randomVec(astVelMin, astVelMax);
         radius = randomVal(astRadiusMin, astRadiusMax);
