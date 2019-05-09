@@ -58,7 +58,7 @@ void Sphere::verlet(double delta_t) {
   pm.forces = Vector3D();
 }
 
-void Sphere::render(GLShader &shader, bool is_paused) {
+void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
   m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
@@ -71,10 +71,11 @@ void Sphere::render(GLShader &shader, bool is_paused) {
           track.push_back(pm.position);
       }
   }
-
-  for (Vector3D p : track) {
-      m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
-  }
+    if (draw_track) {
+      for (Vector3D p : track) {
+          m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
+      }
+    }
 }
 
 void Sphere::isTrackEnd(Vector3D track_start, double distance) {
