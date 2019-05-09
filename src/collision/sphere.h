@@ -30,7 +30,7 @@ struct SphereParameters {
 
 struct Sphere : public CollisionObject {
 public:
-    void render(GLShader &shader, bool is_paused);
+    void render(GLShader &shader, bool is_paused, bool draw_track);
     void collide(PointMass &pm);
     Sphere(const Vector3D &origin, double radius, double friction, Vector3D &velocity, long double mass=1e-5, int num_lat = 40, int num_lon = 40)
             : origin(origin), startOrigin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)),
