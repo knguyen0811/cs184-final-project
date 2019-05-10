@@ -71,5 +71,9 @@
       "velocity":  [0, 4740, 0],
       "mass":  1.46E22
     }
-  ]
+  ],
+  "generate": {
+    "spheres": 0,
+    "asteroids": 100
+  }
 }
