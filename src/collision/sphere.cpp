@@ -10,6 +10,7 @@ using namespace CGL;
 #define G 6.67408e-11
 double Sphere::sphere_factor = 0;
 double Sphere::gravity_margin = 0;
+double Sphere::radiusFactor = 0;
 
 void Sphere::collide(PointMass &pm) {
   // TODO (Part 3): Handle collisions with spheres.
@@ -77,7 +78,7 @@ void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
 
   if (draw_track) {
       for (Vector3D p : track) {
-          m_sphere_mesh.draw_sphere(shader, p / sphere_factor, log(radius)/15);
+          m_sphere_mesh.draw_sphere(shader, p / sphere_factor, log(radius) / 15);
       }
   }
 }

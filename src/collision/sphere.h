@@ -53,6 +53,7 @@ public:
     long double getMass();
     static double sphere_factor;
     static double gravity_margin;
+    static double radiusFactor;
 private:
     PointMass pm;
     Vector3D origin;
