@@ -3,7 +3,7 @@
   [
     {
       "origin": [0, 0, 0],
-      "radius": 347.89,
+      "radius": 85.0,
       "friction": 0.3,
       "velocity": [0, 0, 0],
       "mass": 1.9891E30
@@ -17,49 +17,49 @@
     },
     {
       "origin": [1.082E11, 0, 0],
-      "radius": 3.027,
+      "radius": 1.527,
       "friction": 0.3,
       "velocity":  [0, 35000, 0],
       "mass":  4.87E24
     },
     {
       "origin": [1.496E11, 0, 0],
-      "radius": 3.19,
+      "radius": 1.69,
       "friction": 0.3,
       "velocity":  [0, 29800, 0],
       "mass":  5.976E24
     },
     {
       "origin": [2.279E11, 0, 0],
-      "radius": 4,
+      "radius": 1.8,
       "friction": 0.3,
       "velocity":  [0, 24100, 0],
       "mass":  5.976E24
     },
     {
       "origin": [5.203E11, 0, 0],
-      "radius": 35.76,
+      "radius": 7.76,
       "friction": 0.3,
       "velocity":  [0, 13100, 0],
       "mass":  5.976E24
     },
     {
       "origin": [1.433E12, 0, 0],
-      "radius": 30.14,
+      "radius": 5.14,
       "friction": 0.3,
       "velocity":  [0, 9600, 0],
       "mass":  5.69E26
     },
     {
       "origin": [2.873E12, 0, 0],
-      "radius": 12.78,
+      "radius": 3.78,
       "friction": 0.3,
       "velocity":  [0, 6800, 0],
       "mass":  8.68E25
     },
     {
       "origin": [4.495E12, 0, 0],
-      "radius": 12.39,
+      "radius": 3.39,
       "friction": 0.3,
       "velocity":  [0, 5400, 0],
       "mass":  1.03E26
