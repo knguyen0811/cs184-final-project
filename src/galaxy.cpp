@@ -40,13 +40,11 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         for (int j = i + 1; j < num_planets; j++) {
             other_planet = (*planets)[j];
             gravity = sphere->gravity(*other_planet);
-            gravity = gravity; //TODO SCALED DOWN GRAVITY
             sphere->add_force(gravity);
             other_planet->add_force(-gravity);
         }
     }
     for (auto planet : *planets) {
-        //TODO: possibly add damping
         planet->verlet(delta_t);
     }
 
@@ -56,13 +54,11 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         Sphere *center = (*planets)[0];
         for (Sphere *a : *asteroids) {
             gravity = center->gravity(*a);
-            gravity = gravity; //TODO SCALED DOWN GRAVITY
             center->add_force(gravity);
             a->add_force(-gravity);
         }
 
         for (Sphere *a : *asteroids) {
-            //TODO: possibly add damping
             a->verlet(delta_t);
         }
     }
