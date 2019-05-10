@@ -273,7 +273,7 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
         double angle = randomAngle();
         Vector3D astVelMin(cos(angle)*17900, sin(angle)*17900, 0);
         Vector3D astVelMax(cos(angle)*30000, sin(angle)*30000, 0);
-        double astDist, astRadiusMin=2, astRadiusMax=4;
+        double astDist, astRadiusMin=1, astRadiusMax=1.22;
         long double astMassMin=2.8E21, astMassMax=3.2E21;
 
         Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
@@ -303,6 +303,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int* num_sp
   i >> j;
 
   std::vector<double> coordinateVals = std::vector<double>();
+    std::vector<double> massVals = std::vector<double>();
   // Loop over objects in scene
   for (json::iterator it = j.begin(); it != j.end(); ++it) {
     string key = it.key();
@@ -362,6 +363,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int* num_sp
         auto it_mass = sphere_element.find("mass");
         if (it_mass != sphere_element.end()) {
           mass = *it_mass;
+          massVals.push_back(mass);
         } else {
           incompleteObjectError("sphere", "mass");
         }
@@ -391,6 +393,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int* num_sp
 
   coordinateVals.erase(std::remove(coordinateVals.begin(), coordinateVals.end(), 0), coordinateVals.end());
   sort(coordinateVals.begin(), coordinateVals.end());
+  sort(massVals.begin(), massVals.end());
   double val = coordinateVals.front();
   int count = 0;
   while (val >= 10) {
@@ -398,6 +401,8 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int* num_sp
     count++;
   }
   Sphere::sphere_factor = pow(10, count);
+  Sphere::gravity_margin = (massVals.back() - massVals.front()) / 2;
+  std::cout << Sphere::gravity_margin;
   
   return true;
 }

@@ -9,6 +9,7 @@ using namespace CGL;
 
 #define G 6.67408e-11
 double Sphere::sphere_factor = 0;
+double Sphere::gravity_margin = 0;
 
 void Sphere::collide(PointMass &pm) {
   // TODO (Part 3): Handle collisions with spheres.
