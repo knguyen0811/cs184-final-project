@@ -39,7 +39,7 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         sphere = (*planets)[i];
         for (int j = i + 1; j < num_planets; j++) {
             other_planet = (*planets)[j];
-            if (abs(sphere->getMass() - other_planet->getMass()) > Sphere::gravity_margin) {
+            if (abs(sphere->getMass() - other_planet->getMass()) >= Sphere::gravity_margin) {
                 gravity = sphere->gravity(*other_planet);
                 sphere->add_force(gravity);
                 other_planet->add_force(-gravity);
