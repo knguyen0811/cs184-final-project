@@ -5,13 +5,13 @@
       "origin": [0, 0, 0],
       "radius": 7.0,
       "friction": 0.3,
-      "velocity": [0, 0, 0],
+      "velocity": [0, -24000, 0],
       "mass": 1.9891E30
     },{
-    "origin": [5.79E10, 0, 0],
+    "origin": [8.79E10, 0, 0],
     "radius": 7.0,
     "friction": 0.3,
-    "velocity": [0, 0, 0],
+    "velocity": [0, 24000, 0],
     "mass": 1.9891E30
   }
   ],
