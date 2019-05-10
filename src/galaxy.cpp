@@ -12,6 +12,16 @@ Galaxy::Galaxy(vector<Sphere*> *planets) {
     num_planets = planets->size();
 }
 
+Galaxy::Galaxy(vector<Sphere *> *planets, vector<Sphere *> *asteroids) {
+    this->planets = planets;
+    sort(planets->begin(), planets->end(), compareOrigin);
+    this->last = planets->back();
+    num_planets = planets->size();
+
+    this->asteroids = asteroids;
+    num_asteroids = asteroids->size();
+}
+
 Galaxy::~Galaxy() {
     planets->clear();
     num_planets = 0;
@@ -39,11 +49,35 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         //TODO: possibly add damping
         planet->verlet(delta_t);
     }
+
+    // Add Asteroid stuff here
+    // DEBUG: Placeholder Code for Asteroids, only considers sun's gravitational force
+    if (asteroids != nullptr) {
+        Sphere *center = (*planets)[0];
+        for (Sphere *a : *asteroids) {
+            gravity = center->gravity(*a);
+            gravity = gravity; //TODO SCALED DOWN GRAVITY
+            center->add_force(gravity);
+            a->add_force(-gravity);
+        }
+
+        for (Sphere *a : *asteroids) {
+            //TODO: possibly add damping
+            a->verlet(delta_t);
+        }
+    }
 }
 
-void Galaxy::render(GLShader &shader, bool is_paused) {
+void Galaxy::render(GLShader &shader, bool is_paused, bool draw_track) {
     for (Sphere *s : *planets) {
-        s->render(shader, is_paused);
+        s->render(shader, is_paused, draw_track);
+    }
+    if (asteroids != nullptr) {
+        for (Sphere *a : *asteroids) {
+            // Set is_paused to true to ignore adding position for tracking
+            // Set draw_track to false because we are not draw trail for asteroid belt
+            a->render(shader, true, false);
+        }
     }
 }
 

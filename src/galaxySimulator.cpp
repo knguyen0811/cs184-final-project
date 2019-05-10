@@ -219,8 +219,8 @@ void GalaxySimulator::init() {
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
 
-  view_distance = canonical_view_distance * 2;
-  min_view_distance = canonical_view_distance / 10.0;
+  view_distance = canonical_view_distance;
+  min_view_distance = canonical_view_distance / 100.0;
   max_view_distance = canonical_view_distance * 1000.0;
 
   // canonicalCamera is a copy used for view resets
@@ -276,11 +276,11 @@ void GalaxySimulator::drawContents() {
   case WIREFRAME:
     shader.setUniform("u_color", color, false);
 //    drawWireframe(shader);
-    galaxy->render(shader, is_paused);
+    galaxy->render(shader, is_paused, draw_track);
     break;
   case NORMALS:
 //    drawNormals(shader);
-    galaxy->render(shader, is_paused);
+    galaxy->render(shader, is_paused, draw_track);
     break;
   case PHONG:
 
@@ -305,7 +305,7 @@ void GalaxySimulator::drawContents() {
 
     shader.setUniform("u_texture_cubemap", 5, false);
 //    drawPhong(shader);
-    galaxy->render(shader, is_paused);
+    galaxy->render(shader, is_paused, draw_track);
     break;
   }
 //    for (CollisionObject *co : *collision_objects) {
@@ -863,6 +863,13 @@ void GalaxySimulator::initGUI(Screen *screen) {
                       num_steps->setValue(simulation_steps);
                   }
               });
+
+      b = new Button(window, "Toggle Trail");
+      b->setFlags(Button::ToggleButton);
+      b->setPushed(draw_track);
+      b->setFontSize(14);
+      b->setChangeCallback(
+              [this](bool state) { draw_track = state; });
   }
     // TODO: Replace
 //  // Damping slider and textbox

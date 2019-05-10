@@ -1,0 +1,6 @@
+{
+  "generate": {
+    "spheres": 6,
+    "asteroids": 100
+  }
+}

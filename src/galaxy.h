@@ -10,7 +10,9 @@
 class Galaxy {
 public:
     // Constructor & Destructor
+    Galaxy() {};
     Galaxy(vector<Sphere *> *planets);
+    Galaxy(vector<Sphere *> *planets, vector<Sphere *> *asteroids);
     ~Galaxy();
 
     // Functions
@@ -23,7 +25,7 @@ public:
     void remove_planet(int index);
     int size();
     Sphere* getLastPlanet();
-    void render(GLShader &shader, bool is_paused);
+    void render(GLShader &shader, bool is_paused, bool draw_track);
 
 
     // Comparators
@@ -35,10 +37,20 @@ public:
         return s1->getInitOrigin().norm() < s2->getInitOrigin().norm();
     }
 
+    static bool compareVelocity(Sphere *s1, Sphere *s2) {
+        return s1->getInitVelocity().norm() < s2->getInitVelocity().norm();
+    }
+
+    static bool compareMass(Sphere *s1, Sphere *s2) {
+        return s1->getMass() < s2->getMass();
+    }
+
     // Variables
     int num_planets;
+    int num_asteroids;
     Sphere *last;
     std::vector<Sphere*> *planets;
+    std::vector<Sphere*> *asteroids;
 };
 
 

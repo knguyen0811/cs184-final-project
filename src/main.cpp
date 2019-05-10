@@ -11,6 +11,7 @@
 #endif
 #include <unordered_set>
 #include <stdlib.h> // atoi for getopt inputs
+#include <random>
 
 #include "CGL/CGL.h"
 #include "collision/plane.h"
@@ -33,8 +34,9 @@ const string SPHERE = "sphere";
 const string SPHERES = "spheres";
 const string PLANE = "plane";
 const string CLOTH = "cloth";
+const string GENERATE = "generate";
 
-const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SPHERES};
+const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SPHERES, GENERATE};
 
 GalaxySimulator *app = nullptr;
 GLFWwindow *window = nullptr;
@@ -157,7 +159,141 @@ void incompleteObjectError(const char *object, const char *attribute) {
   exit(-1);
 }
 
-bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_num_lat, int sphere_num_lon) {
+long double randomVal(long double min, long double max) {
+    // Return random value between min and max
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<long double> dist(min, max);
+    long double val = dist(gen);
+    return val;
+}
+
+ double randomAngle() {
+    // Return random angle between 0 and 2PI
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_real_distribution<double> dist(0, 2*PI);
+    long double val = dist(gen);
+    return val;
+}
+
+Vector3D randomVec(Vector3D min, Vector3D max) {
+    // Return random vector between min and max
+    Vector3D dir = max - min;
+    double dirNorm = dir.norm();
+    dir.normalize();
+    double factor = randomVal(0, dirNorm);
+    return min + factor * dir;
+}
+
+Vector3D randomVec(double norm) {
+    // Return random vector between min and max
+    double angle = randomAngle();
+    Vector3D newVec(cos(angle)*norm, sin(angle)*norm, 0);
+    return newVec;
+}
+
+void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* asteroids, int num_spheres, int num_asteroids=0) {
+    Vector3D sphereOrigMin, sphereOrigMax, sphereVelMin, sphereVelMax;
+//    double sphereRadiusMin, sphereRadiusMax, friction=0.3f;
+    long double sphereMassMin, sphereMassMax;
+    double sphereRadiusMin=20, sphereRadiusMax=30, friction=0.3f;
+
+    Vector3D origin, velocity;
+    double radius;
+    long double mass;
+
+    if (planets->empty()) {
+        for (int i = 0; i < num_spheres; i++) {
+            if (planets->empty()) {
+                // Generate the star of the solar system
+                origin = Vector3D(0,0,0);
+                velocity = Vector3D(0,0,0);
+                radius = randomVal(7, 15);
+                mass = randomVal(1E30, 5E30);
+
+                Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                planets->push_back(new_sphere);
+            } else {
+                // Generate rest of the planets
+                Vector3D origSeed(5.79E10,0,0);
+                Vector3D vecSeed(0,4740,0);
+                velocity = randomVec(5 * vecSeed, 10 * vecSeed); // Make velocity large
+//                velocity = 10 * vecSeed;
+                mass = randomVal(1E23, 6E24);
+                radius = randomVal(1, 6);
+
+                if (planets->size() == 1) {
+                    // Create first planet
+                    origin = randomVec(origSeed, 2 * origSeed);
+
+                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                    planets->push_back(new_sphere);
+                } else {
+                    Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
+                    Vector3D farthestOrig = last->getInitOrigin();
+                    sphereOrigMin = farthestOrig * 1.5f;
+                    sphereOrigMax = farthestOrig * 2.f;
+
+                    origin = randomVec(sphereOrigMin, sphereOrigMax);
+
+                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                    planets->push_back(new_sphere);
+                }
+            }
+        }
+    } else {
+        sort(planets->begin(), planets->end(), Galaxy::compareOrigin);
+
+        for (int i = 0; i < num_spheres; i++) {
+            Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
+            Vector3D farthestOrig = last->getInitOrigin();
+            sphereOrigMin = farthestOrig * 1.5f;
+            sphereOrigMax = farthestOrig * 2.f;
+
+            sphereVelMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareVelocity))->getInitVelocity();
+            sphereVelMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareVelocity))->getInitVelocity();
+
+            sphereRadiusMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareRadius))->getRadius();
+            sphereRadiusMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareRadius))->getRadius();
+
+            sphereMassMin = (*std::min_element(planets->begin()+1, planets->end(), Galaxy::compareMass))->getMass();
+            sphereMassMax = (*std::max_element(planets->begin()+1, planets->end(), Galaxy::compareMass))->getMass();
+
+            origin = randomVec(sphereOrigMin, sphereOrigMax);
+            velocity = randomVec(sphereVelMin, sphereVelMax);
+            radius = randomVal(sphereRadiusMin, sphereRadiusMax);
+            mass = randomVal(sphereMassMin, sphereMassMax);
+
+            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+            planets->push_back(new_sphere);
+        }
+    }
+    if (num_asteroids) {
+        double angle = randomAngle();
+        Vector3D astVelMin(cos(angle)*17900, sin(angle)*17900, 0);
+        Vector3D astVelMax(cos(angle)*30000, sin(angle)*30000, 0);
+        double astDist, astRadiusMin=2, astRadiusMax=4;
+        long double astMassMin=2.8E21, astMassMax=3.2E21;
+
+        Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
+        double lastDist = 1.f * last->getInitOrigin().norm();
+
+        for (int j = 0; j < num_asteroids; j++) {
+            astDist = randomVal(lastDist, 1.1f * lastDist);
+
+            origin = randomVec(astDist);
+            velocity = randomVec(astVelMin, astVelMax);
+            radius = randomVal(astRadiusMin, astRadiusMax);
+            mass = randomVal(astMassMin, astMassMax);
+
+            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+            asteroids->push_back(new_sphere);
+        }
+    }
+}
+
+bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int* num_spheres, int* num_asteroids, int sphere_num_lat, int sphere_num_lon) {
   // Read JSON from file
   ifstream i(filename);
   if (!i.good()) {
@@ -235,6 +371,21 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
         planets->push_back(new_sphere);
       }
     }
+    if (key == GENERATE) {
+        auto it_spheres = object.find("spheres");
+        if (it_spheres != object.end()) {
+            *num_spheres = *it_spheres;
+        } else {
+            cout << "num_spheres not specified" << endl;
+        }
+
+        auto it_asteroids = object.find("asteroids");
+        if (it_asteroids != object.end()) {
+            *num_asteroids = *it_asteroids;
+        } else {
+            cout << "num_asteroids not specified" << endl;
+        }
+    }
   }
 
   i.close();
@@ -285,6 +436,9 @@ int main(int argc, char **argv) {
   
   SphereParameters sp;
   vector<Sphere *> planets;
+  vector<Sphere *> asteroids;
+  int num_spheres = 0;
+  int num_asteroids = 0;
 
   int c;
   
@@ -342,11 +496,11 @@ int main(int argc, char **argv) {
   if (!file_specified) { // No arguments, default initialization
     std::stringstream def_fname;
     def_fname << project_root;
-    def_fname << "/scene/sphere.json";
+    def_fname << "/scene/rocky_planets_gen.json";
     file_to_load_from = def_fname.str();
   }
   
-  bool success = loadObjectsFromFile(file_to_load_from, &planets, sphere_num_lat, sphere_num_lon);
+  bool success = loadObjectsFromFile(file_to_load_from, &planets, &num_spheres, &num_asteroids, sphere_num_lat, sphere_num_lon);
   if (!success) {
     std::cout << "Warn: Unable to load from file: " << file_to_load_from << std::endl;
   }
@@ -356,10 +510,13 @@ int main(int argc, char **argv) {
   createGLContexts();
 
   // Initialize the GalaxySimulator object
-  Galaxy galaxy(&planets);
+  if (num_spheres != 0 || num_asteroids != 0) {
+      generateObjectsFromFile(&planets, &asteroids, num_spheres, num_asteroids);
+  }
+  Galaxy galaxy(&planets, &asteroids);
   app = new GalaxySimulator(project_root, screen);
   app->loadSphereParameters(&sp);
-    app->loadGalaxy(&galaxy);
+  app->loadGalaxy(&galaxy);
   app->init();
 
   // Call this after all the widgets have been defined
