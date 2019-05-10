@@ -30,6 +30,13 @@
       "mass":  5.976E24
     },
     {
+      "origin": [149.9844E9, 0, 0],
+      "radius": 1.8,
+      "friction": 0.3,
+      "velocity":  [0, 7.163E11, 0],
+      "mass":  5.976E24
+    },
+    {
       "origin": [2.279E11, 0, 0],
       "radius": 1.8,
       "friction": 0.3,
