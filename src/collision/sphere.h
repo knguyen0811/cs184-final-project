@@ -9,7 +9,7 @@
 #define hours 3600
 #define days 86400
 #define years 31536000
-#define sphere_factor 1E9
+
 
 using namespace CGL;
 using namespace std;
@@ -44,12 +44,14 @@ public:
     void verlet(double delta_t);
     void reset();
     void isTrackEnd(Vector3D track_start, double distance);
+    Vector3D logPosition();
 
     // Get Functions
     Vector3D getInitOrigin();
     Vector3D getInitVelocity();
     double getRadius();
     long double getMass();
+    static double sphere_factor;
 private:
     PointMass pm;
     Vector3D origin;

@@ -215,7 +215,7 @@ void GalaxySimulator::init() {
 //  canonical_view_distance = max(cloth->width, cloth->height) * 0.9;
 //  std::cout << "dist max: " << canonical_view_distance << "\n";
     // DEBUG: Adjust Camera View Distance Here
-  canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / sphere_factor;
+  canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / Sphere::sphere_factor;
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
   scroll_rate = canonical_view_distance / 10;
 

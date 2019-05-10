@@ -8,6 +8,7 @@ using namespace nanogui;
 using namespace CGL;
 
 #define G 6.67408e-11
+double Sphere::sphere_factor = 0;
 
 void Sphere::collide(PointMass &pm) {
   // TODO (Part 3): Handle collisions with spheres.
@@ -58,23 +59,47 @@ void Sphere::verlet(double delta_t) {
   pm.forces = Vector3D();
 }
 
+Vector3D Sphere::logPosition() {
+    Vector3D logPos = Vector3D();
+    if (pm.position.x != 0){
+        logPos.x = copysign(log(abs(pm.position.x)), pm.position.x);
+    } else {
+        logPos.x = 0;
+    }
+
+    if (pm.position.y != 0) {
+        logPos.y = copysign(log(abs(pm.position.y)), pm.position.y);
+    } else {
+        logPos.y = 0;
+    }
+
+    if (pm.position.z != 0) {
+        logPos.z = copysign(log(abs(pm.position.z)), pm.position.z);
+    } else {
+        logPos.z = 0;
+    }
+    return logPos;
+}
+
 void Sphere::render(GLShader &shader, bool is_paused) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
-  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
-  if (!is_paused) {
-      if (track.size() > 2 && addTrack) {
-          this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
-      }
-
-      if (addTrack) {
-          track.push_back(pm.position);
-      }
-  }
-
-  for (Vector3D p : track) {
-      m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
-  }
+  m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
+  std::cout << pm.position << "\n";
+  std::cout << this->logPosition() << "\n\n";
+//  if (!is_paused) {
+//      if (track.size() > 2 && addTrack) {
+//          this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
+//      }
+//
+//      if (addTrack) {
+//          track.push_back(pm.position);
+//      }
+//  }
+//
+//  for (Vector3D p : track) {
+//      m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
+//  }
 }
 
 void Sphere::isTrackEnd(Vector3D track_start, double distance) {

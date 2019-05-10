@@ -166,6 +166,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
   json j;
   i >> j;
 
+  std::vector<double> coordinateVals = std::vector<double>();
   // Loop over objects in scene
   for (json::iterator it = j.begin(); it != j.end(); ++it) {
     string key = it.key();
@@ -191,6 +192,9 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
         if (it_origin != sphere_element.end()) {
           vector<double> vec_origin = *it_origin;
           origin = Vector3D(vec_origin[0], vec_origin[1], vec_origin[2]);
+          coordinateVals.push_back(vec_origin[0]);
+          coordinateVals.push_back(vec_origin[1]);
+          coordinateVals.push_back(vec_origin[2]);
         } else {
           incompleteObjectError("sphere", "origin");
         }
@@ -234,6 +238,16 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
   }
 
   i.close();
+
+  coordinateVals.erase(std::remove(coordinateVals.begin(), coordinateVals.end(), 0), coordinateVals.end());
+  sort(coordinateVals.begin(), coordinateVals.end());
+  double val = coordinateVals.front();
+  int count = 0;
+  while (val >= 10) {
+    val /= 10;
+    count++;
+  }
+  Sphere::sphere_factor = pow(10, count);
   
   return true;
 }
