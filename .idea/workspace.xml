@@ -17,10 +17,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="de5ab507-ccad-43bb-839b-957361589576" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/collision/sphere.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/collision/sphere.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/collision/sphere.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/collision/sphere.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/galaxySimulator.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/galaxySimulator.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -62,11 +58,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/collision/sphere.cpp">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
-              <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+              <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
               <folding>
                 <element signature="e#0#28#0" expanded="true" />
               </folding>
@@ -98,11 +94,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="998">
-              <caret line="348" column="23" selection-start-line="348" selection-start-column="17" selection-end-line="348" selection-end-column="23" />
+            <state relative-caret-position="-195">
+              <caret line="218" column="81" selection-start-line="218" selection-start-column="81" selection-end-line="218" selection-end-column="81" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#174#193#0" expanded="true" />
@@ -174,10 +170,10 @@
         <option value="$PROJECT_DIR$/src/galaxy.h" />
         <option value="$PROJECT_DIR$/src/collision/collisionObject.h" />
         <option value="$PROJECT_DIR$/src/galaxy.cpp" />
-        <option value="$PROJECT_DIR$/src/main.cpp" />
         <option value="$PROJECT_DIR$/src/collision/sphere.h" />
         <option value="$PROJECT_DIR$/src/galaxySimulator.cpp" />
         <option value="$PROJECT_DIR$/src/collision/sphere.cpp" />
+        <option value="$PROJECT_DIR$/src/main.cpp" />
       </list>
     </option>
   </component>
@@ -300,12 +296,12 @@
       <workItem from="1557296671245" duration="2528000" />
       <workItem from="1557384797709" duration="1677000" />
       <workItem from="1557436607359" duration="287000" />
-      <workItem from="1557440454429" duration="5124000" />
+      <workItem from="1557440454429" duration="5520000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48314000" />
+    <option name="totallyTimeSpent" value="48710000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1213" height="775" extended-state="6" />
@@ -552,18 +548,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="998">
-          <caret line="348" column="23" selection-start-line="348" selection-start-column="17" selection-end-line="348" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#174#193#0" expanded="true" />
-            <element signature="e#221#245#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/galaxySimulator.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
@@ -577,9 +561,21 @@
     <entry file="file://$PROJECT_DIR$/src/collision/sphere.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="10" column="22" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
           <folding>
             <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-195">
+          <caret line="218" column="81" selection-start-line="218" selection-start-column="81" selection-end-line="218" selection-end-column="81" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#174#193#0" expanded="true" />
+            <element signature="e#221#245#0" expanded="true" />
           </folding>
         </state>
       </provider>
