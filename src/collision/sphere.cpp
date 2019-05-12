@@ -4,6 +4,8 @@
 #include "../misc/sphere_drawing.h"
 #include "sphere.h"
 
+#include <glad/glad.h>
+
 using namespace nanogui;
 using namespace CGL;
 
@@ -64,7 +66,7 @@ void Sphere::verlet(double delta_t) {
 void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
-  m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
+    m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
 
   if (!is_paused) {
       if (track.size() > 2 && addTrack) {
@@ -75,12 +77,54 @@ void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
           track.push_back(pm.position);
       }
   }
+}
 
-  if (draw_track) {
-      for (Vector3D p : track) {
-          m_sphere_mesh.draw_sphere(shader, p / sphere_factor, log(radius) / 15);
-      }
-  }
+void Sphere::trail(GLShader &shader, std::vector<Vector3D> trail) {
+    if (trail.size() >= 2) {
+        int num_lines = track.size() * 2;
+//        MatrixXd positions(4, num_lines * 2);
+
+        // Draw springs as lines
+
+        int si = leftoff;
+        Vector3D prev;
+
+        for (int i = leftoff; i < trail.size() - 1; i++) {
+            Vector3D pa = trail[i] / sphere_factor;
+            Vector3D pb = trail[i+1] / sphere_factor;
+//            if (isnan(pa.x) || isnan(pa.y) || isnan(pa.z) ||
+//                isnan(pb.x) || isnan(pb.y) || isnan(pb.z)) {
+////                if (isnan(pa.x) || isnan(pa.y) || isnan(pa.z)) {
+////                    break;
+////                } else {
+////                    positions.col(i) << pa.x, pa.y, pa.z, 1.0;
+////                };
+//
+//                break;
+//            }
+
+            prev = pa;
+
+            positions.col(si) << pa.x, pa.y, pa.z, 1.0;
+            positions.col(si + 1) << pb.x, pb.y, pb.z, 1.0;
+
+            si += 2;
+        }
+
+        // shader.setUniform("u_color", nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f), false);
+        shader.uploadAttrib("in_position", positions, false);
+        // Commented out: the wireframe shader does not have this attribute
+        //shader.uploadAttrib("in_normal", normals);
+
+        shader.drawArray(GL_LINES, 0, num_lines);
+    }
+#ifdef LEAK_PATCH_ON
+    shader.freeAttrib("in_position");
+#endif
+}
+
+std::vector<Vector3D> Sphere::getTrack() {
+    return track;
 }
 
 void Sphere::isTrackEnd(Vector3D track_start, double distance) {
@@ -88,6 +132,10 @@ void Sphere::isTrackEnd(Vector3D track_start, double distance) {
         addTrack = false;
     }
 
+}
+
+bool Sphere::getTrackDone() {
+    return !addTrack;
 }
 
 Vector3D Sphere::getInitOrigin() {
@@ -109,6 +157,8 @@ long double Sphere::getMass() {
 void Sphere::reset() {
     this->origin = startOrigin;
     this->velocity = startVelocity;
+    track.clear();
+    addTrack = true;
     pm.position = pm.start_position;
     pm.last_position = pm.start_position;
 }
