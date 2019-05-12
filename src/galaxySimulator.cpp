@@ -65,15 +65,29 @@ void load_cubemap(int frame_idx, GLuint handle, const std::vector<std::string>& 
 
 void GalaxySimulator::load_textures() {
   //TODO: replace with map to texture id
-  glGenTextures(1, &m_gl_texture_1);
+  vector<string> texture_paths;
+  texture_paths.emplace_back("/textures/earth.png");
+  texture_paths.emplace_back("/textures/jupiter.png");
+  texture_paths.emplace_back("/textures/mars.png");
+  texture_paths.emplace_back("/textures/moon.png");
+  texture_paths.emplace_back("/textures/neptune.png");
+  texture_paths.emplace_back("/textures/sun.png");
+  texture_paths.emplace_back("/textures/venus.png");
+  gl_textures = new GLuint[texture_paths.size()];
+  gl_texture_sizes = new Vector3D[texture_paths.size()];
+  glGenTextures(texture_paths.size(), gl_textures);
+  for (int i = 0; i < texture_paths.size(); i++) {
+    gl_texture_sizes[i] = load_texture(0, gl_textures[i], (m_project_root + texture_paths[i]).c_str());
+  }
+  /*glGenTextures(1, &m_gl_texture_1);
   glGenTextures(1, &m_gl_texture_2);
   glGenTextures(1, &m_gl_texture_3);
   glGenTextures(1, &m_gl_texture_4);
   glGenTextures(1, &m_gl_texture_5);
   glGenTextures(1, &m_gl_texture_6);
-  glGenTextures(1, &m_gl_cubemap_tex);
+  glGenTextures(1, &m_gl_cubemap_tex);*/
   
-  m_gl_texture_1_size = load_texture(1, m_gl_texture_1, (m_project_root + "/textures/earth.png").c_str());
+  /*m_gl_texture_1_size = load_texture(1, m_gl_texture_1, (m_project_root + "/textures/earth.png").c_str());
   m_gl_texture_2_size = load_texture(2, m_gl_texture_2, (m_project_root + "/textures/jupiter.png").c_str());
   m_gl_texture_3_size = load_texture(3, m_gl_texture_3, (m_project_root + "/textures/mars.png").c_str());
   m_gl_texture_4_size = load_texture(4, m_gl_texture_4, (m_project_root + "/textures/moon.png").c_str());
@@ -85,7 +99,7 @@ void GalaxySimulator::load_textures() {
   std::cout << "Texture 3 loaded with size: " << m_gl_texture_3_size << std::endl;
   std::cout << "Texture 4 loaded with size: " << m_gl_texture_4_size << std::endl;
   std::cout << "Texture 5 loaded with size: " << m_gl_texture_5_size << std::endl;
-  std::cout << "Texture 6 loaded with size: " << m_gl_texture_6_size << std::endl;
+  std::cout << "Texture 6 loaded with size: " << m_gl_texture_6_size << std::endl;*/
   
   std::vector<std::string> cubemap_fnames = {
     m_project_root + "/textures/space/posx.jpg",
@@ -96,7 +110,7 @@ void GalaxySimulator::load_textures() {
     m_project_root + "/textures/space/negz.jpg"
   };
   
-  load_cubemap(7, m_gl_cubemap_tex, cubemap_fnames);
+  load_cubemap(1, m_gl_cubemap_tex, cubemap_fnames);
   std::cout << "Loaded cubemap texture" << std::endl;
 }
 
@@ -244,12 +258,6 @@ void GalaxySimulator::init() {
 
   camera.configure(camera_info, screen_w, screen_h);
   canonicalCamera.configure(camera_info, screen_w, screen_h);
-
-  //Initialize sphere shaders
-  int i = 1;
-  for (auto& sphere : *galaxy->planets) {
-    sphere->shader.initFromFiles("Texture " + to_string(i++), m_project_root + "/shaders/Default.vert", m_project_root + "/shaders/Texture.frag");
-  }
 }
 
 bool GalaxySimulator::isAlive() { return is_alive; }
@@ -269,11 +277,10 @@ void GalaxySimulator::drawContents() {
 
   // Bind the active shader
 
-  const UserShader& active_shader = shaders[active_shader_idx];
-
-  GLShader shader = active_shader.nanogui_shader;
+  //const UserShader& active_shader = shaders[active_shader_idx];
+  GLShader shader = GLShader();
+  shader.initFromFiles("Texture", m_project_root + "/shaders/Default.vert", m_project_root + "/shaders/Texture.frag");
   shader.bind();
-
   // Prepare the camera projection matrix
 
   Matrix4f model;
@@ -284,61 +291,27 @@ void GalaxySimulator::drawContents() {
 
   Matrix4f viewProjection = projection * view;
   Vector3D cam_pos = camera.position();
-  // FIXME: Needs performance improvements
-  int i = 1; //FIXME: Placeholder
-  for (auto& sphere : *galaxy->planets) {
-    sphere->shader.bind();
-    //TODO: get rid of unnecessary fields
-    sphere->shader.setUniform("u_model", model);
-    sphere->shader.setUniform("u_view_projection", viewProjection);
-    sphere->shader.setUniform("u_texture", i++, false); //FIXME: Placeholder
-    //sphere->shader.setUniform("u_color", color, false);
-    sphere->shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
-    //sphere->shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
-    //sphere->shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
-    //sphere->shader.setUniform("u_normal_scaling", m_normal_scaling, false);
-    //sphere->shader.setUniform("u_height_scaling", m_height_scaling, false);
-    //sphere->shader.setUniform("u_texture_cubemap", 7, false);
-    sphere->render(shader, false); // FIXME: shader field is a placeholder at this point
-  }
 
-  switch (active_shader.type_hint) {
-  case WIREFRAME:
-    shader.setUniform("u_color", color, false);
-//    drawWireframe(shader);
-    galaxy->render(shader, is_paused);
-    break;
-  case NORMALS:
-//    drawNormals(shader);
-    galaxy->render(shader, is_paused);
-    break;
-  case PHONG:
-    // Others
-    /*shader.setUniform("u_color", color, false);
-    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
-    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
-    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
-    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
-    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
-    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
-    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
-    // Textures
-    //shader.setUniform("u_texture_1", 1, false);
-    //shader.setUniform("u_texture_2", 2, false);
-    //shader.setUniform("u_texture_3", 3, false);
-    //shader.setUniform("u_texture_4", 4, false);
-    shader.setUniform("u_texture", 1, false);
-    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
-    shader.setUniform("u_height_scaling", m_height_scaling, false);
+  glActiveTexture(GL_TEXTURE0);
 
-    shader.setUniform("u_texture_cubemap", 7, false);
-//    drawPhong(shader);*/
-    galaxy->render(shader, is_paused);
-    break;
+  shader.setUniform("u_model", model);
+  shader.setUniform("u_view_projection", viewProjection);
+  shader.setUniform("u_color", color, false);
+  shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
+  shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
+  shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
+  shader.setUniform("u_texture", 0, false);
+  shader.setUniform("u_normal_scaling", m_normal_scaling, false);
+  shader.setUniform("u_height_scaling", m_height_scaling, false);
+
+  shader.setUniform("u_texture_cubemap", 1, false);
+  //galaxy->render(shader, is_paused);
+  //FIXME: Placeholder code -- add texture input / texture changing feature
+  int i = 0;
+  for (auto sphere : *(galaxy->planets)) {
+    glBindTexture(GL_TEXTURE_2D, gl_textures[i++]);
+    sphere->render(shader, is_paused);
   }
-//    for (CollisionObject *co : *collision_objects) {
-//        co->render(shader);
-//    }
 }
 
 //void GalaxySimulator::drawWireframe(GLShader &shader) {

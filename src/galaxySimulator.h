@@ -87,6 +87,10 @@ private:
   GLuint m_gl_texture_5;
   GLuint m_gl_texture_6;
   GLuint m_gl_cubemap_tex;
+
+  //TODO: may need to change these
+  GLuint* gl_textures;
+  Vector3D* gl_texture_sizes;
   
   // OpenGL customizable inputs
   
