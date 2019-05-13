@@ -66,15 +66,15 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     }
 }
 
-void Galaxy::render(GLShader &shader, bool is_paused, bool draw_track) {
+void Galaxy::render(GLShader &shader, bool is_paused) {
     for (Sphere *s : *planets) {
-        s->render(shader, is_paused, draw_track);
+        s->render(shader, is_paused);
     }
     if (asteroids != nullptr) {
         for (Sphere *a : *asteroids) {
             // Set is_paused to true to ignore adding position for tracking
             // Set draw_track to false because we are not draw trail for asteroid belt
-            a->render(shader, true, false);
+            a->render(shader, true);
         }
     }
 }

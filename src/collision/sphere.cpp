@@ -63,7 +63,7 @@ void Sphere::verlet(double delta_t) {
   pm.forces = Vector3D();
 }
 
-void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
+void Sphere::render(GLShader &shader, bool is_paused) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
     m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
@@ -82,28 +82,21 @@ void Sphere::render(GLShader &shader, bool is_paused, bool draw_track) {
 void Sphere::trail(GLShader &shader, std::vector<Vector3D> trail) {
     if (trail.size() >= 2) {
         int num_lines = track.size() * 2;
-//        MatrixXd positions(4, num_lines * 2);
+        MatrixXd positions(4, num_lines * 2);
 
         // Draw springs as lines
 
-        int si = leftoff;
-        Vector3D prev;
+        int si = 0;
+//        Vector3D prev;
 
-        for (int i = leftoff; i < trail.size() - 1; i++) {
+        for (int i = 0; i < trail.size() - 1; i++) {
             Vector3D pa = trail[i] / sphere_factor;
             Vector3D pb = trail[i+1] / sphere_factor;
 //            if (isnan(pa.x) || isnan(pa.y) || isnan(pa.z) ||
 //                isnan(pb.x) || isnan(pb.y) || isnan(pb.z)) {
-////                if (isnan(pa.x) || isnan(pa.y) || isnan(pa.z)) {
-////                    break;
-////                } else {
-////                    positions.col(i) << pa.x, pa.y, pa.z, 1.0;
-////                };
-//
 //                break;
 //            }
-
-            prev = pa;
+//            prev = pa;
 
             positions.col(si) << pa.x, pa.y, pa.z, 1.0;
             positions.col(si + 1) << pb.x, pb.y, pb.z, 1.0;
@@ -117,10 +110,10 @@ void Sphere::trail(GLShader &shader, std::vector<Vector3D> trail) {
         //shader.uploadAttrib("in_normal", normals);
 
         shader.drawArray(GL_LINES, 0, num_lines);
-    }
 #ifdef LEAK_PATCH_ON
-    shader.freeAttrib("in_position");
+        shader.freeAttrib("in_position");
 #endif
+    }
 }
 
 std::vector<Vector3D> Sphere::getTrack() {

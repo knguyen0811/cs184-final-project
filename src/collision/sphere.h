@@ -30,7 +30,7 @@ struct SphereParameters {
 
 struct Sphere : public CollisionObject {
 public:
-    void render(GLShader &shader, bool is_paused, bool draw_track);
+    void render(GLShader &shader, bool is_paused);
     void trail(GLShader &shader, std::vector<Vector3D> trail);
     void collide(PointMass &pm);
     Sphere(const Vector3D &origin, double radius, double friction, Vector3D &velocity, long double mass=1e-5, int num_lat = 40, int num_lon = 40)
@@ -70,8 +70,6 @@ private:
     const long double mass; // integer?
     double friction;
     bool addTrack;
-    int leftoff = 0;
-    MatrixXd positions = MatrixXd(4, track.size() * 4);
 
     Misc::SphereMesh m_sphere_mesh;
 };
