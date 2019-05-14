@@ -273,17 +273,15 @@ void GalaxySimulator::drawContents() {
   shader.setUniform("u_view_projection", viewProjection);
 
 
-  if (draw_track) {drawTrail(shader); }
-
   switch (active_shader.type_hint) {
   case WIREFRAME:
     shader.setUniform("u_color", color, false);
 //    drawWireframe(shader);
-    galaxy->render(shader, is_paused);
+//    galaxy->render(shader, is_paused);
     break;
   case NORMALS:
 //    drawNormals(shader);
-    galaxy->render(shader, is_paused);
+//    galaxy->render(shader, is_paused);
     break;
   case PHONG:
 
@@ -308,12 +306,11 @@ void GalaxySimulator::drawContents() {
 
     shader.setUniform("u_texture_cubemap", 5, false);
 //    drawPhong(shader);
-    galaxy->render(shader, is_paused);
     break;
   }
-//    for (CollisionObject *co : *collision_objects) {
-//        co->render(shader);
-//    }
+    if (draw_track) {drawTrail(shader); }
+
+    galaxy->render(shader, is_paused);
 }
 
 void GalaxySimulator::drawTrail(GLShader &shader) {
@@ -769,7 +766,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
     num_steps->setCallback([this](int value) { simulation_steps = value; });
 
       // Time Lapse Buttons
-      Button *b = new Button(window, "Seconds");
+      Button *b = new Button(window, "Seconds Per Step");
       b->setFlags(Button::NormalButton);
       b->setPushed(sp->button_pushed);
       b->setFontSize(14);
@@ -782,7 +779,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
                   }
               });
 
-      b = new Button(window, "Hours");
+      b = new Button(window, "Hours Per Step");
       b->setFlags(Button::NormalButton);
       b->setPushed(sp->button_pushed);
       b->setFontSize(14);
@@ -795,7 +792,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
                   }
               });
 
-      b = new Button(window, "Days");
+      b = new Button(window, "2 Hours Per Step");
       b->setFlags(Button::NormalButton);
       b->setPushed(sp->button_pushed);
       b->setFontSize(14);
@@ -803,12 +800,12 @@ void GalaxySimulator::initGUI(Screen *screen) {
               [this, num_steps](bool state) {
                   sp->button_pushed = state;
                   if (state) {
-                      simulation_steps = days;
+                      simulation_steps = 2 * hours;
                       num_steps->setValue(simulation_steps);
                   }
               });
 
-      b = new Button(window, "Years");
+      b = new Button(window, "3 Hours Per Step");
       b->setFlags(Button::NormalButton);
       b->setPushed(sp->button_pushed);
       b->setFontSize(14);
@@ -816,7 +813,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
               [this, num_steps](bool state) {
                   sp->button_pushed = state;
                   if (state) {
-                      simulation_steps = years;
+                      simulation_steps = 3 * hours;
                       num_steps->setValue(simulation_steps);
                   }
               });
