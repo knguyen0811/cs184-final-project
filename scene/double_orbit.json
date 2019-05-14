@@ -1,0 +1,26 @@
+{
+  "spheres": 
+  [
+    {
+      "origin": [0, 0, 0],
+      "radius": 8.0,
+      "friction": 0.3,
+      "velocity": [0, 0, 0],
+      "mass": 1.9891E30
+    },
+    {
+      "origin": [5.203E11, 0, 0],
+      "radius": 1.12,
+      "friction": 0.3,
+      "velocity":  [0, 15100, 0],
+      "mass":  5.976E27
+    },
+    {
+      "origin": [5.41E11, 0, 0],
+      "radius": 1.03,
+      "friction": 0.3,
+      "velocity":  [0, 19300, 0],
+      "mass":  5.976E21
+    }
+  ]
+}
