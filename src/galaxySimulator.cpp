@@ -66,40 +66,28 @@ void load_cubemap(int frame_idx, GLuint handle, const std::vector<std::string>& 
 void GalaxySimulator::load_textures() {
   //TODO: replace with map to texture id
   vector<string> texture_paths;
-  texture_paths.emplace_back("/textures/earth.png");
-  texture_paths.emplace_back("/textures/jupiter.png");
-  texture_paths.emplace_back("/textures/mars.png");
-  texture_paths.emplace_back("/textures/moon.png");
-  texture_paths.emplace_back("/textures/neptune.png");
-  texture_paths.emplace_back("/textures/sun.png");
-  texture_paths.emplace_back("/textures/venus.png");
+  set<string> files;
+  const string texture_directory = m_project_root + "/textures";
+  bool success = FileUtils::list_files_in_directory(texture_directory, files);
+  if (!success) {
+    std::cout << "Error: could not find the texture folder!" << endl;
+  }
+  std::string file_extension;
+  std::string shader_name;
+  for (auto file : files) {
+    FileUtils::split_filename(file, shader_name, file_extension);
+    if (file_extension == "png") {
+      texture_paths.emplace_back(texture_directory + "/" + file);
+      std::cout << texture_directory + "/" + file << endl;
+    }
+  }
   gl_textures = new GLuint[texture_paths.size()];
   gl_texture_sizes = new Vector3D[texture_paths.size()];
+  //TODO: create map from textures to GLuint*
   glGenTextures(texture_paths.size(), gl_textures);
   for (int i = 0; i < texture_paths.size(); i++) {
-    gl_texture_sizes[i] = load_texture(0, gl_textures[i], (m_project_root + texture_paths[i]).c_str());
+    gl_texture_sizes[i] = load_texture(0, gl_textures[i], (texture_paths[i]).c_str());
   }
-  /*glGenTextures(1, &m_gl_texture_1);
-  glGenTextures(1, &m_gl_texture_2);
-  glGenTextures(1, &m_gl_texture_3);
-  glGenTextures(1, &m_gl_texture_4);
-  glGenTextures(1, &m_gl_texture_5);
-  glGenTextures(1, &m_gl_texture_6);
-  glGenTextures(1, &m_gl_cubemap_tex);*/
-  
-  /*m_gl_texture_1_size = load_texture(1, m_gl_texture_1, (m_project_root + "/textures/earth.png").c_str());
-  m_gl_texture_2_size = load_texture(2, m_gl_texture_2, (m_project_root + "/textures/jupiter.png").c_str());
-  m_gl_texture_3_size = load_texture(3, m_gl_texture_3, (m_project_root + "/textures/mars.png").c_str());
-  m_gl_texture_4_size = load_texture(4, m_gl_texture_4, (m_project_root + "/textures/moon.png").c_str());
-  m_gl_texture_5_size = load_texture(5, m_gl_texture_5, (m_project_root + "/textures/neptune.png").c_str());
-  m_gl_texture_6_size = load_texture(6, m_gl_texture_6, (m_project_root + "/textures/sun.png").c_str());
-  
-  std::cout << "Texture 1 loaded with size: " << m_gl_texture_1_size << std::endl;
-  std::cout << "Texture 2 loaded with size: " << m_gl_texture_2_size << std::endl;
-  std::cout << "Texture 3 loaded with size: " << m_gl_texture_3_size << std::endl;
-  std::cout << "Texture 4 loaded with size: " << m_gl_texture_4_size << std::endl;
-  std::cout << "Texture 5 loaded with size: " << m_gl_texture_5_size << std::endl;
-  std::cout << "Texture 6 loaded with size: " << m_gl_texture_6_size << std::endl;*/
   
   std::vector<std::string> cubemap_fnames = {
     m_project_root + "/textures/space/posx.jpg",

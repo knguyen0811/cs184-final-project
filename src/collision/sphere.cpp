@@ -62,7 +62,7 @@ void Sphere::render(GLShader &shader, bool is_paused) {
   // We decrease the radius here so flat triangles don't behave strangely
   // and intersect with the sphere when rendered
   m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
-  if (!is_paused) {
+  /*if (!is_paused) {
       if (track.size() > 2 && addTrack) {
           this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
       }
@@ -74,7 +74,7 @@ void Sphere::render(GLShader &shader, bool is_paused) {
 
   for (Vector3D p : track) {
       m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
-  }
+  }*/
 }
 
 void Sphere::isTrackEnd(Vector3D track_start, double distance) {

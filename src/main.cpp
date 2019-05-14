@@ -34,6 +34,8 @@ const string SPHERES = "spheres";
 const string PLANE = "plane";
 const string CLOTH = "cloth";
 
+const string default_texture = "moon.png";
+
 const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SPHERES};
 
 GalaxySimulator *app = nullptr;
@@ -188,6 +190,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
       Vector3D origin, velocity;
       double radius, friction;
       long double mass;
+      string tex_file;
       for (auto& sphere_element : object) {
         auto it_origin = sphere_element.find("origin");
         if (it_origin != sphere_element.end()) {
@@ -228,8 +231,15 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, int sphere_
         } else {
           incompleteObjectError("sphere", "mass");
         }
+
+        auto it_tex_file = sphere_element.find("texture");
+        if (it_tex_file != sphere_element.end()) {
+          tex_file = *it_tex_file;
+        } else {
+          tex_file = default_texture;
+        }
         
-        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
+        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, tex_file, sphere_num_lat, sphere_num_lon);
         planets->push_back(new_sphere);
       }
     }
