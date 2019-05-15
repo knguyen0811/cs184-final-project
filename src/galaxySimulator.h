@@ -35,7 +35,7 @@ public:
 
 private:
   virtual void initGUI(Screen *screen);
-//  void drawWireframe(GLShader &shader);
+  void drawTrail(GLShader &shader);
 //  void drawNormals(GLShader &shader);
 //  void drawPhong(GLShader &shader);
   
@@ -131,6 +131,7 @@ private:
   // Simulation flags
 
   bool is_paused = true;
+  bool draw_track = false;
 
   // Screen attributes
 

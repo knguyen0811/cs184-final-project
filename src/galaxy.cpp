@@ -12,6 +12,16 @@ Galaxy::Galaxy(vector<Sphere*> *planets) {
     num_planets = planets->size();
 }
 
+Galaxy::Galaxy(vector<Sphere *> *planets, vector<Sphere *> *asteroids) {
+    this->planets = planets;
+    sort(planets->begin(), planets->end(), compareOrigin);
+    this->last = planets->back();
+    num_planets = planets->size();
+
+    this->asteroids = asteroids;
+    num_asteroids = asteroids->size();
+}
+
 Galaxy::~Galaxy() {
     planets->clear();
     num_planets = 0;
@@ -40,21 +50,43 @@ void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
         sphere = (*planets)[i];
         for (int j = i + 1; j < num_planets; j++) {
             other_planet = (*planets)[j];
-            gravity = sphere->gravity(*other_planet);
-            gravity = gravity; //TODO SCALED DOWN GRAVITY
-            sphere->add_force(gravity);
-            other_planet->add_force(-gravity);
+            //if (abs(sphere->getMass() - other_planet->getMass()) >= Sphere::gravity_margin) {
+                gravity = sphere->gravity(*other_planet);
+                sphere->add_force(gravity);
+                other_planet->add_force(-gravity);
+            //}
         }
     }
     for (auto planet : *planets) {
-        //TODO: possibly add damping
         planet->verlet(delta_t);
+    }
+
+    // Add Asteroid stuff here
+    // DEBUG: Placeholder Code for Asteroids, only considers sun's gravitational force
+    if (asteroids != nullptr) {
+        Sphere *center = (*planets)[0];
+        for (Sphere *a : *asteroids) {
+            gravity = center->gravity(*a);
+            center->add_force(gravity);
+            a->add_force(-gravity);
+        }
+
+        for (Sphere *a : *asteroids) {
+            a->verlet(delta_t);
+        }
     }
 }
 
 void Galaxy::render(GLShader &shader, bool is_paused) {
     for (Sphere *s : *planets) {
         s->render(shader, is_paused);
+    }
+    if (asteroids != nullptr) {
+        for (Sphere *a : *asteroids) {
+            // Set is_paused to true to ignore adding position for tracking
+            // Set draw_track to false because we are not draw trail for asteroid belt
+            a->render(shader, true);
+        }
     }
 }
 

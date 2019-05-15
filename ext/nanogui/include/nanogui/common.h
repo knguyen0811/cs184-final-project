@@ -141,6 +141,7 @@ using Eigen::Matrix3f;
 using Eigen::Matrix4f;
 using Eigen::VectorXf;
 using Eigen::MatrixXf;
+using Eigen::MatrixXd;
 
 /**
  * Convenience typedef for things like index buffers.  You would use it the same

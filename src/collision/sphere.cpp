@@ -4,10 +4,15 @@
 #include "../misc/sphere_drawing.h"
 #include "sphere.h"
 
+#include <glad/glad.h>
+
 using namespace nanogui;
 using namespace CGL;
 
 #define G 6.67408e-11
+double Sphere::sphere_factor = 0;
+double Sphere::gravity_margin = 0;
+double Sphere::radiusFactor = 0;
 
 void Sphere::collide(PointMass &pm) {
   // TODO (Part 3): Handle collisions with spheres.
@@ -41,7 +46,7 @@ void Sphere::add_force(Vector3D force) {
 
 void Sphere::verlet(double delta_t) {
   Vector3D new_pos = pm.position + velocity + (pm.forces / mass);
-  
+
 //    std::cout << "forces: " << pm.forces << "\n";
 //    std::cout << "velocity: " << velocity << "\n";
 //    std::cout << "mass: " << mass << "\n";
@@ -65,6 +70,9 @@ void Sphere::render(GLShader &shader, bool is_paused) {
   glBindTexture(GL_TEXTURE_2D, *texture);
   m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
   /*if (!is_paused) {
+    m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
+
+  if (!is_paused) {
       if (track.size() > 2 && addTrack) {
           this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
       }
@@ -73,10 +81,51 @@ void Sphere::render(GLShader &shader, bool is_paused) {
           track.push_back(pm.position);
       }
   }
+}
 
   for (Vector3D p : track) {
       m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
   }*/
+}
+void Sphere::trail(GLShader &shader, std::vector<Vector3D> trail) {
+    if (trail.size() >= 2) {
+        int num_lines = track.size() * 2;
+        MatrixXd positions(4, num_lines * 2);
+
+        // Draw springs as lines
+
+        int si = 0;
+//        Vector3D prev;
+
+        for (int i = 0; i < trail.size() - 1; i++) {
+            Vector3D pa = trail[i] / sphere_factor;
+            Vector3D pb = trail[i+1] / sphere_factor;
+//            if (isnan(pa.x) || isnan(pa.y) || isnan(pa.z) ||
+//                isnan(pb.x) || isnan(pb.y) || isnan(pb.z)) {
+//                break;
+//            }
+//            prev = pa;
+
+            positions.col(si) << pa.x, pa.y, pa.z, 1.0;
+            positions.col(si + 1) << pb.x, pb.y, pb.z, 1.0;
+
+            si += 2;
+        }
+
+        // shader.setUniform("u_color", nanogui::Color(1.0f, 1.0f, 1.0f, 1.0f), false);
+        shader.uploadAttrib("in_position", positions, false);
+        // Commented out: the wireframe shader does not have this attribute
+        //shader.uploadAttrib("in_normal", normals);
+
+        shader.drawArray(GL_LINES, 0, num_lines);
+#ifdef LEAK_PATCH_ON
+        shader.freeAttrib("in_position");
+#endif
+    }
+}
+
+std::vector<Vector3D> Sphere::getTrack() {
+    return track;
 }
 
 void Sphere::isTrackEnd(Vector3D track_start, double distance) {
@@ -84,6 +133,10 @@ void Sphere::isTrackEnd(Vector3D track_start, double distance) {
         addTrack = false;
     }
 
+}
+
+bool Sphere::getTrackDone() {
+    return !addTrack;
 }
 
 Vector3D Sphere::getInitOrigin() {
@@ -109,6 +162,8 @@ string Sphere::getTexFile() {
 void Sphere::reset() {
     this->origin = startOrigin;
     this->velocity = startVelocity;
+    track.clear();
+    addTrack = true;
     pm.position = pm.start_position;
     pm.last_position = pm.start_position;
 }

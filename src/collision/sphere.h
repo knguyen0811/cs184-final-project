@@ -9,7 +9,7 @@
 #define hours 3600
 #define days 86400
 #define years 31536000
-#define sphere_factor 1E9
+
 
 using namespace CGL;
 using namespace std;
@@ -31,6 +31,7 @@ struct SphereParameters {
 struct Sphere : public CollisionObject {
 public:
     void render(GLShader &shader, bool is_paused);
+    void trail(GLShader &shader, std::vector<Vector3D> trail);
     void collide(PointMass &pm);
     Sphere(const Vector3D &origin, double radius, double friction, Vector3D &velocity, long double mass=1e-5, string tex_file = "moon.png", int num_lat = 40, int num_lon = 40)
             : origin(origin), startOrigin(origin), radius(radius), radius2(radius * radius), log_radius(std::log10(radius)),
@@ -44,14 +45,22 @@ public:
     void verlet(double delta_t);
     void reset();
     void isTrackEnd(Vector3D track_start, double distance);
+    std::vector<Vector3D> getTrack();
+    Vector3D logPosition();
 
     // Get Functions
     Vector3D getInitOrigin();
     Vector3D getInitVelocity();
+    bool getTrackDone();
     double getRadius();
     long double getMass();
     string getTexFile();
     GLuint* texture;
+
+    static double sphere_factor;
+    static double gravity_margin;
+    static double radiusFactor;
+
 private:
     PointMass pm;
     Vector3D origin;
