@@ -3,7 +3,7 @@
   [
     {
       "origin": [0, 0, 0],
-      "radius": 8.0,
+      "radius": 85.0,
       "friction": 0.3,
       "velocity": [0, 0, 0],
       "mass": 1.9891E30,

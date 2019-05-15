@@ -36,7 +36,6 @@ const string PLANE = "plane";
 const string CLOTH = "cloth";
 const string GENERATE = "generate";
 
-const string default_texture = "moon.png";
 const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SPHERES, GENERATE};
 
 GalaxySimulator *app = nullptr;

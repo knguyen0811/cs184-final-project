@@ -273,14 +273,7 @@ void GalaxySimulator::drawContents() {
     }
   }
 
-  // Bind the active shader
-
-  //const UserShader& active_shader = shaders[active_shader_idx];
-  GLShader shader = GLShader();
-  shader.initFromFiles("Texture", m_project_root + "/shaders/Default.vert", m_project_root + "/shaders/Texture.frag");
-  shader.bind();
   // Prepare the camera projection matrix
-
   Matrix4f model;
   model.setIdentity();
 
@@ -292,10 +285,31 @@ void GalaxySimulator::drawContents() {
 
   glActiveTexture(GL_TEXTURE0);
 
+  // Draw Trail with Shader2 so it can change colors
+    for (size_t i = 0; i < shaders_combobox_names.size(); ++i) {
+        if (shaders_combobox_names[i] == "Wireframe") {
+            active_shader_idx = i;
+            break;
+        }
+    }
+
+
+    const UserShader& active_shader = shaders[active_shader_idx];
+    GLShader shader2 = active_shader.nanogui_shader;
+  shader2.bind();
+  shader2.setUniform("u_model", model);
+  shader2.setUniform("u_view_projection", viewProjection);
+  shader2.setUniform("u_color", color, false);
+  if (draw_track) { drawTrail(shader2); }
+
+  // Draw Textures with Shader
+    GLShader shader = GLShader();
+    shader.initFromFiles("Texture", m_project_root + "/shaders/Default.vert", m_project_root + "/shaders/Texture.frag");
+    shader.bind();
   shader.setUniform("u_model", model);
   shader.setUniform("u_view_projection", viewProjection);
-    shader.setUniform("u_color", color, false);
-    if (draw_track) { drawTrail(shader); }
+  shader.setUniform("u_color", color, false);
+
 
   shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
   shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
@@ -705,7 +719,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
                   sp->button_pushed = state;
                   if (state) {
                       std::cout << "adding planet using button" << endl;
-                      Sphere *newPlanet = new Sphere(sp->newOrigin, sp->newRadius, 1, sp->newVelocity);
+                      Sphere *newPlanet = new Sphere(sp->newOrigin, sp->newRadius, 1, sp->newVelocity, sp->newMass);
                       galaxy->add_planet(newPlanet);
                       drawContents();
                   }
@@ -821,81 +835,6 @@ void GalaxySimulator::initGUI(Screen *screen) {
       b->setChangeCallback(
               [this](bool state) { draw_track = state; });
   }
-    // TODO: Replace
-//  // Damping slider and textbox
-//
-//  new Label(window, "Damping", "sans-bold");
-//
-//  {
-//    Widget *panel = new Widget(window);
-//    panel->setLayout(
-//        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
-//
-//    Slider *slider = new Slider(panel);
-//    slider->setValue(sp->damping);
-//    slider->setFixedWidth(105);
-//    cout << "Slider range: " << slider->range().first << ", " << slider->range().second << endl;
-//
-//    TextBox *percentage = new TextBox(panel);
-//    percentage->setFixedWidth(75);
-//    percentage->setValue(to_string(sp->damping));
-//    percentage->setUnits("%");
-//    percentage->setFontSize(14);
-//
-//    slider->setCallback([percentage](float value) {
-//      percentage->setValue(std::to_string(value));
-//    });
-//    slider->setFinalCallback([&](float value) {
-//      sp->damping = (double)value;
-//      // cout << "Final slider value: " << (int)(value * 100) << endl;
-//    });
-//  }
-//
-//  // Gravity
-//
-//  new Label(window, "Gravity", "sans-bold");
-//
-//  {
-//    Widget *panel = new Widget(window);
-//    GridLayout *layout =
-//        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
-//    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
-//    layout->setSpacing(0, 10);
-//    panel->setLayout(layout);
-//
-//    new Label(panel, "x :", "sans-bold");
-//
-//    FloatBox<double> *fb = new FloatBox<double>(panel);
-//    fb->setEditable(true);
-//    fb->setFixedSize(Vector2i(100, 20));
-//    fb->setFontSize(14);
-//    fb->setValue(gravity.x);
-//    fb->setUnits("m/s^2");
-//    fb->setSpinnable(true);
-//    fb->setCallback([this](float value) { gravity.x = value; });
-//
-//    new Label(panel, "y :", "sans-bold");
-//
-//    fb = new FloatBox<double>(panel);
-//    fb->setEditable(true);
-//    fb->setFixedSize(Vector2i(100, 20));
-//    fb->setFontSize(14);
-//    fb->setValue(gravity.y);
-//    fb->setUnits("m/s^2");
-//    fb->setSpinnable(true);
-//    fb->setCallback([this](float value) { gravity.y = value; });
-//
-//    new Label(panel, "z :", "sans-bold");
-//
-//    fb = new FloatBox<double>(panel);
-//    fb->setEditable(true);
-//    fb->setFixedSize(Vector2i(100, 20));
-//    fb->setFontSize(14);
-//    fb->setValue(gravity.z);
-//    fb->setUnits("m/s^2");
-//    fb->setSpinnable(true);
-//    fb->setCallback([this](float value) { gravity.z = value; });
-//  }
   
   window = new Window(screen, "Appearance");
   window->setPosition(Vector2i(15, 15));
@@ -915,7 +854,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
 
   // Shader Parameters
 
-  new Label(window, "Color", "sans-bold");
+  new Label(window, "Trail Color", "sans-bold");
 
   {
     ColorWheel *cw = new ColorWheel(window, color);
@@ -924,34 +863,34 @@ void GalaxySimulator::initGUI(Screen *screen) {
         [this](const nanogui::Color &color) { this->color = color; });
   }
 
-  new Label(window, "Parameters", "sans-bold");
-
-  {
-    Widget *panel = new Widget(window);
-    GridLayout *layout =
-        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
-    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
-    layout->setSpacing(0, 10);
-    panel->setLayout(layout);
-
-    new Label(panel, "Normal :", "sans-bold");
-
-    FloatBox<double> *fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(this->m_normal_scaling);
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { this->m_normal_scaling = value; });
-
-    new Label(panel, "Height :", "sans-bold");
-
-    fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(this->m_height_scaling);
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { this->m_height_scaling = value; });
-  }
+//  new Label(window, "Parameters", "sans-bold");
+//
+//  {
+//    Widget *panel = new Widget(window);
+//    GridLayout *layout =
+//        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
+//    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
+//    layout->setSpacing(0, 10);
+//    panel->setLayout(layout);
+//
+//    new Label(panel, "Normal :", "sans-bold");
+//
+//    FloatBox<double> *fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(this->m_normal_scaling);
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { this->m_normal_scaling = value; });
+//
+//    new Label(panel, "Height :", "sans-bold");
+//
+//    fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(this->m_height_scaling);
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { this->m_height_scaling = value; });
+//  }
 }
