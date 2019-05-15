@@ -41,7 +41,8 @@ private:
   
   void load_shaders();
   void load_textures();
-  
+  void setSphereTextures();
+
   // File management
   
   std::string m_project_root;
@@ -67,10 +68,11 @@ private:
 
   // OpenGL attributes
 
-  int active_shader_idx = 0;
+  int active_shader_idx = 7; //Texture.frag
 
   vector<UserShader> shaders;
   vector<std::string> shaders_combobox_names;
+  map<std::string, GLuint*> tex_file_to_texture;
   
   // OpenGL textures
   
@@ -78,11 +80,19 @@ private:
   Vector3D m_gl_texture_2_size;
   Vector3D m_gl_texture_3_size;
   Vector3D m_gl_texture_4_size;
+  Vector3D m_gl_texture_5_size;
+  Vector3D m_gl_texture_6_size;
   GLuint m_gl_texture_1;
   GLuint m_gl_texture_2;
   GLuint m_gl_texture_3;
   GLuint m_gl_texture_4;
+  GLuint m_gl_texture_5;
+  GLuint m_gl_texture_6;
   GLuint m_gl_cubemap_tex;
+
+  //TODO: may need to change these
+  GLuint* gl_textures;
+  Vector3D* gl_texture_sizes;
   
   // OpenGL customizable inputs
   

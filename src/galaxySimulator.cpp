@@ -64,32 +64,43 @@ void load_cubemap(int frame_idx, GLuint handle, const std::vector<std::string>& 
 }
 
 void GalaxySimulator::load_textures() {
-  glGenTextures(1, &m_gl_texture_1);
-  glGenTextures(1, &m_gl_texture_2);
-  glGenTextures(1, &m_gl_texture_3);
-  glGenTextures(1, &m_gl_texture_4);
-  glGenTextures(1, &m_gl_cubemap_tex);
-  
-  m_gl_texture_1_size = load_texture(1, m_gl_texture_1, (m_project_root + "/textures/texture_1.png").c_str());
-  m_gl_texture_2_size = load_texture(2, m_gl_texture_2, (m_project_root + "/textures/texture_2.png").c_str());
-  m_gl_texture_3_size = load_texture(3, m_gl_texture_3, (m_project_root + "/textures/texture_3.png").c_str());
-  m_gl_texture_4_size = load_texture(4, m_gl_texture_4, (m_project_root + "/textures/texture_4.png").c_str());
-  
-  std::cout << "Texture 1 loaded with size: " << m_gl_texture_1_size << std::endl;
-  std::cout << "Texture 2 loaded with size: " << m_gl_texture_2_size << std::endl;
-  std::cout << "Texture 3 loaded with size: " << m_gl_texture_3_size << std::endl;
-  std::cout << "Texture 4 loaded with size: " << m_gl_texture_4_size << std::endl;
+  //TODO: replace with map to texture id
+  vector<string> texture_paths;
+  set<string> files;
+  const string texture_directory = m_project_root + "/textures";
+  bool success = FileUtils::list_files_in_directory(texture_directory, files);
+  if (!success) {
+    std::cout << "Error: could not find the texture folder!" << endl;
+  }
+  std::string file_extension;
+  std::string texture_name;
+  for (auto file : files) {
+    FileUtils::split_filename(file, texture_name, file_extension);
+    if (file_extension == "png") {
+      texture_paths.emplace_back(texture_directory + "/" + file);
+    }
+  }
+  gl_textures = new GLuint[texture_paths.size()];
+  gl_texture_sizes = new Vector3D[texture_paths.size()];
+  //TODO: create map from textures to GLuint*
+  glGenTextures(texture_paths.size(), gl_textures);
+  for (int i = 0; i < texture_paths.size(); i++) {
+    gl_texture_sizes[i] = load_texture(0, gl_textures[i], (texture_paths[i]).c_str());
+    FileUtils::get_filename_from_path(texture_paths[i], texture_name);
+    std::cout << texture_name << endl;
+    tex_file_to_texture[texture_name] = gl_textures+i;
+  }
   
   std::vector<std::string> cubemap_fnames = {
-    m_project_root + "/textures/cube/posx.jpg",
-    m_project_root + "/textures/cube/negx.jpg",
-    m_project_root + "/textures/cube/posy.jpg",
-    m_project_root + "/textures/cube/negy.jpg",
-    m_project_root + "/textures/cube/posz.jpg",
-    m_project_root + "/textures/cube/negz.jpg"
+    m_project_root + "/textures/space/posx.jpg",
+    m_project_root + "/textures/space/negx.jpg",
+    m_project_root + "/textures/space/posy.jpg",
+    m_project_root + "/textures/space/negy.jpg",
+    m_project_root + "/textures/space/posz.jpg",
+    m_project_root + "/textures/space/negz.jpg"
   };
   
-  load_cubemap(5, m_gl_cubemap_tex, cubemap_fnames);
+  load_cubemap(1, m_gl_cubemap_tex, cubemap_fnames);
   std::cout << "Loaded cubemap texture" << std::endl;
 }
 
@@ -154,6 +165,10 @@ void GalaxySimulator::load_shaders() {
   }
 }
 
+void GalaxySimulator::setSphereTextures() {
+  galaxy->setTextures(tex_file_to_texture);
+}
+
 GalaxySimulator::GalaxySimulator(std::string project_root, Screen *screen)
 : m_project_root(project_root) {
   this->screen = screen;
@@ -165,6 +180,7 @@ GalaxySimulator::GalaxySimulator(std::string project_root, Screen *screen)
   glEnable(GL_DEPTH_TEST);
 }
 
+//TODO: fix destructor
 GalaxySimulator::~GalaxySimulator() {
   for (auto shader : shaders) {
     shader.nanogui_shader.free();
@@ -173,6 +189,8 @@ GalaxySimulator::~GalaxySimulator() {
   glDeleteTextures(1, &m_gl_texture_2);
   glDeleteTextures(1, &m_gl_texture_3);
   glDeleteTextures(1, &m_gl_texture_4);
+  glDeleteTextures(1, &m_gl_texture_5);
+  glDeleteTextures(1, &m_gl_texture_6);
   glDeleteTextures(1, &m_gl_cubemap_tex);
 
   if (sp) delete sp;
@@ -181,7 +199,10 @@ GalaxySimulator::~GalaxySimulator() {
 
 void GalaxySimulator::loadSphereParameters(SphereParameters *sp) { this->sp = sp; }
 
-void GalaxySimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
+void GalaxySimulator::loadGalaxy(Galaxy *galaxy) {
+  this->galaxy = galaxy;
+  this->setSphereTextures();
+}
 
 /**
  * Initializes the cloth simulation and spawns a new thread to separate
@@ -217,7 +238,7 @@ void GalaxySimulator::init() {
     // DEBUG: Adjust Camera View Distance Here
   canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / Sphere::sphere_factor;
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
-  scroll_rate = canonical_view_distance / 10;
+  scroll_rate = canonical_view_distance / 100;
 
   view_distance = canonical_view_distance;
   min_view_distance = canonical_view_distance / 100.0;
@@ -252,15 +273,7 @@ void GalaxySimulator::drawContents() {
     }
   }
 
-  // Bind the active shader
-
-  const UserShader& active_shader = shaders[active_shader_idx];
-
-  GLShader shader = active_shader.nanogui_shader;
-  shader.bind();
-
   // Prepare the camera projection matrix
-
   Matrix4f model;
   model.setIdentity();
 
@@ -268,56 +281,53 @@ void GalaxySimulator::drawContents() {
   Matrix4f projection = getProjectionMatrix();
 
   Matrix4f viewProjection = projection * view;
+  Vector3D cam_pos = camera.position();
 
+  glActiveTexture(GL_TEXTURE0);
+
+  // Draw Trail with Shader2 so it can change colors
+    for (size_t i = 0; i < shaders_combobox_names.size(); ++i) {
+        if (shaders_combobox_names[i] == "Wireframe") {
+            active_shader_idx = i;
+            break;
+        }
+    }
+
+
+    const UserShader& active_shader = shaders[active_shader_idx];
+    GLShader shader2 = active_shader.nanogui_shader;
+  shader2.bind();
+  shader2.setUniform("u_model", model);
+  shader2.setUniform("u_view_projection", viewProjection);
+  shader2.setUniform("u_color", color, false);
+  if (draw_track) { drawTrail(shader2); }
+
+  // Draw Textures with Shader
+    GLShader shader = GLShader();
+    shader.initFromFiles("Texture", m_project_root + "/shaders/Default.vert", m_project_root + "/shaders/Texture.frag");
+    shader.bind();
   shader.setUniform("u_model", model);
   shader.setUniform("u_view_projection", viewProjection);
+  shader.setUniform("u_color", color, false);
 
 
-  switch (active_shader.type_hint) {
-  case WIREFRAME:
-    shader.setUniform("u_color", color, false);
-//    drawWireframe(shader);
-//    galaxy->render(shader, is_paused);
-    break;
-  case NORMALS:
-//    drawNormals(shader);
-//    galaxy->render(shader, is_paused);
-    break;
-  case PHONG:
+  shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
+  shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
+  shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
+  shader.setUniform("u_texture", 0, false);
+  shader.setUniform("u_normal_scaling", m_normal_scaling, false);
+  shader.setUniform("u_height_scaling", m_height_scaling, false);
 
-    // Others
-    Vector3D cam_pos = camera.position();
-    shader.setUniform("u_color", color, false);
-    shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
-    shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
-    shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
-    shader.setUniform("u_texture_1_size", Vector2f(m_gl_texture_1_size.x, m_gl_texture_1_size.y), false);
-    shader.setUniform("u_texture_2_size", Vector2f(m_gl_texture_2_size.x, m_gl_texture_2_size.y), false);
-    shader.setUniform("u_texture_3_size", Vector2f(m_gl_texture_3_size.x, m_gl_texture_3_size.y), false);
-    shader.setUniform("u_texture_4_size", Vector2f(m_gl_texture_4_size.x, m_gl_texture_4_size.y), false);
-    // Textures
-    shader.setUniform("u_texture_1", 1, false);
-    shader.setUniform("u_texture_2", 2, false);
-    shader.setUniform("u_texture_3", 3, false);
-    shader.setUniform("u_texture_4", 4, false);
-
-    shader.setUniform("u_normal_scaling", m_normal_scaling, false);
-    shader.setUniform("u_height_scaling", m_height_scaling, false);
-
-    shader.setUniform("u_texture_cubemap", 5, false);
-//    drawPhong(shader);
-    break;
-  }
-    if (draw_track) {drawTrail(shader); }
-
-    galaxy->render(shader, is_paused);
+  shader.setUniform("u_texture_cubemap", 1, false);
+  galaxy->render(shader, is_paused);
+  //drawPhong(shader);
 }
 
 void GalaxySimulator::drawTrail(GLShader &shader) {
     std::vector<Sphere*> *planets = galaxy->planets;
     Sphere *center = (*planets)[0];
     for (Sphere *s : (*planets)) {
-        if (center != s) {
+        if (center != s || planets->size() == 2) {
             center->trail(shader, s->getTrack());
         }
     }
@@ -709,7 +719,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
                   sp->button_pushed = state;
                   if (state) {
                       std::cout << "adding planet using button" << endl;
-                      Sphere *newPlanet = new Sphere(sp->newOrigin, sp->newRadius, 1, sp->newVelocity);
+                      Sphere *newPlanet = new Sphere(sp->newOrigin, sp->newRadius, 1, sp->newVelocity, sp->newMass);
                       galaxy->add_planet(newPlanet);
                       drawContents();
                   }
@@ -825,81 +835,6 @@ void GalaxySimulator::initGUI(Screen *screen) {
       b->setChangeCallback(
               [this](bool state) { draw_track = state; });
   }
-    // TODO: Replace
-//  // Damping slider and textbox
-//
-//  new Label(window, "Damping", "sans-bold");
-//
-//  {
-//    Widget *panel = new Widget(window);
-//    panel->setLayout(
-//        new BoxLayout(Orientation::Horizontal, Alignment::Middle, 0, 5));
-//
-//    Slider *slider = new Slider(panel);
-//    slider->setValue(sp->damping);
-//    slider->setFixedWidth(105);
-//    cout << "Slider range: " << slider->range().first << ", " << slider->range().second << endl;
-//
-//    TextBox *percentage = new TextBox(panel);
-//    percentage->setFixedWidth(75);
-//    percentage->setValue(to_string(sp->damping));
-//    percentage->setUnits("%");
-//    percentage->setFontSize(14);
-//
-//    slider->setCallback([percentage](float value) {
-//      percentage->setValue(std::to_string(value));
-//    });
-//    slider->setFinalCallback([&](float value) {
-//      sp->damping = (double)value;
-//      // cout << "Final slider value: " << (int)(value * 100) << endl;
-//    });
-//  }
-//
-//  // Gravity
-//
-//  new Label(window, "Gravity", "sans-bold");
-//
-//  {
-//    Widget *panel = new Widget(window);
-//    GridLayout *layout =
-//        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
-//    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
-//    layout->setSpacing(0, 10);
-//    panel->setLayout(layout);
-//
-//    new Label(panel, "x :", "sans-bold");
-//
-//    FloatBox<double> *fb = new FloatBox<double>(panel);
-//    fb->setEditable(true);
-//    fb->setFixedSize(Vector2i(100, 20));
-//    fb->setFontSize(14);
-//    fb->setValue(gravity.x);
-//    fb->setUnits("m/s^2");
-//    fb->setSpinnable(true);
-//    fb->setCallback([this](float value) { gravity.x = value; });
-//
-//    new Label(panel, "y :", "sans-bold");
-//
-//    fb = new FloatBox<double>(panel);
-//    fb->setEditable(true);
-//    fb->setFixedSize(Vector2i(100, 20));
-//    fb->setFontSize(14);
-//    fb->setValue(gravity.y);
-//    fb->setUnits("m/s^2");
-//    fb->setSpinnable(true);
-//    fb->setCallback([this](float value) { gravity.y = value; });
-//
-//    new Label(panel, "z :", "sans-bold");
-//
-//    fb = new FloatBox<double>(panel);
-//    fb->setEditable(true);
-//    fb->setFixedSize(Vector2i(100, 20));
-//    fb->setFontSize(14);
-//    fb->setValue(gravity.z);
-//    fb->setUnits("m/s^2");
-//    fb->setSpinnable(true);
-//    fb->setCallback([this](float value) { gravity.z = value; });
-//  }
   
   window = new Window(screen, "Appearance");
   window->setPosition(Vector2i(15, 15));
@@ -919,7 +854,7 @@ void GalaxySimulator::initGUI(Screen *screen) {
 
   // Shader Parameters
 
-  new Label(window, "Color", "sans-bold");
+  new Label(window, "Trail Color", "sans-bold");
 
   {
     ColorWheel *cw = new ColorWheel(window, color);
@@ -928,34 +863,34 @@ void GalaxySimulator::initGUI(Screen *screen) {
         [this](const nanogui::Color &color) { this->color = color; });
   }
 
-  new Label(window, "Parameters", "sans-bold");
-
-  {
-    Widget *panel = new Widget(window);
-    GridLayout *layout =
-        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
-    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
-    layout->setSpacing(0, 10);
-    panel->setLayout(layout);
-
-    new Label(panel, "Normal :", "sans-bold");
-
-    FloatBox<double> *fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(this->m_normal_scaling);
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { this->m_normal_scaling = value; });
-
-    new Label(panel, "Height :", "sans-bold");
-
-    fb = new FloatBox<double>(panel);
-    fb->setEditable(true);
-    fb->setFixedSize(Vector2i(100, 20));
-    fb->setFontSize(14);
-    fb->setValue(this->m_height_scaling);
-    fb->setSpinnable(true);
-    fb->setCallback([this](float value) { this->m_height_scaling = value; });
-  }
+//  new Label(window, "Parameters", "sans-bold");
+//
+//  {
+//    Widget *panel = new Widget(window);
+//    GridLayout *layout =
+//        new GridLayout(Orientation::Horizontal, 2, Alignment::Middle, 5, 5);
+//    layout->setColAlignment({Alignment::Maximum, Alignment::Fill});
+//    layout->setSpacing(0, 10);
+//    panel->setLayout(layout);
+//
+//    new Label(panel, "Normal :", "sans-bold");
+//
+//    FloatBox<double> *fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(this->m_normal_scaling);
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { this->m_normal_scaling = value; });
+//
+//    new Label(panel, "Height :", "sans-bold");
+//
+//    fb = new FloatBox<double>(panel);
+//    fb->setEditable(true);
+//    fb->setFixedSize(Vector2i(100, 20));
+//    fb->setFontSize(14);
+//    fb->setValue(this->m_height_scaling);
+//    fb->setSpinnable(true);
+//    fb->setCallback([this](float value) { this->m_height_scaling = value; });
+//  }
 }

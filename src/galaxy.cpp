@@ -27,6 +27,25 @@ Galaxy::~Galaxy() {
     num_planets = 0;
 }
 
+void Galaxy::setTextures(map<string, GLuint*> &tex_file_to_texture) {
+  for (auto sphere : *planets) {
+    if (tex_file_to_texture.count(sphere->getTexFile())) {
+      sphere->texture = tex_file_to_texture[sphere->getTexFile()];
+    } else {
+      // Assign an arbitrary texture
+      sphere->texture = tex_file_to_texture.begin()->second;
+    }
+  }
+  for (auto asteroid : *asteroids) {
+    if (tex_file_to_texture.count(asteroid->getTexFile())) {
+      asteroid->texture = tex_file_to_texture[asteroid->getTexFile()];
+    } else {
+      // Assign an arbitrary texture
+      asteroid->texture = tex_file_to_texture.begin()->second;
+    }
+  }
+}
+
 void Galaxy::simulate(double frames_per_sec, double simulation_steps) {
     double delta_t = 1 / frames_per_sec / simulation_steps;
     // std::cout << "DELTA_T:" << delta_t << "\n";
