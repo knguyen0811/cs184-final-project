@@ -50,6 +50,48 @@ Now we can see that for these types of objects (stars, planets, moons, asteroids
 <p>We believe the biggest lesson we all learned was that working on something without understanding it is dangerous. Firstly, Ryan was the only physics major of the three of us and the only one with nontrivial prior exposure to astrophysics. This meant that he was the only one who could fix a number of bugs involving our physical calculations. In retrospect it would have done us a lot of good for the other two of us to learn about astrophysics before starting work on this project. Finally, we assumed we wouldn’t need very much OpenGL since Project 4’s codebase would have most of the OpenGL already written, but as previously described we hit some limitations fairly quickly. Our solutions to these problems were mostly kludgy and inefficient before we acquired a fairly good understanding of OpenGL.</p>
 <h2 align="middle">Results</h2>
 <p>We are able to simulate different types of planetary systems. Below we have a planet-moon system, which illustrates the effects of gravitational forces between the sun (middle), the earth (second smallest sphere), and the moon (smallest sphere). As we would expect, the earth revolves around the sun as the moon revolves around the earth.</p>
+<img align="center" src="images/double_orbit_tex.gif" width="300px"/><br>
+<p>The second system that we can simulate is a binary star system. The system illustrates the trajectory of two stars revolving around each other due to their gravitational forces. In consideration of the structure of this type of system, the calculations used to simulate this system were the same calculations used as in any other system; in other words, our simulation was holistic enough to cover various systems.</p>
+<img align="center" src="images/binary_tex.gif" width="300px"/><br>
+<p>The next system we were able to simulate was that of our own solar system. The example below first shows only the rocky planets (Mercury, Venus, Earth, Mars). Again, as we would expect, the closer the planet, the larger the gravitational force between the star and the planet, and vice versa.</p>
+<img align="center" src="images/rocky_planets_tex.gif" width="300px"/><br>
+<h2 align="middle">References</h2>
+<div align="center">
+<a href="https://en.wikipedia.org/wiki/N-body_problem">N-body Problem (Wikipedia)</a><br>
+<a href="http://hyperphysics.phy-astr.gsu.edu/hbase/Solar/soldata2.html#c5">Solar System Data</a><br>
+<a href="https://nssdc.gsfc.nasa.gov/planetary/factsheet/">Planetary Factsheet</a>
+</div>
+<h2 align="center">Contributions from each team member</h2>
+<ul>
+<li>
+    Khang Nguyen:
+    <ul>
+    <li>Backend development</li>
+    <li>Class structures, parameters and methods</li>
+    <li>GUI additions (buttons, parameters, keyboard interactions)</li>
+    </ul>
+</li>
+<li>Ryan Lee
+    <ul>
+<li>Backend development</li>
+<li>Class structures and methods</li>
+<li>Algorithm</li>
+<li>Implementation of force relations between objects.</li>
+<li>Creation of tracks</li>
+<li>Optimizations of the code to make less computations</li>
+</ul>
+</li>
+<li>
+Milo Piazza
+<ul>
+<li>JSON Formatting</li>
+<li>Textures</li>
+</ul>
+</li></ul>
+<h2 align="middle">Final Project Video</h2>
+<div align="center">
+<a href="https://drive.google.com/file/d/12pYzIp0U_diFiLTaZAMfJ1_2VvNk3kZI/view?usp=sharing">Final Project Video</a>
+</div>
 </div>
 </body>
 </html>
