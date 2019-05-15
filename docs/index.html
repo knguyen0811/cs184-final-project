@@ -1,32 +1,55 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <style>
-        div.padded {
-            padding-top: 0px;
-            padding-right: 100px;
-            padding-bottom: 0.25in;
-            padding-left: 100px;
-        }
-    </style>
-    <title>CS 184 Final Project: Galaxy Simulation</title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+<title>Galaxy Simulation</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
 <br />
-<h1 align="middle">CS 184 Final Project: Galaxy Simulation</h1>
-<h2 align="middle">Milestone Status Report</h2>
-<h2 align="middle">Milo Piazza, Ryan Lee, Khang Nguyen</h2>
+<h1 align="middle">Final Project: Planet Simulation</h1>
+    <h2 align="middle">Milo Piazza, Ryan Lee, Khang Nguyen</h2>
 
-<div class="padded">
-    <!-- picture here-->
-    <h2 align="left">Accomplishments</h2>
-    <p>So far we have adapted our rendering code from Project 4 to accomodate a simulation of a small solar system consisting of a sun and several planets. It runs very smoothly compared to the cloth simulations from Project 4.</p>
-    <h2 align="left">Preliminary Work</h2>
-    <p>We initialize the solar system by supplying the location, mass, initial centripetal velocity, and radius of each planet. We then use Newton's law of universal gravitation to compute every gravitational force acting on each body, followed by the modified Euler's method to update the bodies' positions and velocities. The approach will likely not scale well to larger galaxies since computing the gravity acting on every body this way is O(n^2), so therefore much of our future work will be towards optimization, as well as researching and implementing more advanced approximation techniques.</p>
-    <h2 align="left">Progress</h2>
-    <p>We are behind our original schedule, as we underestimated the difficulty of the tasks we listed in said schedule. As such, our plan is to experiment with ways of making the N-body simulation scale better, such as spatial hashing or octrees, more advanced numerical approximation algorithms, and alternative approaches that compute the energy of a body instead of the force acting on it. We are unlikely to simulate planetary collisions but will still attempt to do so if we have time.</p>
+    <h2 align="middle">Abstract</h2>
+        <p> Our project is a planet simulator based on project 4’s cloth simulator. Many of the capabilities of the simulator are built from or inspired by code already given in project 4. By using it as a template for our simulator, we were able to simulate planetary systems using commonly known laws of gravitation. This project was motivated by the n-body problem, which describes the problem of predicting the individual motions of celestial objects resulting from gravitational interactions among them. Creating a planet simulator was our attempt at solving this problem and trying to better understand these motions.</p>
+    <h2 align="middle">Technical Approach</h2>
+        <p> Using astrophysics we can predict the trajectories of large bodies in a solar system or a galaxy. However, in order to do so we rely on approximations of some physical constants, and we are unsure of their accuracy. N-body simulations allow us to see the rotations of planets and stars on a larger scale in order to verify our approximations. We plan to implement such a simulation. We will first implement basic motion using Newton’s law of gravitation, then move on to planetary collisions if we have time. </p>
+    <h4 align="middle">Preamble</h4>
+    <ol>
+        <li>Camera:
+A simple modification to the camera’s canonical view distance was changed such that instead of being dependent on the maximum size of the cloth, it was as long as the norm of the farthest planet in the system being simulated, scaled down by some factor. This enabled the simulation window to start with the entire system in full view given any system. </li>
+        <li>UI:
+The UI from project 4 was used as the template for our subsequent implementations. Seeing as we had ideas for adding and removing planets, several adjustable parameters corresponding to a planet’s variables were added to the simulation box, as well as buttons for adding a planet with the desired features, and removing a planet at the desired index (ignoring the star). 
+More buttons were added with regard to the rate (steps/frame) at which the simulation ran for ease-of-use. The way the code was structured in the backend, several buttons were added by “Seconds Per Step”, “Hours Per Step”, “2 Hours Per Step”, and so forth so that users could change how fast they wanted the simulation to run at the click of a button.</li>
+        <li>Sphere and Galaxy Object:
+The galaxy object is analogous to the cloth object in project 4, and contained all the methods necessary to store a vector of spheres, simulate the movement of planets by performing force calculations, add and remove planets, and lastly reset the simulation. The vector of sphere objects is analogous to the vector of collision objects in project 4, and contained all the spheres (stars, planets, and moons) in the system to be simulated. Each sphere was initialized from a JSON file containing all the necessary parameters (origin, velocity, mass, and radius) that are used in the force calculations. Pointers to each sphere object were stored in a vector that was then used to initialize the galaxy object. The galaxy object also defined comparators for comparing a given parameter between two planets.</li>
+        <li>JSON File:
+Note that the json file will contain a list of sphere that will be rendered and also there is a key that allows for randomly generated spheres and asteroids, which are a random number of sphere in a ring. In addition the parameters that go into the json file for each sphere uses SI units except for the radius which is arbitrary but can be scaled so that the radio of the radius or volume between each object is accurate. The radius is just used for rendering the spheres. </li>
+    </ol>
+    <h4 align="middle">Force Interactions</h4>
+<p>To start the implementation of the planet simulator we need to understand the forces that will be involved within this system. Now note that we are dealing with celestial objects so things will become big and forces are going to become large. Because of this, small forces will not affect our system that much but we need to make sure that forces are accurate or note errors will propagate.
+Now we can see that for these types of objects (stars, planets, moons, asteroids, and etc) the major source of displacement is going to be the force of gravity. Note the force of gravity affects every pairwise object similar to how a spring will affect every object. However unlike a spring we do not have a rest length or a limit to proportionality. To do this we will iterate through all objects and compute the force of gravity that is object have on every object. To save some time on computation, when iterating on the i-th object we only have to iterate on the (i+1)-th to n-th object because we know that the force of gravity on i-th object due to the j-th object is equal to the force in the opposite direction on the j-th object by the i-th object. So when computing one pair of objects we can see that we are able to get 2 forces. Even with this we will have n^2 as (n^2)/2 is still O(n^2).</p>
+<h4 align="middle">Location Update</h4>
+<p>Now that we have summed up the forces we are going to compute the location update at every time step. Now we will be using the displacement formula or then modified euler. This will allow us to be able to relatively accurate steps and to ensure that we don't have errors propagating we are going to have each step be exactly 1 second.  This means that the location update will be new_pos = old_pos + velocity + acceleration/2. Acceleration will be the the total force on the object divided by its mass.</p>
+<h4 align="middle">Real Value Scaling</h4>
+<p>Recall that we are using actual values and astronomical values can get really big really quickly. Now to scale down distance we are going to take the shortest distance within a certain coordinate and we are going to normalize all coordinates with that value when rendering. Note that we only scale the numbers down for rendering so that it will remain accurate for the computation.</p>
+<h4 align="middle">Track Part 1: Initial Implementation</h4>
+<p>An initial track implementation is quite simple since we want to know the location of where the sphere has been we simply need to store all the places at which the sphere was rendered. So every time the object is rendered we store its location as another sphere and place this into a vector of sphere which we will render every time this object is rendered. The track sphere will be 15th the size of the object so that it will  still be visible and proportional to the object.</p>
+<h4 align="middle">Track Part 2: Using Lines</h4>
+<p>The newer implementation was based on the code from project 4 in drawWireframe, where several adjacent 3D coordinates were inserted into a matrix to be used as the source of each line. When comparing the two methods of drawing the trail, the latter was much faster than the former, especially at longer runtimes. The only issue with the latter implementation, however, were the strange lines being drawn around the center to some point outside the view of the camera after resetting and rerunning the simulation. </p>
+<h4 align="middle">Optimization</h4>
+<p>Now to optimize we are going to reduce the pairwise computation to do so we define a gravity margin. This gravity margin is going to be the one half the difference between the most massive object and least massive object. Then for every object we look to see if the difference in mass of the two objects is greater than or equal to the mass margin. With this we are able to filter out most of the computation against similar size planets as they are usually very far away.</p>
+<h4 align="middle">Random Generation</h4>
+<p>We can procedurally generate a subset of the solar system. This is done by defining a number of planets and asteroids in a surrounding asteroid belt in the input file. We allow textures to be given for both planets and asteroids, in order to distinguish them and improve visibility of the system.</p>
+<h4 align="middle">Problems Encountered</h4>
+<ul>
+    <li>Performance issues due to large number of computations: As stated before our biggest optimization was implementing a gravity margin.</li>
+    <li>We had to make a surprising number of changes to the project 4 codebase. Project 4 turned out to only support a single texture, forcing us to modify the OpenGL pipeline to allow every celestial body to be modeled with a different texture.</li>
+</ul>
+<h4 align="middle">Lessons Learned</h4>
+<p>We believe the biggest lesson we all learned was that working on something without understanding it is dangerous. Firstly, Ryan was the only physics major of the three of us and the only one with nontrivial prior exposure to astrophysics. This meant that he was the only one who could fix a number of bugs involving our physical calculations. In retrospect it would have done us a lot of good for the other two of us to learn about astrophysics before starting work on this project. Finally, we assumed we wouldn’t need very much OpenGL since Project 4’s codebase would have most of the OpenGL already written, but as previously described we hit some limitations fairly quickly. Our solutions to these problems were mostly kludgy and inefficient before we acquired a fairly good understanding of OpenGL.</p>
+<h2 align="middle">Results</h2>
+<p>We are able to simulate different types of planetary systems. Below we have a planet-moon system, which illustrates the effects of gravitational forces between the sun (middle), the earth (second smallest sphere), and the moon (smallest sphere). As we would expect, the earth revolves around the sun as the moon revolves around the earth.</p>
 </div>
 </body>
 </html>
