@@ -49,7 +49,14 @@ bool split_filename(const std::string& filename, std::string& before_extension, 
   }
 }
 
-
+void get_filename_from_path(const std::string& path, std::string& filename, char delimiter) {
+  std::size_t slash_pos = path.find_last_of(delimiter);
+  if (slash_pos == std::string::npos) {
+    filename = path;
+  } else {
+    filename = path.substr(slash_pos + 1);
+  }
+}
 
 bool file_exists(const std::string& test_filename) {
   std::ifstream temp(test_filename);

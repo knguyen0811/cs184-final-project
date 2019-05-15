@@ -41,7 +41,8 @@ private:
   
   void load_shaders();
   void load_textures();
-  
+  void setSphereTextures();
+
   // File management
   
   std::string m_project_root;
@@ -71,6 +72,7 @@ private:
 
   vector<UserShader> shaders;
   vector<std::string> shaders_combobox_names;
+  map<std::string, GLuint*> tex_file_to_texture;
   
   // OpenGL textures
   

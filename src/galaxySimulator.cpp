@@ -73,12 +73,11 @@ void GalaxySimulator::load_textures() {
     std::cout << "Error: could not find the texture folder!" << endl;
   }
   std::string file_extension;
-  std::string shader_name;
+  std::string texture_name;
   for (auto file : files) {
-    FileUtils::split_filename(file, shader_name, file_extension);
+    FileUtils::split_filename(file, texture_name, file_extension);
     if (file_extension == "png") {
       texture_paths.emplace_back(texture_directory + "/" + file);
-      std::cout << texture_directory + "/" + file << endl;
     }
   }
   gl_textures = new GLuint[texture_paths.size()];
@@ -87,6 +86,9 @@ void GalaxySimulator::load_textures() {
   glGenTextures(texture_paths.size(), gl_textures);
   for (int i = 0; i < texture_paths.size(); i++) {
     gl_texture_sizes[i] = load_texture(0, gl_textures[i], (texture_paths[i]).c_str());
+    FileUtils::get_filename_from_path(texture_paths[i], texture_name);
+    std::cout << texture_name << endl;
+    tex_file_to_texture[texture_name] = gl_textures+i;
   }
   
   std::vector<std::string> cubemap_fnames = {
@@ -163,6 +165,10 @@ void GalaxySimulator::load_shaders() {
   }
 }
 
+void GalaxySimulator::setSphereTextures() {
+  galaxy->setTextures(tex_file_to_texture);
+}
+
 GalaxySimulator::GalaxySimulator(std::string project_root, Screen *screen)
 : m_project_root(project_root) {
   this->screen = screen;
@@ -174,6 +180,7 @@ GalaxySimulator::GalaxySimulator(std::string project_root, Screen *screen)
   glEnable(GL_DEPTH_TEST);
 }
 
+//TODO: fix destructor
 GalaxySimulator::~GalaxySimulator() {
   for (auto shader : shaders) {
     shader.nanogui_shader.free();
@@ -192,7 +199,10 @@ GalaxySimulator::~GalaxySimulator() {
 
 void GalaxySimulator::loadSphereParameters(SphereParameters *sp) { this->sp = sp; }
 
-void GalaxySimulator::loadGalaxy(Galaxy *galaxy) { this->galaxy = galaxy; }
+void GalaxySimulator::loadGalaxy(Galaxy *galaxy) {
+  this->galaxy = galaxy;
+  this->setSphereTextures();
+}
 
 /**
  * Initializes the cloth simulation and spawns a new thread to separate
@@ -293,13 +303,9 @@ void GalaxySimulator::drawContents() {
   shader.setUniform("u_height_scaling", m_height_scaling, false);
 
   shader.setUniform("u_texture_cubemap", 1, false);
-  //galaxy->render(shader, is_paused);
+  galaxy->render(shader, is_paused);
   //FIXME: Placeholder code -- add texture input / texture changing feature
   int i = 0;
-  for (auto sphere : *(galaxy->planets)) {
-    glBindTexture(GL_TEXTURE_2D, gl_textures[i++]);
-    sphere->render(shader, is_paused);
-  }
 }
 
 //void GalaxySimulator::drawWireframe(GLShader &shader) {

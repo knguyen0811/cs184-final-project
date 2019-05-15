@@ -50,6 +50,7 @@ public:
     Vector3D getInitVelocity();
     double getRadius();
     long double getMass();
+    string getTexFile();
     GLuint* texture;
 private:
     PointMass pm;
@@ -65,7 +66,6 @@ private:
     double friction;
     bool addTrack;
     Misc::SphereMesh m_sphere_mesh;
-    int texture_id;
     string tex_file;
 };
 
