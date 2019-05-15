@@ -7,7 +7,6 @@
 
 #include <vector>
 #include "collision/sphere.h"
-#define default_texture "moon.png"
 
 class Galaxy {
 public:

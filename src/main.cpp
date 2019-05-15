@@ -419,14 +419,14 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<doub
 
         auto it_planet_texture = object.find("sphere-texture");
         if (it_planet_texture != object.end()) {
-          *planet_texture = *it_planet_texture;
+          *planet_texture = (*it_planet_texture).get<string>();
         } else {
           *planet_texture = default_planet_texture;
         }
 
         auto it_asteroid_texture = object.find("asteroid-texture");
         if (it_asteroid_texture != object.end()) {
-          *asteroid_texture = *it_asteroid_texture;
+          *asteroid_texture = (*it_asteroid_texture).get<string>();
         } else {
           *asteroid_texture = default_asteroid_texture;
         }

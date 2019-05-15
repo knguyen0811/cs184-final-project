@@ -238,7 +238,7 @@ void GalaxySimulator::init() {
     // DEBUG: Adjust Camera View Distance Here
   canonical_view_distance = abs(galaxy->getLastPlanet()->getInitOrigin().norm()) / Sphere::sphere_factor;
 //  std::cout << "dist lastPlanet: " << canonical_view_distance << "\n";
-  scroll_rate = canonical_view_distance / 10;
+  scroll_rate = canonical_view_distance / 100;
 
   view_distance = canonical_view_distance;
   min_view_distance = canonical_view_distance / 100.0;
@@ -327,7 +327,7 @@ void GalaxySimulator::drawTrail(GLShader &shader) {
     std::vector<Sphere*> *planets = galaxy->planets;
     Sphere *center = (*planets)[0];
     for (Sphere *s : (*planets)) {
-        if (center != s) {
+        if (center != s || planets->size() == 2) {
             center->trail(shader, s->getTrack());
         }
     }
