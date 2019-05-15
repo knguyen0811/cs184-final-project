@@ -44,6 +44,8 @@
   ],
   "generate": {
     "spheres": 0,
-    "asteroids": 100
+    "asteroids": 100,
+    "sphere-texture": "earth.png",
+    "asteroid-texture": "moon.png"
   }
 }
