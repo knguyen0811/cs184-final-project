@@ -1,9 +1,9 @@
 {
-  "spheres": 
+  "spheres":
   [
     {
       "origin": [0, 0, 0],
-      "radius": 85.0,
+      "radius": 8.0,
       "friction": 0.3,
       "velocity": [0, 0, 0],
       "mass": 1.9891E30,
@@ -15,7 +15,7 @@
       "friction": 0.3,
       "velocity":  [0, 47400, 0],
       "mass":  3.3E23,
-      "texture": "earth.png"
+      "texture": "mercury.png"
     },
     {
       "origin": [1.082E11, 0, 0],
@@ -23,7 +23,7 @@
       "friction": 0.3,
       "velocity":  [0, 35000, 0],
       "mass":  4.87E24,
-      "texture": "mercury.png"
+      "texture": "venus.png"
     },
     {
       "origin": [1.496E11, 0, 0],
@@ -31,15 +31,7 @@
       "friction": 0.3,
       "velocity":  [0, 29800, 0],
       "mass":  5.976E24,
-      "texture": "venus.png"
-    },
-    {
-      "origin": [149.9844E9, 0, 0],
-      "radius": 1.8,
-      "friction": 0.3,
-      "velocity":  [0, 7.163E11, 0],
-      "mass":  5.976E24,
-      "texture": "neptune.png"
+      "texture": "earth.png"
     },
     {
       "origin": [2.279E11, 0, 0],
@@ -47,7 +39,7 @@
       "friction": 0.3,
       "velocity":  [0, 24100, 0],
       "mass":  5.976E24,
-      "texture": "moon.png"
+      "texture": "mars.png"
     }
   ]
 }

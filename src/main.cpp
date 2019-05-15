@@ -345,7 +345,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<doub
       Vector3D origin, velocity;
       double radius, friction;
       long double mass;
-      string tex_file;
+      std::string tex_file;
       for (auto& sphere_element : object) {
         auto it_origin = sphere_element.find("origin");
         if (it_origin != sphere_element.end()) {
@@ -393,7 +393,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<doub
 
         auto it_tex_file = sphere_element.find("texture");
         if (it_tex_file != sphere_element.end()) {
-          tex_file = *it_tex_file;
+          tex_file = (*it_tex_file).get<string>();
         } else {
           tex_file = default_texture;
         }
@@ -553,6 +553,7 @@ int main(int argc, char **argv) {
         Sphere::sphere_factor = pow(10, count);
         Sphere::gravity_margin = (massVals.back() - massVals.front()) / 2;
         Sphere::radiusFactor = 1; //TODO NEED TO FIX
+        std::cout << "Planet size = " << planets.size() << endl;
         std::cout << "Gravity margin = " << Sphere::gravity_margin << endl;
         std::cout << "Sphere factor = " << Sphere::sphere_factor << endl;
         std::cout << "Radius factor = " << Sphere::radiusFactor << endl;

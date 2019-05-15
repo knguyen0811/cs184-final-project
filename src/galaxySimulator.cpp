@@ -294,7 +294,9 @@ void GalaxySimulator::drawContents() {
 
   shader.setUniform("u_model", model);
   shader.setUniform("u_view_projection", viewProjection);
-  shader.setUniform("u_color", color, false);
+    shader.setUniform("u_color", color, false);
+    if (draw_track) { drawTrail(shader); }
+
   shader.setUniform("u_cam_pos", Vector3f(cam_pos.x, cam_pos.y, cam_pos.z), false);
   shader.setUniform("u_light_pos", Vector3f(0.5, 2, 2), false);
   shader.setUniform("u_light_intensity", Vector3f(3, 3, 3), false);
@@ -305,7 +307,6 @@ void GalaxySimulator::drawContents() {
   shader.setUniform("u_texture_cubemap", 1, false);
   galaxy->render(shader, is_paused);
   //drawPhong(shader);
-  if (draw_track) { drawTrail(shader); }
 }
 
 void GalaxySimulator::drawTrail(GLShader &shader) {

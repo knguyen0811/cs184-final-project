@@ -6,13 +6,15 @@
       "radius": 7.0,
       "friction": 0.3,
       "velocity": [0, -24000, 0],
-      "mass": 1.9891E30
+      "mass": 1.9891E30,
+      "texture": "sun.png"
     },{
     "origin": [8.79E10, 0, 0],
     "radius": 7.0,
     "friction": 0.3,
     "velocity": [0, 24000, 0],
-    "mass": 1.9891E30
+    "mass": 1.9891E30,
+    "texture": "sun.png"
   }
   ],
   "cloth": {

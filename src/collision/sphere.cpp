@@ -68,24 +68,17 @@ void Sphere::render(GLShader &shader, bool is_paused) {
   // and intersect with the sphere when rendered
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, *texture);
-  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
-  /*if (!is_paused) {
-    m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
+//  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius / radiusFactor);
+    m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, log(radius));
+    if (!is_paused) {
+        if (track.size() > 2 && addTrack) {
+            this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
+        }
 
-  if (!is_paused) {
-      if (track.size() > 2 && addTrack) {
-          this->isTrackEnd(track.front(), (track.at(1) - track.at(0)).norm());
-      }
-
-      if (addTrack) {
-          track.push_back(pm.position);
-      }
-  }
-}
-
-  for (Vector3D p : track) {
-      m_sphere_mesh.draw_sphere(shader, p/sphere_factor, 0.3);
-  }*/
+        if (addTrack) {
+            track.push_back(pm.position);
+        }
+    }
 }
 void Sphere::trail(GLShader &shader, std::vector<Vector3D> trail) {
     if (trail.size() >= 2) {
