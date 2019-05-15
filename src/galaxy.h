@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "collision/sphere.h"
+
 class Galaxy {
 public:
     // Constructor & Destructor
@@ -23,9 +24,10 @@ public:
     void add_planet_helper(Sphere *s);
     void remove_planet();
     void remove_planet(int index);
+    void setTextures(map<string, GLuint*> &tex_file_to_texture);
     int size();
     Sphere* getLastPlanet();
-    void render(GLShader &shader, bool is_paused, bool draw_track);
+    void render(GLShader &shader, bool is_paused);
 
 
     // Comparators

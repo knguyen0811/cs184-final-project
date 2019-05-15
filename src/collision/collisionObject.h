@@ -11,7 +11,7 @@ using namespace nanogui;
 
 class CollisionObject {
 public:
-  virtual void render(GLShader &shader, bool is_paused, bool draw_track) = 0;
+  virtual void render(GLShader &shader, bool is_paused) = 0;
   virtual void collide(PointMass &pm) = 0;
 
 private:

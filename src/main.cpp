@@ -36,6 +36,9 @@ const string PLANE = "plane";
 const string CLOTH = "cloth";
 const string GENERATE = "generate";
 
+const string default_texture = "moon.png";
+const string default_planet_texture = "earth.png";
+const string default_asteroid_texture = "moon.png";
 const unordered_set<string> VALID_KEYS = {SPHERE, PLANE, CLOTH, SPHERES, GENERATE};
 
 GalaxySimulator *app = nullptr;
@@ -194,7 +197,7 @@ Vector3D randomVec(double norm) {
 }
 
 void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* asteroids, vector<double> *coordVals, vector<double> *massVals, vector<double> *radiusVals,
-        int num_spheres, int num_asteroids=0) {
+        int num_spheres, int num_asteroids=0, string planet_texture = "earth.png", string asteroid_texture = "moon.png", string star_texture = "sun.png") {
     Vector3D sphereOrigMin, sphereOrigMax, sphereVelMin, sphereVelMax;
 //    double sphereRadiusMin, sphereRadiusMax, friction=0.3f;
     long double sphereMassMin, sphereMassMax;
@@ -213,7 +216,7 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
                 radius = randomVal(7, 12);
                 mass = randomVal(1E30, 5E30);
 
-                Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, star_texture);
                 planets->push_back(new_sphere);
                 coordVals->push_back(origin[0]);
                 coordVals->push_back(origin[1]);
@@ -233,7 +236,7 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
                     // Create first planet
                     origin = randomVec(origSeed, 1.5 * origSeed);
 
-                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, planet_texture);
                     planets->push_back(new_sphere);
                 } else {
                     Sphere* last = *std::max_element(planets->begin()+1, planets->end(), Galaxy::compareOrigin);
@@ -243,7 +246,7 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
 
                     origin = randomVec(sphereOrigMin, sphereOrigMax);
 
-                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+                    Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, planet_texture);
                     planets->push_back(new_sphere);
                 }
 
@@ -277,7 +280,7 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
             radius = randomVal(sphereRadiusMin, sphereRadiusMax);
             mass = randomVal(sphereMassMin, sphereMassMax);
 
-            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, planet_texture);
             planets->push_back(new_sphere);
 
             coordVals->push_back(origin[0]);
@@ -306,14 +309,14 @@ void generateObjectsFromFile(vector<Sphere *>* planets, vector<Sphere *>* astero
             radius = randomVal(astRadiusMin, astRadiusMax);
             mass = randomVal(astMassMin, astMassMax);
 
-            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass);
+            Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, asteroid_texture);
             asteroids->push_back(new_sphere);
         }
     }
 }
 
 bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<double> *coordVals, vector<double> *massVals, vector<double> *radiusVals,
-        int* num_spheres, int* num_asteroids, int sphere_num_lat, int sphere_num_lon) {
+        int* num_spheres, int* num_asteroids, string* planet_texture, string* asteroid_texture, int sphere_num_lat, int sphere_num_lon) {
   // Read JSON from file
   ifstream i(filename);
   if (!i.good()) {
@@ -342,6 +345,7 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<doub
       Vector3D origin, velocity;
       double radius, friction;
       long double mass;
+      std::string tex_file;
       for (auto& sphere_element : object) {
         auto it_origin = sphere_element.find("origin");
         if (it_origin != sphere_element.end()) {
@@ -386,8 +390,15 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<doub
         } else {
           incompleteObjectError("sphere", "mass");
         }
+
+        auto it_tex_file = sphere_element.find("texture");
+        if (it_tex_file != sphere_element.end()) {
+          tex_file = (*it_tex_file).get<string>();
+        } else {
+          tex_file = default_texture;
+        }
         
-        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, sphere_num_lat, sphere_num_lon);
+        Sphere *new_sphere = new Sphere(origin, radius, friction, velocity, mass, tex_file, sphere_num_lat, sphere_num_lon);
         planets->push_back(new_sphere);
       }
     }
@@ -404,6 +415,20 @@ bool loadObjectsFromFile(string filename, vector<Sphere *>* planets, vector<doub
             *num_asteroids = *it_asteroids;
         } else {
             cout << "num_asteroids not specified" << endl;
+        }
+
+        auto it_planet_texture = object.find("sphere-texture");
+        if (it_planet_texture != object.end()) {
+          *planet_texture = (*it_planet_texture).get<string>();
+        } else {
+          *planet_texture = default_planet_texture;
+        }
+
+        auto it_asteroid_texture = object.find("asteroid-texture");
+        if (it_asteroid_texture != object.end()) {
+          *asteroid_texture = (*it_asteroid_texture).get<string>();
+        } else {
+          *asteroid_texture = default_asteroid_texture;
         }
     }
   }
@@ -452,6 +477,8 @@ int main(int argc, char **argv) {
   vector<double> radiusVals;
   int num_spheres = 0;
   int num_asteroids = 0;
+  string planet_texture = "";
+  string asteroid_texture = "";
 
   int c;
   
@@ -513,7 +540,7 @@ int main(int argc, char **argv) {
     file_to_load_from = def_fname.str();
   }
   
-  bool success = loadObjectsFromFile(file_to_load_from, &planets, &coordVals, &massVals, &radiusVals, &num_spheres, &num_asteroids, sphere_num_lat, sphere_num_lon);
+  bool success = loadObjectsFromFile(file_to_load_from, &planets, &coordVals, &massVals, &radiusVals, &num_spheres, &num_asteroids, &planet_texture, &asteroid_texture, sphere_num_lat, sphere_num_lon);
   if (!success) {
     std::cout << "Warn: Unable to load from file: " << file_to_load_from << std::endl;
   }
@@ -524,7 +551,7 @@ int main(int argc, char **argv) {
 
     // Initialize the GalaxySimulator object
     if (num_spheres != 0 || num_asteroids != 0) {
-        generateObjectsFromFile(&planets, &asteroids, &coordVals, &massVals, &radiusVals, num_spheres, num_asteroids);
+        generateObjectsFromFile(&planets, &asteroids, &coordVals, &massVals, &radiusVals, num_spheres, num_asteroids, planet_texture, asteroid_texture);
     }
 
   // Ryan's factoring code
@@ -542,6 +569,7 @@ int main(int argc, char **argv) {
         Sphere::sphere_factor = pow(10, count);
         Sphere::gravity_margin = (massVals.back() - massVals.front()) / 2;
         Sphere::radiusFactor = 1; //TODO NEED TO FIX
+        std::cout << "Planet size = " << planets.size() << endl;
         std::cout << "Gravity margin = " << Sphere::gravity_margin << endl;
         std::cout << "Sphere factor = " << Sphere::sphere_factor << endl;
         std::cout << "Radius factor = " << Sphere::radiusFactor << endl;
