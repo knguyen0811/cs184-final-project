@@ -68,7 +68,7 @@ void Sphere::render(GLShader &shader, bool is_paused) {
   // and intersect with the sphere when rendered
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, *texture);
-  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, radius);
+  m_sphere_mesh.draw_sphere(shader, pm.position / sphere_factor, log_radius);
   /*if (!is_paused) {
     m_sphere_mesh.draw_sphere(shader, pm.position / Sphere::sphere_factor, log(radius));
 
